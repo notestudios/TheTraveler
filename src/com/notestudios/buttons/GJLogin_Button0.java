@@ -1,6 +1,7 @@
 package com.notestudios.buttons;
 
 import com.notestudios.main.Game;
+import com.notestudios.menus.GJLogin;
 
 import java.awt.*;
 
@@ -16,7 +17,7 @@ public class GJLogin_Button0 extends Button {
         if(selected && clicked) {
             clicked = false;
             if(!Game.isLoggedIn) {
-                Game.loginGameJolt(Game.USER_NAME, Game.USER_TOKEN);
+                GJLogin.loginGameJolt(Game.USER_NAME, Game.USER_TOKEN);
                 if (Game.loginSuccessful) {
                     if (!Game.api.getTrophy(Game.TROPHIES_IDs[0]).isAchieved()) {
                         Game.api.achieveTrophy(Game.TROPHIES_IDs[0]);

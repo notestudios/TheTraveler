@@ -5,10 +5,15 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.Objects;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 import com.notestudios.buttons.GJLogin_Button0;
 import com.notestudios.buttons.GJLogin_Button1;
@@ -104,124 +109,87 @@ public class GJLogin {
         String tkn = "Token: "+Game.USER_TOKEN;
         g.drawString(tkn, tokenTextBoxX + 10, 300 + loginbtn.getHeight() / 2 + 12);
     }
-    /*
-    public void userCredentialsSave(String var) {
-    	// A variável String a ser salva no arquivo
-        String str = var;
+    
+    public static void loginGameJolt(String username, String token) {
+        Game.api.verifyUser(username, token);
+        Game.loginSuccessful = Game.api.sessionOpen();
+        if (Game.loginSuccessful) {
+            Game.gjUser = Game.api.getUser(username);
+            System.out.println("Authentication successful: "+Game.gjUser.getName());
+			Game.isLoggedIn = true;
+			Game.transition = true;
+			Game.gameState = "GJLogin";
+			if(Game.dev && !Game.api.getTrophy(Game.TROPHIES_IDs[3]).isAchieved()) {
+				Game.api.achieveTrophy(Game.TROPHIES_IDs[3]); }
+			return;
+        } else {
+			String msg;
+			String title;
+			
+			if(MainMenu.Por == 1 && MainMenu.portugues) {
+				msg = "Usuário ou Token inválidos!\nTente verificar o seu Token ou Usuário";
+				title = "Ocorreu um erro do Game Jolt!";
+			} else {
+				msg = "Username or Token invalid! \n Try verifying your token or username.";
+				title = "An Game Jolt error occurred";
+			}
+            JOptionPane.showMessageDialog(null, msg, title, JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    public static void logoutGameJolt() {
+        Game.logoutSuccessful = Game.api.sessionClose();
+        if (Game.logoutSuccessful) {
+        	Game.USER_TOKEN = "";
+        	Game.isLoggedIn = false;
+            System.out.println("Logout successful!");
+			Game.transition = true;
+			Game.gameState = "Menu";
+			
+			return;
+        } else {
+			String msg;
+			String title;
 
-        // O nome do arquivo a ser escrito
-        String fileName = "usr.txt";
+			if(MainMenu.Por == 1 && MainMenu.portugues) {
+				msg = "Ocorreu um erro ao encerrar a sessão\n Tente novamente mais tarde";
+				title = "Ocorreu um erro do Game Jolt!";
+			} else {
+				msg = "An error occurred during Log Out!\n Try again later.";
+				title = "An Game Jolt error occurred";
+			}
 
-        // O encoding do arquivo
-        String encoding = "UTF-8";
-
-        try {
-            // Criar um PrintWriter a partir do nome do arquivo e do encoding
-            PrintWriter writer = new PrintWriter(fileName, encoding);
-
-            // Escrever a variável String no arquivo
-            writer.println(str);
-
-            // Fechar o PrintWriter
-            writer.close();
-        } catch (IOException e) {
-            // Tratar a exceção de entrada e saída
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, msg, title, JOptionPane.ERROR_MESSAGE);
         }
     }
     
-    public void userCredentialsLoad(String var) {
-	    // O nome do arquivo a ser lido
-    	String fileName = "usr.txt";
-	
-	    // O encoding do arquivo
-	    String encoding = "UTF-8";
-	
-	    // Um StringBuilder para armazenar o conteúdo do arquivo
-	    StringBuilder content = new StringBuilder();
-	
-	    try {
-	        // Criar um BufferedReader a partir de um FileInputStream e um InputStreamReader
-	        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), encoding));
-	
-	        // Ler uma linha do arquivo
-	        String line = reader.readLine();
-	
-	        // Enquanto a linha não for nula, adicionar ao conteúdo e ler a próxima linha
-	        while (line != null) {
-	            content.append(line).append("\n");
-	            line = reader.readLine();
-	        }
-	
-	        // Fechar o BufferedReader
-	        reader.close();
-	    } catch (IOException e) {
-	        // Tratar a exceção de entrada e saída
-	        e.printStackTrace();
-	    }
-	
-	    // Imprimir o conteúdo do arquivo
-	    var = content.toString().trim();
-	    System.out.println(content.toString().trim());
-    }
     
-    public void tokenCredentialsSave(String var) {
-    	// A variável String a ser salva no arquivo
-        String str = var;
-
-        // O nome do arquivo a ser escrito
-        String fileName = "tkn.txt";
-
-        // O encoding do arquivo
-        String encoding = "UTF-8";
-
-        try {
-            // Criar um PrintWriter a partir do nome do arquivo e do encoding
-            PrintWriter writer = new PrintWriter(fileName, encoding);
-
-            // Escrever a variável String no arquivo
-            writer.println(str);
-
-            // Fechar o PrintWriter
-            writer.close();
-        } catch (IOException e) {
-            // Tratar a exceção de entrada e saída
-            e.printStackTrace();
-        }
-    }
     
-    public void tokenCredentialsLoad(String var) {
-	    // O nome do arquivo a ser lido
-    	String fileName = "tkn.txt";
+    //Save user credentials to next time
+    public static void fileSave(String fileName, String username, String token) {
+		String encoding = "UTF-8";
+		try {
+			PrintWriter writer = new PrintWriter(fileName, encoding);
+			writer.println(username);
+			writer.println(token);
+			writer.close();
+			//salvo com sucesso!
+		} catch(IOException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "An error occurred with Game Jolt", "Credentials Error!", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 	
-	    // O encoding do arquivo
-	    String encoding = "UTF-8";
-	
-	    // Um StringBuilder para armazenar o conteúdo do arquivo
-	    StringBuilder content = new StringBuilder();
-	
-	    try {
-	        // Criar um BufferedReader a partir de um FileInputStream e um InputStreamReader
-	        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), encoding));
-	
-	        // Ler uma linha do arquivo
-	        String line = reader.readLine();
-	
-	        // Enquanto a linha não for nula, adicionar ao conteúdo e ler a próxima linha
-	        while (line != null) {
-	            content.append(line).append("\n");
-	            line = reader.readLine();
-	        }
-	
-	        // Fechar o BufferedReader
-	        reader.close();
-	    } catch (IOException e) {
-	        // Tratar a exceção de entrada e saída
-	        e.printStackTrace();
-	    }
-	
-	    // Imprimir o conteúdo do arquivo
-	    var = content.toString().trim();
-	    System.out.println(content.toString().trim());
-    }*/
+	public static void autoLogin(String fileName) {
+		String encoding = "UTF-8";
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), encoding));
+			String username = reader.readLine().trim().toString();
+			String token = reader.readLine().trim().toString();
+			reader.close();
+			loginGameJolt(username, token);
+		} catch(IOException e) {
+			JOptionPane.showMessageDialog(null, "An error occurred with Game Jolt", "Credentials Error!", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
+	}
 }

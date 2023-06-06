@@ -1,6 +1,6 @@
 package com.notestudios.buttons;
 
-import com.notestudios.main.Game;
+import com.notestudios.menus.GJLogin;
 
 public class GJLogin_Button2 extends Button {
 
@@ -13,7 +13,7 @@ public class GJLogin_Button2 extends Button {
 		textOffsetX=-5;
 		if(selected && clicked) {
 			clicked = false;
-			Game.logoutGameJolt();
+			GJLogin.logoutGameJolt();
 		}
 	}
 

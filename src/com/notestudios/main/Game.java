@@ -138,7 +138,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	public PopupLogin popupLogin;
 	public UpdateRPC updRPC;
 	
-	public static Color defaultBgColor = new Color(39, 39, 39, 255);
+	public static Color defaultBgColor = new Color(39, 39, 39, 255); /*OLD 15,40,50 | NEW 0xFF1E1E1F*/
 
 	public double logoTime = 0;
 	public double logoMaxTime = (60 * 4);/*4 seconds is better*/
@@ -196,7 +196,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 
 	public static boolean isLoggedIn = false;
 	int GAME_ID = 796130;
-	String GAME_PRIVATE_KEY = "73979f3cebe0b2ce206ea1abbace9d22";
+	private String GAME_PRIVATE_KEY = /***********************************************************************************************/"73979f3cebe0b2ce206ea1abbace9d22";
 	public static String USER_NAME = "";
 	public static String USER_TOKEN = "";
 	public static int[] TROPHIES_IDs = {/*loginAch*/193422, /*SPAM*/193423, /*why he's so big*/193917, /*dev*/193424};
@@ -207,7 +207,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	"what... just... happened...?", "sorry for the delay :'(", "Somehow Figure just turned into a ninja idk",
 	"new menu style lol", "Figure is bugged", "when the impostor is SUS ඞ", "Seek is watching you!", "bruh", "cool",
 	"kaboom", "coffee and tea.", "here's your attention again.", "spider-man goes crazy :0", "Got your attention haha ;)", "[...] thread == null!", "this is a random title!",
-	currentVersion+" is on!", "lmao", "I know your discord username haha", "Some levels are still buggy, I'm fixing it"};
+	currentVersion+" is on!", "lmao", "I know your discord username haha", "Some levels are still buggy, I'm fixing it", "Your Game Jolt login is now being saved locally!"};
 	
 	String[] tipsEn = {"Press 'C' to save the game! ", "is this a... tip?", "You can run pressing 'Shift'!", "idk whats the next tip bru", 
 			"Move using W, A, S, D keys!", "There are maps that you can't use minimap!", "You can use the menus with the arrow keys!", "sorry for the delay.", 
@@ -219,28 +219,20 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	String randomTip;
 	public static String showGraphics;
 	String randomText;
-	
-	public static String currentVersion = "v4.4.0";
-	public static String newerVersion;
-	
-	public static String day = "05";
-	public static String month = "06";
-	public static String year = "2023";
-	
+	public static String currentVersion = "v4.4.2b";
+	String newerVersion;
+	static String day = "06", month = "06", year = "2023";
 	public static String lastUpdateEn = month+"/"+day+"/"+year;
 	public static String lastUpdatePt = day+"/"+month+"/"+year;
-	
 	public static String appID = "1087444872132313168";
 	public static String gameState = "Start Menu";
-
+	
+	public static char charPressed;
+	
 	RPC rpc;
 	GJLogin gjlogin;
-
-    public static char charPressed;
-
-    public static GameJoltAPI api;
+	public static GameJoltAPI api;
 	public static User gjUser;
-	
 	JFrame frame;
 	
 	/*
@@ -253,13 +245,12 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	 * Controls = show controls;
 	 * Background = shows game Background;
 	 * Shop = opens shop (available RIGHT NOW!);
-	 * Credits = Shows the game credits.
+	 * Credits = Shows the game credits;
+	 * Start Menu = game start menu;
+	 * GJLogin = Game Jolt login page;
 	 * 
 	 * NoteStudios GAMES INC.
 	 */
-	
-	public static int usernamesaved = 0;
-	public static int usertokensaved = 0;
 
 	public Game() {
 		rand = new Random();
@@ -335,6 +326,13 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			Settings.applyCfgSave(saver);
 		}
 		
+		File credentials = new File("GJ");
+		if(credentials.exists()) {
+			GJLogin.autoLogin("GJ");
+			showPopup = 0;
+			loginPopup = false;
+		}
+		
 		mute = Settings.mute == 1;
 		minimapRender = Settings.minimap == 1;
 		AAEnabled = Settings.AntiAliasing == 1;
@@ -380,59 +378,6 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		
 		loadingScreen = true;
 	}
-    public static void loginGameJolt(String Username, String token) {
-        api.verifyUser(USER_NAME, USER_TOKEN);
-        loginSuccessful = api.sessionOpen();
-        if (loginSuccessful) {
-            gjUser = api.getUser(USER_NAME);
-            System.out.println("Authentication successful: "+gjUser.getName());
-			isLoggedIn = true;
-			transition = true;
-			gameState = "GJLogin";
-			if(dev && !api.getTrophy(TROPHIES_IDs[3]).isAchieved()) {
-				api.achieveTrophy(TROPHIES_IDs[3]);
-			}
-			return;
-			
-        } else {
-			String msg;
-			String title;
-			
-			if(MainMenu.Por == 1 && MainMenu.portugues) {
-				msg = "Usuário ou Token inválidos!\nTente verificar o seu Token ou Usuário";
-				title = "Ocorreu um erro do Game Jolt!";
-			} else {
-				msg = "Username or Token invalid! \n Try verifying your token or username.";
-				title = "An Game Jolt error occurred";
-			}
-            JOptionPane.showMessageDialog(null, msg, title, JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    public static void logoutGameJolt() {
-        logoutSuccessful = api.sessionClose();
-        if (logoutSuccessful) {
-        	USER_TOKEN = "";
-        	isLoggedIn = false;
-            System.out.println("Logout successful!");
-			transition = true;
-			gameState = "Menu";
-			
-			return;
-        } else {
-			String msg;
-			String title;
-
-			if(MainMenu.Por == 1 && MainMenu.portugues) {
-				msg = "Ocorreu um erro ao encerrar a sessão\n Tente novamente mais tarde";
-				title = "Ocorreu um erro do Game Jolt!";
-			} else {
-				msg = "An error occurred during Log Out!\n Try again later.";
-				title = "An Game Jolt error occurred";
-			}
-
-            JOptionPane.showMessageDialog(null, msg, title, JOptionPane.ERROR_MESSAGE);
-        }
-    }
 
 	public static void main(String[] args) {
         Game game = new Game();
@@ -631,12 +576,10 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			int[] cfg2 = {MainMenu.Eng, MainMenu.Por, graphics, MainMenu.arrSelect, minimapEnable, Settings.mute, Settings.minimap, 
 					Settings.AntiAliasing, showPopup};
 			Settings.saveConfig(cfg1, cfg2);
-		} /*if (saveLogin) {
-		    // TODO: Salvar a sessão do usuário
+		} if (saveLogin) {
 		    saveLogin = false;
-		    gjlogin.userCredentialsSave(USER_NAME);
-		    gjlogin.tokenCredentialsSave(USER_TOKEN);
-		}*/
+		    GJLogin.fileSave("GJ", USER_NAME, USER_TOKEN);
+		}
 		if (gameState.equals("Options")) {
 			opt.tick();
 		}
@@ -803,7 +746,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		}
 		g.setColor(defaultBgColor);
 		g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
-		if(gameState != "GJLogin") {
+		if(!gameState.equals("GJLogin")) {
 			world.render(g);
 		}
 		if(gameState.equals("Menu") || gameState.equals("Normal") || gameState.equals("")) {
@@ -812,7 +755,8 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				e.render(g);
 			}
 		}
-		for (Bullets bullet : bullets) {
+		for (int i = 0; i < bullets.size(); i++) {
+			Bullets bullet = bullets.get(i);
 			bullet.render(g);
 		}
 		if (saveGameScreen && gameState.equals("Normal")) {
@@ -957,8 +901,6 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		}
 
 		if (gameState.equals("Options")) {
-			/*OLD 15,40,50 | NEW 0xFF1E1E1F*/
-			
 			g.setColor(defaultBgColor);
 			g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
 			if (graphics == 2) {
@@ -1423,11 +1365,9 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		if(gameState.equals("GJLogin") && Game.charPressed != '\b' && charPressed != '\n'
 				&& charPressed != KeyEvent.VK_ESCAPE) {
 			if (GJLogin.curTextBox.equals("username") && USER_NAME.length() < 25) {
-				Game.USER_NAME += Game.charPressed;
-				usernamesaved += charPressed;
+				USER_NAME += charPressed;
 			} else if (GJLogin.curTextBox.equals("token") && USER_TOKEN.length() < 20) {
-				Game.USER_TOKEN += Game.charPressed;
-				usernamesaved += charPressed;
+				USER_TOKEN += charPressed;
 			}
 		}
 	}
