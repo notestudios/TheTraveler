@@ -1,7 +1,7 @@
 # The Traveler
   The Traveler Game on GitHub!
   
-  ![](https://github.com/RetrozinnDev/The_Traveler_v4/blob/master/assets/images/BannerGitHub.png?raw=true)
+  ![](https://github.com/notestudios/TheTraveler/blob/master/assets/images/BannerGitHub.png?raw=true)
   
   This is The Traveler source code on GitHub! You can make mods, optimize the game 
 and make any changes you want to the code!
