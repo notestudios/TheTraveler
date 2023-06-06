@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,6 +30,7 @@ public class GJLogin {
     public GJLogin_Button1 cancelbtn;
     public GJLogin_Button2 logoutbtn;
     public static String curTextBox = "";
+    static File credentials = new File("GJ");
 
     public GJLogin() {
         try {
@@ -117,8 +119,7 @@ public class GJLogin {
             Game.gjUser = Game.api.getUser(username);
             System.out.println("Authentication successful: "+Game.gjUser.getName());
 			Game.isLoggedIn = true;
-			Game.transition = true;
-			Game.gameState = "GJLogin";
+			if(!credentials.exists()) { Game.transition = true; Game.gameState = "GJLogin"; }
 			if(Game.dev && !Game.api.getTrophy(Game.TROPHIES_IDs[3]).isAchieved()) {
 				Game.api.achieveTrophy(Game.TROPHIES_IDs[3]); }
 			return;
@@ -141,6 +142,7 @@ public class GJLogin {
         if (Game.logoutSuccessful) {
         	Game.USER_TOKEN = "";
         	Game.isLoggedIn = false;
+        	if(credentials.exists()) { credentials.delete(); }
             System.out.println("Logout successful!");
 			Game.transition = true;
 			Game.gameState = "Menu";

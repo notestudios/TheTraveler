@@ -219,7 +219,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	String randomTip;
 	public static String showGraphics;
 	String randomText;
-	public static String currentVersion = "v4.4.2";
+	public static String currentVersion = "v4.4.3";
 	String newerVersion;
 	static String day = "06", month = "06", year = "2023";
 	public static String lastUpdateEn = month+"/"+day+"/"+year;
