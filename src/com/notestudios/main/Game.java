@@ -219,7 +219,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	String randomTip;
 	public static String showGraphics;
 	String randomText;
-	public static String currentVersion = "v4.4.2b";
+	public static String currentVersion = "v4.4.2";
 	String newerVersion;
 	static String day = "06", month = "06", year = "2023";
 	public static String lastUpdateEn = month+"/"+day+"/"+year;
@@ -336,15 +336,9 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		mute = Settings.mute == 1;
 		minimapRender = Settings.minimap == 1;
 		AAEnabled = Settings.AntiAliasing == 1;
-		
-		if(MainMenu.Por == 1) {
-			randomTip = tipsPt[rand.nextInt(tipsPt.length)];
-		} else if(MainMenu.Eng == 1) {
-			randomTip = tipsEn[rand.nextInt(tipsEn.length)];
-		} else {
-			randomTip = "Welcome! Use the Menu with you Keyoboard or mouse!";
-		}
-		
+		if(MainMenu.Por == 1) { randomTip = tipsPt[rand.nextInt(tipsPt.length)];
+		} else if(MainMenu.Eng == 1) { randomTip = tipsEn[rand.nextInt(tipsEn.length)];
+		} else { randomTip = "Welcome! Use the Menu with you Keyoboard or mouse!"; }
 		gameProcessStarted = true;
 		DiscordRPC.discordInitialize(appID, rpc, true);
 	}
