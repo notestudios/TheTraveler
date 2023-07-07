@@ -7,7 +7,7 @@ import java.awt.Graphics;
 import com.notestudios.entities.Entity;
 import com.notestudios.graphics.UI;
 import com.notestudios.main.Game;
-import com.notestudios.main.Sound;
+import com.notestudios.util.Sound;
 
 public class Shop {
 	
@@ -69,7 +69,7 @@ public class Shop {
 		g.setColor(Color.white);
 		if(MainMenu.english)
 			g.drawString("Shop", 55, 48);
-		else if(MainMenu.portugues)
+		else if(MainMenu.portuguese)
 			g.drawString("Loja", 60, 48);
 
 		g.setFont(MainMenu.aFont);

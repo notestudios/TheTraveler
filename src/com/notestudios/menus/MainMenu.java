@@ -11,8 +11,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.notestudios.entities.Entity;
+import com.notestudios.gameapi.GameJolt;
 import com.notestudios.main.Game;
-import com.notestudios.main.Sound;
+import com.notestudios.util.Sound;
 import com.notestudios.world.World;
 
 public class MainMenu {
@@ -20,7 +21,7 @@ public class MainMenu {
 	public String[] options = { "novo_jogo", "carregar_jogo", "options", "sair", "Credits", "nothing" };
 	public static String curLanguage = "English";
 	public static boolean english = true;
-	public static boolean portugues = false;
+	public static boolean portuguese = false;
 	public boolean optNew = true;
 	public boolean exitYes = false;
 	public boolean exitNo = false;
@@ -142,18 +143,18 @@ public class MainMenu {
 
 	public void tick() {
 		
-		if(Game.dev) {
+		if(Game.devMode) {
 			curEncode = 0;
-		} else if(!Game.dev) {
+		} else if(!Game.devMode) {
 			curEncode = 5;
 		}
 		
 		if(Eng == 1 && Por == 0) {
 			english = true;
-			portugues = false;
+			portuguese = false;
 		} else if(Por == 1 && Eng == 0) {
 			english = false;
-			portugues = true;
+			portuguese = true;
 		}
 
 		if (save.exists()) {
@@ -201,18 +202,15 @@ public class MainMenu {
 		if (options[currentOption] == "Credits") {
 			if (enter) {
 				enter = false;
-				Game.boolCredits = true;
-				if(!Game.mute) {
-					Sound.menuEnter.play();
-				}
+				if(!Game.mute) { Sound.menuEnter.play(); }
 				Game.gameState = "Credits";
-				Game.transition = true;
+				Game.downTransition = true;
 			}
 		}
 		
 		if(esc && Game.gameState == "Menu" && !pause && !Game.ESC) {
 			esc = false;
-			Game.transition = true;
+			Game.downTransition = true;
 			Game.gameState = "Start Menu";
 		}
 		
@@ -258,7 +256,7 @@ public class MainMenu {
 						Sound.loadSave.play();
 					}
 				}
-				Game.estadoCena = Game.jogando;
+				Game.cutsceneState = Game.finishCutscene;
 			} else if (options[currentOption] == "options") {
 				Game.gameState = "Options";
 				optNew = false;
@@ -266,7 +264,7 @@ public class MainMenu {
 				exitRequest = false;
 				exitYes = false;
 				exitNo = false;
-				Game.transition = true;
+				Game.downTransition = true;
 			}
 		}
 		if (exitRequest) {
@@ -310,7 +308,7 @@ public class MainMenu {
 			String[] spl2 = spl[i].split(":");
 			switch (spl2[0]) {
 			case "level":
-				World.restartGame("level" + spl2[1] + ".png");
+				World.nextLevel("level" + spl2[1] + ".png");
 				Game.gameState = "Normal";
 				break;
 
@@ -417,15 +415,9 @@ public class MainMenu {
 			
 		}*/
 		
-		if (!Game.licenseOK) {
-			if (!Game.debug) {
-				g.setFont(Game.menuFont2);
-				g.setColor(new Color(255, 255, 0));
-				g.drawString("The Traveler " + Game.currentVersion + " | Where is the license file?", 5, 630);
-			}
-		} if(Game.isLoggedIn) {
-			String currentUser = Game.gjUser.getName();
-			g.setFont(Game.fontPixel2);
+		if(GameJolt.isLoggedIn) {
+			String currentUser = GameJolt.user.getName();
+			g.setFont(Game.titleFont2);
 			g.setColor(Color.white);
 			g.drawString("User: @"+currentUser, 5, 630);
 		}
@@ -444,7 +436,7 @@ public class MainMenu {
 					g.fillOval(728, 620, 10, 10);
 					g.setColor(Color.black);
 					g.drawOval(728, 620, 10, 10);
-				} else if (portugues) {
+				} else if (portuguese) {
 					g.setColor(Color.green);
 					g.fillOval(720 + 30, 620, 10, 10);
 					g.setColor(Color.black);
@@ -460,7 +452,7 @@ public class MainMenu {
 					g.drawOval(718 + 14, 619, 10, 10);
 					g.setColor(Color.white);
 					g.drawString("The file doesn't exist!", 750, 630);
-				} else if (portugues) {
+				} else if (portuguese) {
 					g.setColor(Color.red);
 					g.fillOval(718 + 22, 618, 10, 10);
 					g.setColor(Color.black);
@@ -479,7 +471,7 @@ public class MainMenu {
 			g.setFont(new Font("Segoe UI", Font.BOLD, 18));
 			if (english && curLanguage == "English") {
 				g.drawString("Exit game", 845, 630);
-			} else if (portugues) {
+			} else if (portuguese) {
 				g.drawString("Sair do Jogo", 837, 630);
 			}
 		}
@@ -494,7 +486,7 @@ public class MainMenu {
 				} else {
 					g.drawString("Starts the Game", 805, 630);
 				}
-			} else if (portugues) {
+			} else if (portuguese) {
 				if (pause) {
 					g.drawString("Retorna ao Jogo", 800, 630);
 				} else {
@@ -510,7 +502,7 @@ public class MainMenu {
 			g.setFont(new Font("Segoe UI", Font.BOLD, 18));
 			if (english) {
 				g.drawString("Change Settings", 805, 630);
-			} else if (portugues) {
+			} else if (portuguese) {
 				g.drawString("Opções do Jogo", 804, 630);
 			}
 		}
@@ -522,7 +514,7 @@ public class MainMenu {
 			g.setFont(new Font("Segoe UI", Font.BOLD, 18));
 			if (english) {
 				g.drawString("See Credits", 840, 630);
-			} else if (portugues) {
+			} else if (portuguese) {
 				g.drawString("Ver Créditos", 835, 630);
 			}
 		}
@@ -568,7 +560,7 @@ public class MainMenu {
 			} else {
 				g.drawString("Play Game", 102, 402);
 			}
-		} else if (portugues) {
+		} else if (portuguese) {
 			if (pause) {
 				g.drawString("Voltar ao Jogo", 75, 404);
 			} else {
@@ -585,7 +577,7 @@ public class MainMenu {
 		}
 		if (english) {
 			g.drawString("Load Game", 88, 462);
-		} else if (portugues) {
+		} else if (portuguese) {
 			g.drawString("Carregar", 105, 464);
 		}
 		/***/
@@ -597,7 +589,7 @@ public class MainMenu {
 		/* options */
 		if (english)
 			g.drawString("Settings", 102, 522);
-		else if (portugues)
+		else if (portuguese)
 			g.drawString("Config.", 120, 524);
 		/***/
 		g.setFont(aFont);
@@ -610,7 +602,7 @@ public class MainMenu {
 		if(currentOption == 4) {
 			if(english) {
 				g.drawString("Credits", 400, 520);	
-			}else if(portugues) {
+			}else if(portuguese) {
 				g.drawString("Créditos", 401, 520);
 			}
 		} else {
@@ -626,7 +618,7 @@ public class MainMenu {
 		/* sair */
 		if (english)
 			g.drawString("Quit Game", 95, 580);
-		else if (portugues)
+		else if (portuguese)
 			g.drawString("Sair do Jogo", 72, 584);
 		/***/
 		g.setColor(Color.white);
@@ -665,7 +657,7 @@ public class MainMenu {
 				g.drawImage(Entity.GUN_SELECT, 525, 490, -48, 32, null);
 			} else {
 				g.setColor(Color.white);
-				if(portugues) {
+				if(portuguese) {
 					g.drawRoundRect(356, 480, 42 * Game.SCALE, 14 * Game.SCALE -1, 16, 16);
 				}else if(english) {
 					g.drawRoundRect(356, 480, 37 * Game.SCALE -1, 14 * Game.SCALE -1, 16, 16);
@@ -678,7 +670,7 @@ public class MainMenu {
 			
 			g.setColor(Color.white);
 			g.setFont(TheFont);
-			if (portugues)
+			if (portuguese)
 				g.drawString("Pausado", 220, 272);
 			else if (english)
 				g.drawString("Paused", 220, 272);
@@ -688,7 +680,7 @@ public class MainMenu {
 			if(Game.gameState != "Menu") {
 				exitRequest = false;
 			}
-			g.drawImage(Entity.JoaoNPC_EN, 40, 85, 16*Game.SCALE, 16*Game.SCALE, null);
+			g.drawImage(Entity.DefaultNPC_EN, 40, 85, 16*Game.SCALE, 16*Game.SCALE, null);
 			g.setFont(RFont);
 			g.drawString("?", 90, 105);
 			
@@ -722,7 +714,7 @@ public class MainMenu {
 					g.setColor(Color.white);
 					g.drawRoundRect(330, 120, 100, 50, 14, 14);
 				}
-			} else if (portugues) {
+			} else if (portuguese) {
 				g.setFont(aFont);
 				g.drawString("Tem certeza que quer sair?", 140, 85);
 				

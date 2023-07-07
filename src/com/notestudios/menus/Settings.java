@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import com.notestudios.buttons.Settings_Button0;
 import com.notestudios.entities.Entity;
 import com.notestudios.main.Game;
-import com.notestudios.main.Sound;
+import com.notestudios.util.Button;
+import com.notestudios.util.Sound;
 
 public class Settings {
 
@@ -42,6 +42,27 @@ public class Settings {
 	public static boolean back = false;
 	public static int minimap = 1;
 	public static int AntiAliasing = 0;
+	
+	static class Settings_Button0 extends Button {
+		public Settings_Button0(int x, int y, int width, int height, int type, String text) {
+			super(x, y, width, height, type, text);
+			//directory = "";
+		}
+		
+		public void functions() {
+			textOffsetX=-170;
+			textOffsetY=-20;
+			customFont = MainMenu.menuFont;
+			customBackColor = new Color(66, 66, 66);
+			customTextColor = Color.white;
+			if(selected && clicked) {
+				clicked = false;
+				Game.downTransition = true;
+				Game.gameState = "GJLogin";
+			}
+		}
+	}
+	
 	
 	public Settings_Button0 gjButton;
 	
@@ -95,12 +116,12 @@ public class Settings {
 				Sound.backMenu.play();
 			}
 			Game.gameState = "Menu";
-			Game.transition = true;
+			Game.downTransition = true;
 			Game.saveConfig = true;
 		}
 		if (esc && versionInfoRequest == false && Game.gameState.equals("Options")) {
 			esc = false;
-			Game.transition = true;
+			Game.downTransition = true;
 			Game.gameState = "Menu";
 			if (enter) {
 				enter = false;
@@ -111,7 +132,7 @@ public class Settings {
 				MainMenu.curLanguage = "English";
 				MainMenu.Eng = 1;
 				MainMenu.Por = 0;
-			} if (MainMenu.portugues) {
+			} if (MainMenu.portuguese) {
 				MainMenu.curLanguage = "Português";
 				MainMenu.Eng = 0;
 				MainMenu.Por = 1;
@@ -122,15 +143,15 @@ public class Settings {
 				Game.npc.curIndex = 0;
 				if (MainMenu.english) {
 					//english language -> portuguese launguage
-					Game.transition = true;
-					MainMenu.portugues = true;
+					Game.downTransition = true;
+					MainMenu.portuguese = true;
 					MainMenu.english = false;
 					MainMenu.curLanguage = "Português";
 					Game.saveConfig = true;
-				} else if (MainMenu.portugues) {
+				} else if (MainMenu.portuguese) {
 					//portuguese launguage -> english language
-					Game.transition = true;
-					MainMenu.portugues = false;
+					Game.downTransition = true;
+					MainMenu.portuguese = false;
 					MainMenu.english = true;
 					MainMenu.curLanguage = "English";
 					Game.saveConfig = true;
@@ -161,7 +182,7 @@ public class Settings {
 				if(!Game.mute) {
 					Sound.menuEnter.play();
 				}
-				Game.transition = true;
+				Game.downTransition = true;
 				Game.saveConfig = true;
 			}
 		}
@@ -190,7 +211,7 @@ public class Settings {
 				if(!Game.mute) {
 					Sound.backMenu.play();
 				}
-				Game.transition = true;
+				Game.downTransition = true;
 				Game.saveConfig = true;
 			}
 		}
@@ -274,19 +295,19 @@ public class Settings {
 				}
 			} else if(enter && Game.graphics == 2) {
 				enter = false;
-				if(!Game.AAEnabled) {
+				if(!Game.AAliasingEnabled) {
 					enter = false;
 					if(!Game.mute) {
 						Sound.menuEnter.play();
 					}
-					Game.AAEnabled = true;
+					Game.AAliasingEnabled = true;
 					AntiAliasing = 1;
-				} else if(Game.AAEnabled) {
+				} else if(Game.AAliasingEnabled) {
 					enter = false;
 					if(!Game.mute) {
 						Sound.menuEnter.play();
 					}
-					Game.AAEnabled = false;
+					Game.AAliasingEnabled = false;
 					AntiAliasing = 0;
 				}
 				Game.saveConfig = true;
@@ -352,11 +373,11 @@ public class Settings {
 					} else {
 						g.setColor(Color.lightGray);
 					}
-					g.drawString("Anti-Aliasing < " + Game.AAEnabled + " >", 300, (360 - 180));
+					g.drawString("Anti-Aliasing < " + Game.AAliasingEnabled + " >", 300, (360 - 180));
 					
 				}
 				
-			} else if (MainMenu.portugues) {
+			} else if (MainMenu.portuguese) {
 				g.setFont(MainMenu.TheFont);
 				g.setColor(Color.white);
 				g.drawString("Config.", 48, 48);
@@ -401,7 +422,7 @@ public class Settings {
 				} else if(nextPage) {
 					gjButton.render(g);
 					g.setFont(MainMenu.menuFont);
-					g.drawString("Anti-Aliasing < " + Game.AAEnabled + " >", 300, (360 - 180));
+					g.drawString("Anti-Aliasing < " + Game.AAliasingEnabled + " >", 300, (360 - 180));
 				}
 			}
 			g.setColor(Color.white);
@@ -477,7 +498,7 @@ public class Settings {
 				g.drawString("" + Game.currentVersion, 810, 375);
 				g.setFont(new Font("Segoe UI", Font.BOLD, 16));
 				g.setColor(Color.white);
-				if(MainMenu.portugues) {
+				if(MainMenu.portuguese) {
 					g.drawString(""+Game.lastUpdatePt, 810, 390);
 					//g.drawString("You can now download the newest version clicking here!", 268, 420);
 				} else if(MainMenu.english) {

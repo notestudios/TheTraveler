@@ -41,7 +41,7 @@ public class Entity {
 	public static BufferedImage UIPause = Spritesheet.spritesheetUI.getSubimage(96, 80, 16, 16);
 	public static BufferedImage UIShop = Spritesheet.spritesheetUI.getSubimage(112, 80, 16, 16);
 	public static BufferedImage ShopItemSelect = Spritesheet.spritesheetUI.getSubimage(48, 80, 48, 48);
-	public static BufferedImage JoaoNPC_EN = Spritesheet.spritesheetPlayer.getSubimage(16, 96, 16, 16);
+	public static BufferedImage DefaultNPC_EN = Spritesheet.spritesheetPlayer.getSubimage(16, 96, 16, 16);
 	public static BufferedImage COIN_EN = Spritesheet.spritesheetTiles.getSubimage(64, 32, 16, 16);
 	public static BufferedImage BigEnemy = Spritesheet.spritesheetPlayer.getSubimage(208, 96, 32, 32);
 	public static BufferedImage BigEnemyDMG = Spritesheet.spritesheetPlayer.getSubimage(112, 96, 32, 32);

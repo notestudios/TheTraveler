@@ -20,6 +20,11 @@
 *.rar
 *.7z
 
+# The Traveler files
+*.save
+LICENSE
+license
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*

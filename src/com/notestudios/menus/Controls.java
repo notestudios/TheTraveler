@@ -5,7 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 
 import com.notestudios.main.Game;
-import com.notestudios.main.Sound;
+import com.notestudios.util.Sound;
 
 public class Controls {
 	
@@ -13,7 +13,7 @@ public class Controls {
 		
 		if (Game.ESC) {
 			Game.ESC = false;
-			Game.transition = true;
+			Game.downTransition = true;
 			if(!Game.mute) {
 				Sound.backMenu.play();
 			}
@@ -23,7 +23,7 @@ public class Controls {
 		if(Game.backControlsSelect && Game.backControlsEnter) {
 			Game.backControlsSelect = false;
 			Game.backControlsEnter = false;
-			Game.transition = true;
+			Game.downTransition = true;
 			if(!Game.mute) {
 				Sound.backMenu.play();
 			}
@@ -39,7 +39,7 @@ public class Controls {
 			g.drawRoundRect(-32, 68, 50 * Game.SCALE, 14 * Game.SCALE, 14, 14);
 		}
 		
-		if (MainMenu.portugues) {
+		if (MainMenu.portuguese) {
 			g.setFont(MainMenu.aFont);
 			g.setColor(Color.white);//controls
 			g.drawString("< Voltar", 20, 106);

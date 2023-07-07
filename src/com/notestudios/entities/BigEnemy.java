@@ -5,7 +5,9 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import com.notestudios.gameapi.GameJolt;
 import com.notestudios.graphics.Spritesheet;
+import com.notestudios.graphics.UI;
 import com.notestudios.main.Game;
 import com.notestudios.world.Camera;
 import com.notestudios.world.World;
@@ -116,15 +118,15 @@ public class BigEnemy extends Entity{
 		Game.bossFight = false;
 
 		if(Game.gameState.equals("Normal")) {
-			Game.menu.pause = false;
-			World.restartGame("level"+Game.curLevel+".png");
+			UI.menu.pause = false;
+			World.nextLevel("level"+Game.curLevel+".png");
 			Game.gameState = "Credits";
-			Game.estadoCena = Game.entrada;
-			Game.transition = true;
+			Game.cutsceneState = Game.enterCutscene;
+			Game.downTransition = true;
 		}
-		if(Game.isLoggedIn) {
-			if(!Game.api.getTrophy(Game.TROPHIES_IDs[2]).isAchieved()) {
-				Game.api.achieveTrophy(Game.TROPHIES_IDs[2]);
+		if(GameJolt.isLoggedIn) {
+			if(!Game.jolt.getTrophy(GameJolt.trophiesIDs[2]).isAchieved()) {
+				Game.jolt.achieveTrophy(GameJolt.trophiesIDs[2]);
 			}
 		}
 		Game.entities.remove(this);

@@ -25,7 +25,7 @@ public class Npc extends Entity {
 
 	public void tick() {
 		
-		if (MainMenu.portugues) {
+		if (MainMenu.portuguese) {
 			falas[0] = "Olá, Seja bem-vindo ao Jogo! :), para Ajuda, abra o\n"
 					+ "Menu(ESC), entre em opções e selecione 'Controles'!";
 			/*falas[1] = "Estou em fase de desenvolvimento, ou seja, estou em\n"

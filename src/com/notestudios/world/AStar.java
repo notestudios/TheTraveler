@@ -9,7 +9,7 @@ public class AStar {
 
 	public static double lastTime = System.currentTimeMillis();
 	private static Comparator<Node> nodeSorter = new Comparator<Node>() {
-
+		
 		@Override
 		public int compare(Node n0, Node n1) {
 			if (n1.fCost < n0.fCost)
@@ -19,37 +19,34 @@ public class AStar {
 			return 0;
 		}
 	};
-
+	
 	public static boolean clear() {
 		if (System.currentTimeMillis() - lastTime >= 1000) {
 			return true;
 		}
 		return false;
 	}
-
+	
 	public static List<Node> findPath(World world, Vector2i start, Vector2i end) {
 		lastTime = System.currentTimeMillis();
 		List<Node> openList = new ArrayList<Node>();
 		List<Node> closedList = new ArrayList<Node>();
-
 		Node current = new Node(start, null, 0, getDistance(start, end));
 		openList.add(current);
 		while (openList.size() > 0) {
 			Collections.sort(openList, nodeSorter);
 			current = openList.get(0);
 			if (current.tile.equals(end)) {
-				// Inimigo chegou ao ponto final.
+				// Enemy is on the desired place
 				List<Node> path = new ArrayList<Node>();
 				while (current.parent != null) {
 					path.add(current);
 					current = current.parent;
 				}
-
 				openList.clear();
 				closedList.clear();
 				return path;
 			}
-
 			openList.remove(current);
 			closedList.add(current);
 
@@ -113,10 +110,8 @@ public class AStar {
 				}
 			}
 		}
-
 		closedList.clear();
 		return null;
-
 	}
 
 	private static boolean vecInList(List<Node> list, Vector2i vector) {
@@ -131,9 +126,7 @@ public class AStar {
 	private static double getDistance(Vector2i tile, Vector2i goal) {
 		double dx = tile.x - goal.x;
 		double dy = tile.y - goal.y;
-
 		return Math.sqrt(dx * dx + dy * dy);
-
 	}
 
 }

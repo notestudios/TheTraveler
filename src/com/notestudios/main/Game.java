@@ -1,44 +1,48 @@
 package com.notestudios.main;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.*;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
-
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
-import org.gamejolt.GameJoltAPI;
-import org.gamejolt.User;
-
-import com.notestudios.buttons.Button;
+import com.notestudios.discord.RPC;
+import com.notestudios.discord.UpdateRPC;
 import com.notestudios.entities.BigEnemy;
 import com.notestudios.entities.Bullets;
 import com.notestudios.entities.Enemy;
 import com.notestudios.entities.Entity;
 import com.notestudios.entities.Npc;
 import com.notestudios.entities.Player;
+import com.notestudios.gameapi.GameJolt;
 import com.notestudios.graphics.Spritesheet;
 import com.notestudios.graphics.UI;
-import com.notestudios.menus.Controls;
-import com.notestudios.menus.Credits;
-import com.notestudios.menus.GJLogin;
-import com.notestudios.menus.GameOver;
+import com.notestudios.menus.JoltLogin;
 import com.notestudios.menus.MainMenu;
-import com.notestudios.menus.PopupLogin;
 import com.notestudios.menus.Settings;
 import com.notestudios.menus.Shop;
-import com.notestudios.menus.StartMenu;
-import com.notestudios.world.WallTile;
+import com.notestudios.util.Button;
+import com.notestudios.util.Sound;
 import com.notestudios.world.World;
 
 import net.arikia.dev.drpc.DiscordRPC;
@@ -50,15 +54,13 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 
 	private Thread thread;
 
-	int menuX = 0,  menuY = 0;
+	int menuX = 0, menuY = 0;
 	int mx = 0, my = 0;
 	int bgY = 0;
 	int bgY2 = 160;
-	public int bgSpd = 1;
-	public int updPresenceTime = 0;
-	public int maxUpdPresenceTime = (60*2);
-	public static int[] minimapPixels;
-	
+	int bgSpd = 1;
+	int updPresenceTime = 0;
+	int maxUpdPresenceTime = (60*2);
 	public static int gameOverFrames = 0;
 	public static int curLevel = 1, maxLevel = 12;
 	public static int playerCoins = 0;
@@ -66,24 +68,22 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	public static int HEIGHT = 160;//640
 	public static int SCALE = 4; //res: 960x640
 	public static int graphics = 2;
-	public static int entrada = 1;
-	public static int jogando = 2;
-	public static int estadoCena = entrada;
-	public static int minimapEnable = 1;
+	public static int enterCutscene = 1;
+	public static int finishCutscene = 2;
+	public static int cutsceneState = enterCutscene;
+	public static int enableMinimap = 1;
 	public static int showPopup = 1;
-
 	private boolean isRunning = true;
 	
-	public boolean secret = false;
-	public boolean saveGame = false;
-	public boolean loadingScreenFinish = false;
-	public boolean saveGameScreen = false;
-	public boolean loadingScreen = false;
-	public boolean loadingScreenAni = false;
-	public boolean passouDaTransicao = false;
-	public boolean mouseExited = true;
-	
-	public static boolean AAEnabled = false;
+	public static boolean secret = false;
+	public static boolean saveGame = false;
+	public static boolean loadingScreenFinish = false;
+	boolean saveGameScreen = false;
+	public static boolean loadingScreen = false;
+	boolean loadingScreenAni = false;
+	public static boolean upTransition = false;
+	public static boolean mouseExited = true;
+	public static boolean AAliasingEnabled = false;
 	public static boolean EnterGameOver = false;
 	public static boolean selectBackMenu = false;
 	public static boolean QExitGame = false;
@@ -95,7 +95,6 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	public static boolean cutsceneCredits = false;
 	public static boolean saveConfig = false;
 	public static boolean saveLogin = false;
-	public static boolean boolCredits = false;
 	public static boolean ESC;
 	public static boolean minimapRender = true;
 	public static boolean mute = false;
@@ -108,10 +107,10 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	public static boolean pauseSelect = false;
 	public static boolean shopSelect = false;
 	public static boolean gameMenuEnter = false;
-	public static boolean transition = false;
+	public static boolean downTransition = false;
 	public static boolean gameProcessStarted = false;
 	public static boolean bossFight = false;
-	public static boolean dev = false;
+	public static boolean devMode = false;
 	public static boolean isPressingEnter = false;
 	public static boolean loginPopup = false;
 
@@ -120,32 +119,21 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	public static List<BigEnemy> bosses;
 	public static List<Bullets> bullets;
 	public static List<Button> button;
-    public static boolean loginSuccessful;
-    public static boolean logoutSuccessful;
 	
 	public static Random rand;
 	public static UI ui;
-	public static MainMenu menu;
-	public static Settings opt;
-	public static Controls controls;
 	public static Npc npc;
 	public static Player player;
 	public static World world;
-	public static Credits credits;
-	public static StartMenu startMenu;
-	public static Shop shop;
-	public static GameOver gameOver;
-	public PopupLogin popupLogin;
-	public UpdateRPC updRPC;
 	
-	public static Color defaultBgColor = new Color(39, 39, 39, 255); /*OLD 15,40,50 | NEW 0xFF1E1E1F*/
+	public static final Color defaultBgColor = new Color(39, 39, 39, 255); //old rgb(15,40,50) 
 
 	public double logoTime = 0;
-	public double logoMaxTime = (60 * 4);/*4 seconds is better*/
+	public double logoMaxTime = (60 * 4);/*default value: 4*/
 	public double saveGameInfoMaxTime = (60 * 4);
 	public double curSaveGameTime = 0;
 	public double saveGameSpeed = 2;
-	public double x1 = 238/*238*/;
+	public double x1 = 238;
 	public double opacity = 255;
 	public double opacity2 = 255;
 	public double opacity3 = 0;
@@ -159,84 +147,76 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	public static String AlterebroFontDir = "fonts/alterebro_pixel.ttf";
 	public static String noteFontDir = "fonts/silkscreen.ttf";
 
-	public InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
+	public static InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
 	public static Font newFont;
 
-	public InputStream stream5 = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
+	public static InputStream stream5 = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
 	public static Font warningFont;
 
-	public InputStream streamFont = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
+	public static InputStream streamFont = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
 	public static Font optFont;
 
-	public InputStream stream1 = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
-	public static Font fontPixel2;
+	public static InputStream stream1 = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
+	public static Font titleFont2;
 
-	public InputStream stream3 = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
-	public static Font fontPixel3;
+	public static InputStream stream3 = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
+	public static Font titleFont;
 
-	public InputStream stream2 = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
+	public static InputStream stream2 = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
 	public static Font menuFont2;
 
-	public InputStream stream4 = ClassLoader.getSystemClassLoader().getResourceAsStream(noteFontDir);
+	public static InputStream stream4 = ClassLoader.getSystemClassLoader().getResourceAsStream(noteFontDir);
 	public static Font noteLogoFont;
 	
-	public InputStream stream6 = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
+	public static InputStream stream6 = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
 	public static Font travelerLogoFont;
 	
 	private final BufferedImage image;
 	public Spritesheet spritesheet;
-	public BufferedImage GameBackground;
-	public BufferedImage GameBackground2;
-	public static BufferedImage minimap;
-
+	public static BufferedImage GameBackground, GameBackground2;
 	File debugFile = new File("debugAccess.txt");
 	File licenseFile = new File("LICENSE");
 	File devFile = new File("README.md");
+	File configSave = new File("config.save");
+	public static File gameCredentialsFile = new File("gamejolt.save");
+	public static File gamejoltCredentialsFile = new File(".gj-credentials");
 	public static File amogus = new File("amogus.txt");
-
-	public static boolean isLoggedIn = false;
-	int GAME_ID = 796130;
-	private String GAME_PRIVATE_KEY = /***********************************************************************************************/"73979f3cebe0b2ce206ea1abbace9d22";
-	public static String USER_NAME = "";
-	public static String USER_TOKEN = "";
-	public static int[] TROPHIES_IDs = {/*loginAch*/193422, /*SPAM*/193423, /*why he's so big*/193917, /*dev*/193424};
+	int gameID = 796130;
+	private String gamePrivateID = /******************************************************************************************************************************************************************************************************************************/"73979f3cebe0b2ce206ea1abbace9d22";
+	public static String userName = "";
+	public static String userToken;
 	
-	String[] Words = {"this game doesn't have bugs! trust me", "i know, title screen is bugged",
-	"oh, here is another bug", "look behind you.", "hey you!", "potatoes", "this is "+currentVersion+"!", "Hey you! Yeah, you!", 
-	"fun fact: every 60 seconds on the loading screen, a minute passes. ;)", "'try{image = ImageIO.read(getClass().getResource(path));}catch(IOException e){e.printStackTrace}'",
-	"what... just... happened...?", "sorry for the delay :'(", "Somehow Figure just turned into a ninja idk",
-	"new menu style lol", "Figure is bugged", "when the impostor is SUS ඞ", "Seek is watching you!", "bruh", "cool",
-	"kaboom", "coffee and tea.", "here's your attention again.", "spider-man goes crazy :0", "Got your attention haha ;)", "[...] thread == null!", "this is a random title!",
-	currentVersion+" is on!", "lmao", "I know your discord username haha", "Some levels are still buggy, I'm fixing it", "Your Game Jolt login is now being saved locally!"};
+	String[] Words = {"got some new buttons yea", "i know, title screen is bugged",
+	"frontend or backend? 🤔", "sheeeeesh", "hey you!", "potato", "this is "+currentVersion+"!", "Hey you! Yeah, you!", 
+	"fun fact: the developer likes coding ;)", "'try{image = ImageIO.read(getClass().getResource(path));}catch(IOException e){e.printStackTrace}'",
+	"what... just... happened...?", "New things are coming in the next update to this game! Like... a BOMB", "if you like linux, use winget on windows!",
+	"new menu style lol", "Figure is bugged", "when the impostor is SUS ඞ", "brooooooooooooooooooooooo", "bruh", "cool",
+	"kaboom", "hi", "here's your attention again.", "spider-man goes crazy :0", "Got your attention haha ;)", "[...] thread == null!", "this is a random title!",
+	currentVersion+" is on!", "lmao", "I know your discord username haha", "hmm, achivements...", "bro, VS Imposter Alternated is a mod of a mod :O"};
 	
 	String[] tipsEn = {"Press 'C' to save the game! ", "is this a... tip?", "You can run pressing 'Shift'!", "idk whats the next tip bru", 
-			"Move using W, A, S, D keys!", "There are maps that you can't use minimap!", "You can use the menus with the arrow keys!", "sorry for the delay.", 
-			"Login with you Game Jolt Account!", "Config > Scroll Down > Game Jolt Login", "Use 'Shift' or 'Ctrl' to run!"};
+			"Move using W, A, S, D keys!", "There are maps that you can't use minimap!", "You can use the menus with the arrow keys!", "spam pressing E", 
+			"Login with you Game Jolt Account!", "Config > Scroll Down > Game Jolt Login", "Use 'Shift' or 'Ctrl' to run!", "Unlock new Achivements with Game Jolt!"};
 	
 	String[] tipsPt = {"Pressione 'C' para salvar o jogo!", "Você pode correr pressionando 'Shift'!", "Você também pode usar o menu com as setas!",
-			"qual a próxima dica mesmo?", "Mova-se usando as teclas W, A, S, D!", "Há mapas que o minimapa não pode ser usado!", "me desculpem pela demora.", 
-			"Faça login com sua conta Game Jolt!", "Config > Scroll Down > Game Jolt Login", "Use 'Shift' ou 'Ctrl' para correr!"};
+			"qual a próxima dica mesmo?", "Mova-se usando as teclas W, A, S, D!", "Há mapas que o minimapa não pode ser usado!", "spam segurando E", 
+			"Faça login com sua conta Game Jolt!", "Config > Scroll Down > Game Jolt Login", "Use 'Shift' ou 'Ctrl' para correr!", "Desbloqueie novas conquistas com o Game Jolt!"};
 	String randomTip;
 	public static String showGraphics;
 	String randomText;
-	public static String currentVersion = "v4.4.3";
+	public static String currentVersion = "v4.4.7b";
 	String newerVersion;
-	static String day = "06", month = "06", year = "2023";
-	public static String lastUpdateEn = month+"/"+day+"/"+year;
-	public static String lastUpdatePt = day+"/"+month+"/"+year;
-	public static String appID = "1087444872132313168";
+	static String day = "02", month = "07", year = "2023";
+	public static String lastUpdateEn = month+"/"+day+"/"+year, lastUpdatePt = day+"/"+month+"/"+year;
+	public static String DiscordAppID = "1087444872132313168";
 	public static String gameState = "Start Menu";
-	
+	//got no Internet access btw
 	public static char charPressed;
-	
+	public static GameJolt jolt;
 	RPC rpc;
-	GJLogin gjlogin;
-	public static GameJoltAPI api;
-	public static User gjUser;
-	JFrame frame;
+	public static JFrame frame;
 	
-	/*
-	 * Game States:
+	/* Game States:
 	 * 
 	 * Game Over = Game Over screen (obvious);
 	 * Menu = Menu mode / pause;
@@ -247,7 +227,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	 * Shop = opens shop (available RIGHT NOW!);
 	 * Credits = Shows the game credits;
 	 * Start Menu = game start menu;
-	 * GJLogin = Game Jolt login page;
+	 * GJLogin = Game Jolt login page.
 	 * 
 	 * NoteStudios GAMES INC.
 	 */
@@ -255,92 +235,72 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	public Game() {
 		rand = new Random();
 		beta = currentVersion.endsWith("b");
-		dev = devFile.exists();
+		devMode = devFile.exists();
 		debug = debugFile.exists();
 		secret = amogus.exists();
+		/* TODO: remove this code in version 4.6.0! */
+		File oldCredentials = new File("GJ");
+		if(oldCredentials.exists()) { oldCredentials.renameTo(gameCredentialsFile); }
+		/***/
 		randomText = Words[rand.nextInt(Words.length)];
 		addKeyListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
-		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
+		setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT * SCALE));
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-		initFrame();
-		api = new GameJoltAPI(GAME_ID, GAME_PRIVATE_KEY);
-		rpc = new RPC();
-		ui = new UI();
+		createFrame();
 		spritesheet = new Spritesheet();
-		player = new Player(0, 0, 16, 16, Spritesheet.spritesheetPlayer.getSubimage(0, 0, 16, 16));
-		try {
-			newFont = Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(55f);
-			noteLogoFont = Font.createFont(Font.TRUETYPE_FONT, stream4).deriveFont(120f);
-			fontPixel2 = Font.createFont(Font.TRUETYPE_FONT, stream1).deriveFont(35f);
-			fontPixel3 = Font.createFont(Font.TRUETYPE_FONT, stream3).deriveFont(200f);
-			menuFont2 = Font.createFont(Font.TRUETYPE_FONT, stream2).deriveFont(35f);
-			optFont = Font.createFont(Font.TRUETYPE_FONT, streamFont).deriveFont(140f);
-			warningFont = Font.createFont(Font.TRUETYPE_FONT, stream5).deriveFont(20f);
-			travelerLogoFont = Font.createFont(Font.TRUETYPE_FONT, stream6).deriveFont(160f);
-		} catch (FontFormatException | IOException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, JOptionPane.ERROR,
-				"An error occurred while loading fonts\n"+e, JOptionPane.ERROR_MESSAGE);
-		}
+		jolt = new GameJolt(gameID, gamePrivateID);
+		player = new Player(0, 0, 16, 16, Entity.playerStop);
 		entities = new ArrayList<Entity>();
 		enemies = new ArrayList<Enemy>();
 		bosses = new ArrayList<BigEnemy>();
 		bullets = new ArrayList<Bullets>();
-		button = new ArrayList<Button>();
-		npc = new Npc(32, 32, 16, 16, Spritesheet.spritesheetPlayer.getSubimage(16, 96, 16, 16));
-		world = new World("/levels/level"+curLevel+".png");
-		entities.add(npc);
-		entities.add(player);
-		startMenu = new StartMenu();
-		popupLogin = new PopupLogin();
-		updRPC = new UpdateRPC();
-		menu = new MainMenu();
-		credits = new Credits();
-		shop = new Shop();
-		opt = new Settings();
-		controls = new Controls();
-		gameOver = new GameOver();
-		
-		gjlogin = new GJLogin();
-		
-		minimap = new BufferedImage(World.WIDTH, World.HEIGHT, BufferedImage.TYPE_INT_RGB);
-		minimapPixels = ((DataBufferInt) minimap.getRaster().getDataBuffer()).getData();
-		
-		try {
-			GameBackground = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/Background.png")));
-			GameBackground2 = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/Background.png")));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		if(loadingScreen) {
-			Sound.noteStudiosEffect.play();
-		}
+		npc = new Npc(32, 32, 16, 16, Entity.DefaultNPC_EN);
+		entities.add(player); entities.add(npc);
+		world = new World(World.levelsFolder+"level"+curLevel+".png");
+		reloadAllUI();
+		rpc = new RPC();
+		World.initializeMinimap();
 		loginPopup = true;
-		File cfg = new File("config.save");
-		if (cfg.exists()) {
+		if (configSave.exists()) {
 			String saver = Settings.loadConfig();
 			Settings.applyCfgSave(saver);
+			mute = Settings.mute == 1;
+			minimapRender = Settings.minimap == 1;
+			AAliasingEnabled = Settings.AntiAliasing == 1;
 		}
-		
-		File credentials = new File("GJ");
-		if(credentials.exists()) {
-			GJLogin.autoLogin("GJ");
+		if(MainMenu.english) {
+			randomTip = tipsEn[rand.nextInt(tipsEn.length)];
+		} else if(MainMenu.portuguese) {
+			randomTip = tipsPt[rand.nextInt(tipsPt.length)];
+		} else {
+			randomTip = "Use Mouse/Arrows";
+		}
+		if(gameCredentialsFile.exists() || gamejoltCredentialsFile.exists()) {
+			if(gamejoltCredentialsFile.exists()) {
+				jolt.autoLogin(gamejoltCredentialsFile);
+			} else if(gameCredentialsFile.exists()) {
+				jolt.autoLogin(gameCredentialsFile);
+			} else if(gameCredentialsFile.exists() && gamejoltCredentialsFile.exists()) {
+				jolt.autoLogin(gamejoltCredentialsFile);
+			}
 			showPopup = 0;
 			loginPopup = false;
 		}
-		
-		mute = Settings.mute == 1;
-		minimapRender = Settings.minimap == 1;
-		AAEnabled = Settings.AntiAliasing == 1;
-		if(MainMenu.Por == 1) { randomTip = tipsPt[rand.nextInt(tipsPt.length)];
-		} else if(MainMenu.Eng == 1) { randomTip = tipsEn[rand.nextInt(tipsEn.length)];
-		} else { randomTip = "Welcome! Use the Menu with you Keyoboard or mouse!"; }
+		if(loadingScreen && !mute) { Sound.noteStudiosEffect.play(); }
 		gameProcessStarted = true;
-		DiscordRPC.discordInitialize(appID, rpc, true);
+		DiscordRPC.discordInitialize(DiscordAppID, rpc, true);
+		loadingScreen = true;
+	}
+	
+	
+	public static void reloadAllUI() {
+		button = new ArrayList<Button>();
+		ui = new UI();
+		UI.reloadUI();
+		UI.reloadFonts();
 	}
 
 	public synchronized void start() {
@@ -352,13 +312,14 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	public synchronized void stop() {
 		try { thread.join();
 		} catch (InterruptedException e) {
-			e.printStackTrace(); }
+			e.printStackTrace();
+		}
 	}
 
-	public void initFrame() {
+	public void createFrame() {
 		frame = new JFrame();
 		frame.add(this);
-		//frame.setUndecorated(!frame.isUndecorated()); Just on full screen(alpha)
+		//frame.setUndecorated(!frame.isUndecorated()); Just on full screen(super-alpha)
 		frame.setVisible(!frame.isVisible());
 		frame.setTitle("The Traveler | " + randomText);
 		frame.pack();
@@ -369,8 +330,6 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		frame.setResizable(false);
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/Icon.png")));
 		frame.setLocationRelativeTo(null);
-		
-		loadingScreen = true;
 	}
 
 	public static void main(String[] args) {
@@ -400,160 +359,54 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		updPresenceTime++;
 		if(updPresenceTime == maxUpdPresenceTime) {
 			updPresenceTime = 0;
-			updRPC.tick();
+			UpdateRPC.tick();
 		}
+		
+		Sound.tick();
+		
+		loginPopup = showPopup == 1;
+		arrSelectSprite = MainMenu.arrSelect == 1;
+		licenseOK = licenseFile.exists();
 		
 		if (graphics == 2) {
-			if (MainMenu.portugues) {
+			if (MainMenu.portuguese) {
 				showGraphics = "Alta";
-			} else if (MainMenu.english) {
-				showGraphics = "High";
-			}
+			} else { showGraphics = "High"; }
 		} else if (graphics == 1) {
 			arrSelectSprite = false;
-			if (MainMenu.portugues) {
+			if (MainMenu.portuguese) {
 				showGraphics = "Baixa";
-			} else if (MainMenu.english) {
-				showGraphics = "Low";
-			}
-		}
-		
-		if(showPopup == 0) {
-			loginPopup = false;
-		} else {
-			loginPopup = true;
-		}
-
-		if(MainMenu.arrSelect == 1) {
-			arrSelectSprite = true;
-		} else if(MainMenu.arrSelect == 0) {
-			arrSelectSprite = false;
+			} else { showGraphics = "Low"; }
 		}
 		player.updateCamera();
-		if(boolCredits) {
+		if(gameState.equals("Credits")) {
 			if(ESC) {
 				ESC = false;
-				boolCredits = false;
 				gameState = "Menu";
-				transition = true;
-				if(!mute) {
-					Sound.backMenu.play();
-				}
+				downTransition = true;
+				if(!mute) { Sound.backMenu.play(); }
 			}
-		}
-		
-		if (licenseFile.exists()) {
-			licenseOK = true;
-		} else if (!licenseFile.exists()) {
-			licenseOK = false;
 		}
 
 		if (gameState.equals("Normal") && ESC) {
 			ESC = false;
-			menu.pause = true;
-			if(!mute) {
-				Sound.pauseGame.play();
-			}
+			UI.menu.pause = true;
+			if(!mute) { Sound.pauseGame.play(); }
 			gameState = "Menu";
 		}
-		if (gameState.equals("Menu") && estadoCena == entrada) {
+		if (gameState.equals("Menu") && cutsceneState == enterCutscene) {
 			player.setX(64);
 			player.setY(416);
 			player.right = false;
 		}
-		
-		/* mute game sound logic down below */
-		if(!mute) {
-			switch (gameState) {
-				case "Start Menu" -> {
-					Sound.creditsMusic.pause();
-					Sound.optionsMenuMusic.pause();
-					Sound.menuMusicloop.pause();
-					Sound.sussyMenuMusic.pause();
-					Sound.gameMusic.pause();
-				}
-				//Sound.startMenuMusic.loop();
-
-				case "Menu" -> {
-					Sound.menuMusicloop.setVolume(0.8f);//max is 2f
-					Sound.gameMusic.pause();
-					Sound.creditsMusic.pause();
-					Sound.optionsMenuMusic.pause();
-					if (!menu.pause) {
-						if (!transition) {
-							if (amogus.exists()) {
-								Sound.sussyMenuMusic.loop();
-							} else {
-								Sound.menuMusicloop.loop();
-							}
-						}
-					} else {
-						//Sound.menuMusicloop.pause();
-						//Sound.sussyMenuMusic.pause();
-						if (!transition) {
-							if (amogus.exists()) {
-								Sound.sussyMenuMusic.loop();
-							} else {
-								Sound.menuMusicloop.loop();
-							}
-						}
-						//pause menu music here
-					}
-				}
-				case "Normal" -> {
-					Sound.creditsMusic.pause();
-					Sound.optionsMenuMusic.pause();
-					Sound.menuMusicloop.pause();
-					Sound.sussyMenuMusic.pause();
-					Sound.gameMusic.loop();
-				}
-				case "Shop" -> {
-					Sound.creditsMusic.pause();
-					Sound.optionsMenuMusic.loop();
-					Sound.menuMusicloop.pause();
-					Sound.sussyMenuMusic.pause();
-					Sound.gameMusic.pause();
-				}
-				case "Options" -> {
-					Sound.creditsMusic.pause();
-					Sound.menuMusicloop.pause();
-					Sound.sussyMenuMusic.pause();
-					Sound.gameMusic.pause();
-					if (!transition) {
-						Sound.optionsMenuMusic.loop();
-					}
-				}
-				case "Credits" -> {
-					Sound.menuMusicloop.pause();
-					Sound.sussyMenuMusic.pause();
-					Sound.gameMusic.pause();
-					Sound.optionsMenuMusic.pause();
-					if (!transition) {
-						Sound.creditsMusic.loop();
-					}
-				}
-				case "Game Over" -> {
-					Sound.creditsMusic.pause();
-					Sound.optionsMenuMusic.pause();
-					Sound.menuMusicloop.pause();
-					Sound.sussyMenuMusic.pause();
-					Sound.gameMusic.pause();
-					System.out.println("game-over music not found");
-					//game-over music
-				}
-			}
-		} else {
-			Sound.creditsMusic.pause();
-			Sound.optionsMenuMusic.pause();
-			Sound.menuMusicloop.pause();
-			Sound.sussyMenuMusic.pause();
-			Sound.gameMusic.pause();
-		}
-
+		;
 		if(secret) {
 			if(!gameState.equals("Menu") && !gameState.equals("Normal") && !loadingScreen) {
 				secret = false;
 				if(!mute) { Sound.secret.play(); }
+				if(GameJolt.isLoggedIn) {
+					GameJolt.Trophies.achieve(GameJolt.trophiesIDs[4]);
+				}
 			}
 		}
 		if (saveGame) {
@@ -562,28 +415,30 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				Sound.savedGame.play(); }
 			String[] opt1 = { "level", "px", "py", "life", "coins", "ammo"};
 			int[] opt2 = { curLevel, (int) player.x, (int) player.y, (int) player.life, playerCoins, player.ammo};
-			MainMenu.saveGame(opt1, opt2, /*encode*/menu.curEncode);
+			MainMenu.saveGame(opt1, opt2, /*encode*/UI.menu.curEncode);
 		} if (saveConfig) {
 			saveConfig = false;
 			String[] cfg1 = {"english", "portugues", "quality", "arrowSelect", "minimap", "mute", 
 					"minimap", "anti-aliasing", "showPopup"};
-			int[] cfg2 = {MainMenu.Eng, MainMenu.Por, graphics, MainMenu.arrSelect, minimapEnable, Settings.mute, Settings.minimap, 
+			int[] cfg2 = {MainMenu.Eng, MainMenu.Por, graphics, MainMenu.arrSelect, enableMinimap, Settings.mute, Settings.minimap, 
 					Settings.AntiAliasing, showPopup};
 			Settings.saveConfig(cfg1, cfg2);
 		} if (saveLogin) {
 		    saveLogin = false;
-		    GJLogin.fileSave("GJ", USER_NAME, USER_TOKEN);
+		    if(!gamejoltCredentialsFile.exists()) {
+		    	jolt.fileSave(GameJolt.gameCredentialsFile.getName(), userName, userToken);
+		    }
 		}
 		if (gameState.equals("Options")) {
-			opt.tick();
+			UI.opt.tick();
 		}
 		if (f1Shop) {
 			gameState = "Shop";
-			shop.tick();
+			UI.shop.tick();
 		}
 		if (gameState.equals("Normal")) {
 			QExitGame = false;
-			if (estadoCena == jogando) {
+			if (cutsceneState == finishCutscene) {
 				for (int i = 0; i < entities.size(); i++) {
 					Entity e = entities.get(i);
 					e.tick();
@@ -591,7 +446,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				for (int i = 0; i < bullets.size(); i++) {
 					bullets.get(i).tick();
 				}
-			} else if (estadoCena == entrada) {
+			} else if (cutsceneState == enterCutscene) {
 				if (player.getX() < 162) {
 					player.updateCamera();
 					player.moved = true;
@@ -601,7 +456,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 					player.right = false;
 					player.updateCamera();
 					player.moved = false;
-					estadoCena = jogando;
+					cutsceneState = finishCutscene;
 				}
 			}
 			if (enemies.size() == 0 && bosses.size() == 0 && !bossFight) {
@@ -609,16 +464,14 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				if (curLevel > maxLevel) {
 					curLevel = 1;
 				}
-				World.restartGame("level" + curLevel + ".png");
+				World.nextLevel("level" + curLevel + ".png");
 			}
 		}
-		if (gameState.equals("Game Over")) { gameOver.tick(); }
+		if (gameState.equals("Game Over")) { UI.gameOver.tick(); }
 		if (gameState.equals("Menu")) {
 			player.updateCamera();
-			menu.tick();
-			if(loginPopup) {
-				popupLogin.tick();
-			}
+			UI.menu.tick();
+			if(loginPopup) { UI.popupLogin.tick(); }
 		}
 		if (gameState.equals("Normal")) {
 			ENTER = false;
@@ -631,28 +484,25 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				saveGameScreen = false;
 			}
 		}
-		if (boolCredits) {
-			gameState = "Credits";
-		}
 		
-		if(gameState.equals("Normal") && estadoCena == jogando) {
+		if(gameState.equals("Normal") && cutsceneState == finishCutscene) {
 			if(pauseSelect && gameMenuEnter) {
 				pauseSelect = false;
 				if(!Game.mute) { Sound.pauseGame.play(); }
 				gameMenuEnter = false;
-				menu.pause = true;
+				UI.menu.pause = true;
 				gameState = "Menu";
 			} if(shopSelect && gameMenuEnter) {
 				shopSelect = false;
 				gameMenuEnter = false;
 				if(!Game.mute) { Sound.menuEnter.play(); }
-				menu.pause = true;
+				UI.menu.pause = true;
 				f1Shop = true;
 			}
 		}
 		
 		if(gameState.equals("Controls")) {
-			controls.tick();
+			UI.controls.tick();
 		}
 		
 		if(gameState.equals("Menu") || gameState.equals("Background") 
@@ -667,62 +517,15 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		}
 		
 		if(gameState.equals("Credits")) {
-			credits.tick();
+			UI.credits.tick();
 		} if(gameState.equals("Start Menu")) {
-			startMenu.tick();
+			UI.startMenu.tick();
 		}
 		if(gameState.equals("GJLogin")) {
-			gjlogin.tick();
+			UI.gjlogin.tick();
 		}
 
 	}
-	
-	public void renderMiniMap() {
-		Arrays.fill(minimapPixels, 0xFF009616);
-		for (int xx = 0; xx < World.WIDTH; xx++) {
-			for (int yy = 0; yy < World.HEIGHT; yy++) {
-				if (World.tiles[xx + (yy * World.WIDTH)] instanceof WallTile) {
-					minimapPixels[xx + (yy * World.WIDTH)] = 0xFFFFFFFF;
-				}
-			}
-		}
-		/* Player */
-		int xPlayer = player.getX() / 16;
-		int yPlayer = player.getY() / 16;
-
-		minimapPixels[xPlayer + (yPlayer * World.WIDTH)] = 0xFF0026FF;
-
-		/* NPC */
-		int xNPC = npc.getX() / 16;
-		int yNPC = npc.getY() / 16;
-
-		minimapPixels[xNPC + (yNPC * World.WIDTH)] = 0xFF9352B6;
-		
-		/* ENEMY */
-
-        for (Enemy en : enemies) {
-            int xENE = en.getX() / 16;
-            int yENE = en.getY() / 16;
-
-            minimapPixels[xENE + (yENE * World.WIDTH)] = 0xFFFF0000;
-        }
-		
-		/* Boss */
-		
-		for(int i = 0; i < bosses.size(); i++) {
-			BigEnemy en = bosses.get(i);
-			
-			int xBENE = en.getX() / 16;
-			int yBENE = en.getY() / 16;
-			
-			minimapPixels[xBENE + (yBENE * World.WIDTH)] = 0xFFFF7FB6;
-		}
-	}
-	
-	public static void drawString(Graphics g, String text, int x, int y) {
-        for (String line : text.split("\n"))
-            g.drawString(line, x, y += g.getFontMetrics().getHeight());
-    }
 	
 	public void render() {
 		BufferStrategy bs = this.getBufferStrategy();
@@ -730,22 +533,16 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			this.createBufferStrategy(3);
 			return;
 		}
-		
 		Graphics2D g = (Graphics2D) image.getGraphics();
-		
-		if (AAEnabled) {
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		} else {
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-		}
+		UI.useAntiAliasing(g);
 		g.setColor(defaultBgColor);
 		g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
-		if(!gameState.equals("GJLogin")) {
-			world.render(g);
-		}
+		
 		if(gameState.equals("Menu") || gameState.equals("Normal") || gameState.equals("")) {
+			world.render(g);
 			entities.sort(Entity.enSorter);
-			for(Entity e : entities) {
+			for(int i = 0; i < entities.size(); i++) {
+				Entity e = entities.get(i);
 				e.render(g);
 			}
 		}
@@ -754,7 +551,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			bullet.render(g);
 		}
 		if (saveGameScreen && gameState.equals("Normal")) {
-			if (MainMenu.portugues) {
+			if (MainMenu.portuguese) {
 				if (x1 > 155 && curSaveGameTime < saveGameInfoMaxTime/2) {
 					x1-=saveGameSpeed;
 				} else if (curSaveGameTime > saveGameInfoMaxTime/2) {
@@ -771,13 +568,13 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				g.drawImage(defaultLargeOptionBg, (int) x1, 80, null);
 			}
 		}
-		if(estadoCena == entrada && gameState.equals("Normal")) {
+		if(cutsceneState == enterCutscene && gameState.equals("Normal")) {
 			g.setColor(defaultBgColor);
 			g.fillRect(0, 0, WIDTH, HEIGHT/5);
 			g.fillRect(0, HEIGHT-30, WIDTH, HEIGHT/5);
 		}
 		
-		if(gameState.equals("Normal") && estadoCena == jogando) {
+		if(gameState.equals("Normal") && cutsceneState == finishCutscene) {
 			if(graphics == 2) {
 				g.drawImage(defaultShortOptBg, -62, 5, null);
 				g.drawImage(defaultShortOptBg, -62, 19, null);
@@ -792,7 +589,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			/*g.drawImage(GameBackground, 0, bgY, null);
 				g.drawImage(GameBackground2, GameBackground2.getWidth(), bgY2,
 				 -GameBackground2.getWidth(), GameBackground2.getHeight(), null);*/
-			if(!menu.pause && graphics == 2) {
+			if(!UI.menu.pause && graphics == 2) {
 				g.drawImage(GameBackground, 0, bgY, null);
 				g.drawImage(GameBackground2, 0, bgY2, null);
 			}
@@ -812,30 +609,30 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			g.setColor(new Color(0, 0, 0, 60));
 			g.fillRect(0, 0, WIDTH, HEIGHT);
 			
-			if(!menu.pause && graphics == 2) {
+			/*if(!UI.menu.pause && graphics == 2) {
 				g.drawImage(GameBackground, 0, bgY, null);
 				g.drawImage(GameBackground2, 0, bgY2, null);
-			}
+			}*/
 			g.setColor(defaultBgColor);
-			g.rotate(-4.50);
+			g.rotate(-4.55);
 			g.fillRect(-100, -135, WIDTH+100, HEIGHT);
-			g.rotate(4.50);
+			g.rotate(4.55);
 			
 			if (graphics == 2) {
 				
-				if(menu.exitRequest) {
+				if(UI.menu.exitRequest) {
 					g.drawImage(bigBackground, -10, 4, 112+40, 50,null);
 					//g.drawImage(bigBackground, -50, 5, 200, 50, null);
 				}
 				
 				g.drawImage(defaultLargeOptionBg, -39, 87, null);
 				g.drawImage(defaultLargeOptionBg, -39, 89, null);
-				g.drawImage(newGameOptionBg, -40, 89, null);//TODO
+				g.drawImage(newGameOptionBg, -40, 89, null);
 				g.drawImage(defaultLargeOptionBg, -50, 104, null);
-				if(menu.currentOption == 4) {
+				if(UI.menu.currentOption == 4) {
 					if(MainMenu.english) {
 						g.drawImage(defaultLargeOptionBg, -15, 119, null);	
-					}else if(MainMenu.portugues) {
+					}else if(MainMenu.portuguese) {
 						g.drawImage(defaultLargeOptionBg, -10, 119, null);
 					}
 				} else {
@@ -843,7 +640,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				}
 				g.drawImage(defaultLargeOptionBg, -50, 119, null);
 				g.drawImage(defaultLargeOptionBg, -50, 134, null);
-				if (menu.options[menu.currentOption].equals("novo_jogo")) {
+				if (UI.menu.options[UI.menu.currentOption].equals("novo_jogo")) {
 					if (positionX > 185) {
 						positionX -= 1;
 					} else if (positionX < 185) {
@@ -851,14 +648,14 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 					}
 					g.drawImage(defaultLargeOptionBg, (int) positionX, 149, null);
 				}
-				if (menu.options[menu.currentOption].equals("carregar_jogo")) {
+				if (UI.menu.options[UI.menu.currentOption].equals("carregar_jogo")) {
 					if (MainMenu.english) {
 						if (positionX > 172) {
 							positionX -= 1;
 						} else if (positionX < 172) {
 							positionX += 1;
 						}
-					} else if (MainMenu.portugues) {
+					} else if (MainMenu.portuguese) {
 						if (positionX > 174) {
 							positionX -= 1;
 						} else if (positionX < 174) {
@@ -867,7 +664,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 					}
 					g.drawImage(defaultLargeOptionBg, (int) positionX, 149, null);
 				}
-				if (menu.options[menu.currentOption].equals("options")) {
+				if (UI.menu.options[UI.menu.currentOption].equals("options")) {
 					if (positionX > 188) {
 						positionX -= 1;
 					} else if (positionX < 188) {
@@ -875,7 +672,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 					}
 					g.drawImage(defaultLargeOptionBg, (int) positionX, 149, null);
 				}
-				if (menu.options[menu.currentOption].equals("sair")) {
+				if (UI.menu.options[UI.menu.currentOption].equals("sair")) {
 					if (positionX > 195) {
 						positionX -= 1;
 					} else if (positionX < 195) {
@@ -883,7 +680,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 					}
 					g.drawImage(defaultLargeOptionBg, (int) positionX, 149, null);
 				}
-				if (menu.options[menu.currentOption].equals("Credits")) {
+				if (UI.menu.options[UI.menu.currentOption].equals("Credits")) {
 					if (positionX > 195) {
 						positionX -= 1;
 					} else if (positionX < 195) {
@@ -899,13 +696,13 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
 			if (graphics == 2) {
 				
-				if (opt.optOptions[opt.curOpt].equals("verInfo") && opt.versionInfoRequest && gameState.equals("Options")) {
+				if (UI.opt.optOptions[UI.opt.curOpt].equals("verInfo") && UI.opt.versionInfoRequest && gameState.equals("Options")) {
 					g.drawImage(defaultLargeOptionBg, 178, 130 - 45, null);
 				}
 				g.drawImage(bigBackground, -50, -25, null);
 				/* back */g.drawImage(defaultLargeOptionBg, -99, 16, null);
 					
-				if(!opt.nextPage) {
+				if(!UI.opt.nextPage) {
 					g.drawImage(defaultLargeOptionBg, 47, 79 - 45, null);
 					g.drawImage(defaultLargeOptionBg, 47, 96 - 45, null);
 					g.drawImage(defaultLargeOptionBg, 47, 113 - 45, null);
@@ -915,17 +712,11 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 					g.drawImage(defaultLargeOptionBg, 47, 130 + 17 + 17 + 17 - 45, null);
 				} else {
 					g.drawImage(defaultLargeOptionBg, 47, 79 - 45, null);
-					/*g.drawImage(defaultLargeOptionBg, 47, 96 - 45, null);
-					g.drawImage(defaultLargeOptionBg, 47, 113 - 45, null);
-					g.drawImage(defaultLargeOptionBg, 47, 130 - 45, null);
-					g.drawImage(defaultLargeOptionBg, 47, 130 + 17 - 45, null);
-					g.drawImage(defaultLargeOptionBg, 47, 130 + 17 + 17 - 45, null);
-					g.drawImage(defaultLargeOptionBg, 47, 130 + 17 + 17 + 17 - 45, null);*/
 				}
 			}
 		}
 		
-		if (gameState.equals("Normal") && estadoCena == jogando) {
+		if (gameState.equals("Normal") && cutsceneState == finishCutscene) {
 			g.drawImage(Entity.BULLET_EN, 85, 11, null);
 			g.drawImage(Entity.COIN_EN, 124, 12, null);
 		}
@@ -936,9 +727,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			
 
 			if (graphics == 2) {
-				
 				g.drawImage(bigBackground, -50, -25, null);
-
 				/* back */g.drawImage(defaultLargeOptionBg, -99, 16, null);
 				
 				g.drawImage(defaultLargeOptionBg, -40, 50, null);
@@ -985,20 +774,20 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			g.setFont(MainMenu.RFont);
 			g.setColor(Color.white);
 			if (!saveFile.exists()) {
-				if (MainMenu.portugues)
+				if (MainMenu.portuguese)
 					g.drawString("Seu jogo foi salvo!", (int) x1 * Game.SCALE + 53, 362);
 				else if (MainMenu.english) {
 					g.drawString("Your game is saved!", (int) x1 * Game.SCALE + 51, 362);
 				}
 			} else if (saveFile.exists()) {
-				if (MainMenu.portugues)
+				if (MainMenu.portuguese)
 					g.drawString("O Jogo foi Atualizado!", (int) x1 * Game.SCALE + 52, 362);
 				else if (MainMenu.english) {
 					g.drawString("Your save is updated!", (int) x1 * Game.SCALE + 50, 362);
 				}
 			}
 		}
-		if(gameState.equals("Normal") && estadoCena == jogando) {
+		if(gameState.equals("Normal") && cutsceneState == finishCutscene) {
 			if(pauseSelect) {
 				g.setColor(Color.white);
 				g.drawRoundRect(-12, 23, 18 * SCALE, 13 * SCALE, 14, 14);
@@ -1009,7 +798,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		}
 		
 		if (gameState.equals("Controls")) {
-			controls.render(g);
+			UI.controls.render(g);
 		}
 		
 		if (npc.showMessage && gameState.equals("Normal")) {
@@ -1026,23 +815,22 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			
 			g.setFont(MainMenu.DialogFont);
 			g.setColor(Color.white);
-			drawString(g, npc.falas[0].substring(0, npc.curIndex), 270, 490);
-			//g.drawString(npc.frases[1].substring(0, npc.curIndex), 250, 568);
+			UI.drawString(g, npc.falas[0].substring(0, npc.curIndex), 270, 490);
 		}
 		//comingSoon(g);
 		if (f1Shop) {
-			shop.render(g);
+			UI.shop.render(g);
 		}
-		if (gameState.equals("Normal") && estadoCena == jogando) {
+		if (gameState.equals("Normal") && cutsceneState == finishCutscene) {
 			ui.render(g);
 		}
-		if (gameState.equals("Normal") && estadoCena == jogando) {
+		if (gameState.equals("Normal") && cutsceneState == finishCutscene) {
 			g.setFont(MainMenu.aFont);
 			g.setColor(Color.white);
 			g.drawString(String.valueOf(player.ammo), 420/* 420 */, 92/* 43 */);
 			g.drawString(String.valueOf(playerCoins), 570/* 570 */, 92/* 43 */);
 		}
-		if (gameState.equals("Normal") && estadoCena == jogando) {
+		if (gameState.equals("Normal") && cutsceneState == finishCutscene) {
 			g.setColor(Color.white);
 			g.setFont(newFont);
 			if (player.life >= 100)
@@ -1051,14 +839,14 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				g.drawString((int) player.life + "/" + (int) player.maxLife, 416/* 125 */, 44/* 44 */);
 		}
 		if (gameState.equals("Options")) {
-			opt.render(g);
+			UI.opt.render(g);
 		}
 		if (gameState.equals("Game Over")) {
-			gameOver.render(g);
+			UI.gameOver.render(g);
 		} else if (gameState.equals("Menu")) {
-			menu.render(g);
+			UI.menu.render(g);
 			if(loginPopup) {
-				popupLogin.render(g);
+				UI.popupLogin.render(g);
 			}
 		}
 		/*
@@ -1069,26 +857,26 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			g.fillRect(200, 200, 50, 50);
 		}*/
 		if(minimapRender) {
-			renderMiniMap();
+			world.renderMiniMap();
 		}
 		//gameState = "Normal";
-		if (gameState.equals("Normal") && minimapRender && estadoCena == jogando) { /* Minimap */
-			if(licenseFile.exists()) {
+		if(gameState.equals("Normal") && minimapRender && cutsceneState == finishCutscene) { /* Minimap */
+			if(licenseOK) {
 				g.setColor(Color.white);
 				g.fillRoundRect(6, 446, World.WIDTH * 6+8, World.HEIGHT * 6+8, 16, 16);
-				g.drawImage(minimap, 10, 450, World.WIDTH * 6, World.HEIGHT * 6, null);
+				g.drawImage(World.minimap, 10, 450, World.WIDTH * 6, World.HEIGHT * 6, null);
 			} else {
 				g.fillRoundRect(8, 448, World.WIDTH * 6, World.HEIGHT * 6, 14, 14);
-				g.drawImage(minimap, 10, 430, World.WIDTH * 6, World.HEIGHT * 6, null);
+				g.drawImage(World.minimap, 10, 430, World.WIDTH * 6, World.HEIGHT * 6, null);
 			}
 		}
 		
-		if(MainMenu.enter && menu.currentOption == 5) {
+		if(MainMenu.enter && UI.menu.currentOption == 5) {
 			MainMenu.enter = false;
 		}
 		
 		if(gameState.equals("Start Menu")) {
-			startMenu.render(g);
+			UI.startMenu.render(g);
 		}
 		
 		if (loadingScreen) {
@@ -1159,7 +947,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			g.setFont(new Font("Segoe UI", Font.BOLD, 30));
 			g.drawString("S T U D I O S", x2 + 75, y2);
 
-			g.setFont(fontPixel3);
+			g.setFont(titleFont);
 			
 			if (!loadingScreenFinish) {
 				g.setColor(new Color(153, 153, 153, (int) opacity3));
@@ -1183,53 +971,30 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			} else {
 				g.setColor(new Color(255, 255, 255, (int) opacity4));
 			}
-			if(amogus.exists()) {
-				g.drawString("          very sussy", 210, 250);
+			if(secret) {
+				g.drawString("very sussy", 280, 250);
 			} else {
 				g.drawString("The", 428, 250);
 			}
-			g.setFont(fontPixel2);
-			if(licenseFile.exists()) {
+			g.setFont(titleFont2);
+			if(licenseOK) {
 				if(!amogus.exists()) {
-					if(MainMenu.portugues) {
-						g.drawString("Dica: "+randomTip, 10, 630);
-					} else if(MainMenu.english) {
+					if(MainMenu.english) {
 						g.drawString("Tip: "+randomTip, 10, 630);
+					} else if(MainMenu.portuguese) {
+						g.drawString("Dica: "+randomTip, 10, 630);
 					}
-				} else if(amogus.exists()) {
-					g.drawString("susus moogus", 10, 630);
+				} else {
+					g.drawString("sussus moogus", 10, 630);
 				}
 			}
-
-			if (!loadingScreenAni) {
-				g.setColor(Color.white);
-			} else {
-				g.setColor(new Color(255, 255, 255, (int) opacity));
-			}
-			/*
-			 * g2.rotate(-20, 30, 570); g.drawImage(Spritesheet.loadingImg, 30, 570, 48, 48,
-			 * null); g2.rotate(20, 30, 570);
-			 */
-			//g.drawImage(loading, 50, 50, this);
 		}
 		
-		if(gameState.equals("Credits")) {
-			credits.render(g);
-		} else {
-			boolCredits = false;
-		}
-		
-		if (!Game.licenseOK) {
-			if (!Game.debug) {
-				g.setFont(Game.menuFont2);
-				g.setColor(new Color(255, 255, 0, 255));
-				g.drawString("The Traveler " + Game.currentVersion + " | Where is the license file?", 5, 630);
-			}
-		}
+		if(gameState.equals("Credits")) { UI.credits.render(g); }
 		if(beta) {
 			g.setFont(Game.menuFont2);
 			g.setColor(defaultBgColor);
-			if(gameState.equals("Menu") && !loadingScreen && menu.currentOption != 5) {
+			if(gameState.equals("Menu") && !loadingScreen && UI.menu.currentOption != 5) {
 				g.fillRoundRect(WIDTH*SCALE-140, 565, 150, 35, 16, 16);
 				g.setColor(Color.gray);
 				g.drawRoundRect(WIDTH*SCALE-140, 565, 150, 42, 16, 16);
@@ -1244,10 +1009,19 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			}
 		}
 		if(gameState.equals("GJLogin")) {
-			gjlogin.render(g);
+			UI.gjlogin.render(g);
 		}
-		if(transition) {
-			if(!passouDaTransicao) {
+		
+		if (!Game.licenseOK) {
+			if (!Game.debug) {
+				g.setFont(Game.menuFont2);
+				g.setColor(new Color(255, 255, 0));
+				g.drawString("The Traveler " + Game.currentVersion + " | Where is the LICENSE file?", 5, HEIGHT*SCALE-8);
+			}
+		}
+		
+		if(downTransition) {
+			if(!upTransition) {
 				g.setColor(defaultBgColor);
 				g.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
 			}
@@ -1255,23 +1029,32 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			g.setColor(new Color(10, 10, 11, 255));
 			g.fillRect(0, 0, WIDTH*SCALE, (int)(transitionY));
 		}
-		if(transition && !passouDaTransicao) {
+		if(downTransition && !upTransition) {
 			transitionY+=transitionSpd;
 			if(transitionY == (HEIGHT*SCALE+298)) {
-				passouDaTransicao = true;
+				upTransition = true;
 			}
-		} if(passouDaTransicao) {
+		} if(upTransition) {
 			transitionY-=transitionSpd;
 		} if(transitionY == 0) {
-			passouDaTransicao = false;
-			transition = false;
+			upTransition = false;
+			downTransition = false;
 		}
 		
 		//renderFakeMouseCursor(g);
+		/* Achievement notify Debug Code:
+		BufferedImage achivIcon = null;
+		try {
+			achivIcon = ImageIO.read(getClass().getResource("/achivements/why-is-he-so-big.png"));
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		ui.unlockAchivementAnim(g, achivIcon, "???", "Loading trophy description...\nThis is an achivement!", false);
+		*/
 		bs.show();
 	}
 	
-	public void renderFakeMouseCursor(Graphics g) {
+	/*private void renderFakeMouseCursor(Graphics g) {
 		URL cur1 = getClass().getResource("/cursors/cur.png");
 		URL moogusCur = getClass().getResource("/cursors/amongususcur.png");
 		URL normalCur = getClass().getResource("/cursors/normalCur.png");
@@ -1300,7 +1083,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			}
 		}
 		
-	}
+	}*/
 	
 	public void comingSoon(Graphics g) {
 		g.setColor(defaultBgColor);
@@ -1312,7 +1095,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			g.setFont(MainMenu.aFont);
 			g.drawString("This function isn't available for now!", (WIDTH * SCALE) / 2 - 225,
 					(HEIGHT * SCALE) / 2 + 50);
-		} else if (MainMenu.portugues) {
+		} else if (MainMenu.portuguese) {
 			g.setFont(MainMenu.fontPixel);
 			g.drawString("Em Breve...", (WIDTH * SCALE) / 2 - 185, (HEIGHT * SCALE) / 2);
 			g.setFont(MainMenu.aFont);
@@ -1358,10 +1141,10 @@ MouseMotionListener, MouseWheelListener, WindowListener {
         charPressed = e.getKeyChar();
 		if(gameState.equals("GJLogin") && Game.charPressed != '\b' && charPressed != '\n'
 				&& charPressed != KeyEvent.VK_ESCAPE) {
-			if (GJLogin.curTextBox.equals("username") && USER_NAME.length() < 25) {
-				USER_NAME += charPressed;
-			} else if (GJLogin.curTextBox.equals("token") && USER_TOKEN.length() < 20) {
-				USER_TOKEN += charPressed;
+			if (JoltLogin.curTextBox.equals("username") && userName.length() < 25) {
+				userName += charPressed;
+			} else if (JoltLogin.curTextBox.equals("token") && userToken.length() < 20) {
+				userToken += charPressed;
 			}
 		}
 	}
@@ -1374,13 +1157,13 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				ESC = true;
 			}
 			if(gameState.equals("Controls") && ESC) {
-				transition = true;
+				downTransition = true;
 			}
-			if (menu.exitRequest) {
-				menu.exitNo = true;
+			if (UI.menu.exitRequest) {
+				UI.menu.exitNo = true;
 			}
 			if (gameState.equals("Options")) {
-				opt.esc = true;
+				UI.opt.esc = true;
 			}
 			if(gameState.equals("Menu")) {
 				MainMenu.esc = true;
@@ -1399,15 +1182,15 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			} if (gameState.equals("Menu")) {
 				MainMenu.enter = true;
 			} if (gameState.equals("Options")) {
-				opt.enter = true;
-			} if (menu.exitRequest) {
-				menu.exitYes = true;
+				UI.opt.enter = true;
+			} if (UI.menu.exitRequest) {
+				UI.menu.exitYes = true;
 			} if(gameState.equals("GJLogin")) {
-				if(GJLogin.curTextBox.equals("token")) {
-					gjlogin.loginbtn.selected = true;
-					gjlogin.loginbtn.clicked = true;
-				} else if(GJLogin.curTextBox.equals("username")) {
-					GJLogin.curTextBox = "token";
+				if(JoltLogin.curTextBox.equals("token")) {
+					UI.gjlogin.loginbtn.selected = true;
+					UI.gjlogin.loginbtn.clicked = true;
+				} else if(JoltLogin.curTextBox.equals("username")) {
+					JoltLogin.curTextBox = "token";
 				}
 			}
 		} if (e.getKeyCode() == KeyEvent.VK_Q) {
@@ -1419,18 +1202,18 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				f1Shop = true;
 			}
 		} if (e.getKeyCode() == KeyEvent.VK_SHIFT || e.getKeyCode() == KeyEvent.VK_CONTROL) {
-			player.player_run = true;
+			player.playerRun = true;
 		} if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
 			player.right = true;
 			if(gameState.equals("Options")) {
-				opt.rightOpt = true;
+				UI.opt.rightOpt = true;
 			} if(gameState.equals("Menu")) {
 				MainMenu.right = true;
 			}
 		} else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
 			player.left = true;
 			if(gameState.equals("Options")) {
-				opt.leftOpt = true;
+				UI.opt.leftOpt = true;
 			} if(gameState.equals("Menu")) {
 				MainMenu.left = true;
 			}
@@ -1440,7 +1223,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			} if (gameState.equals("Menu")) {
 				MainMenu.up = true;
 			} if (gameState.equals("Options")) {
-				opt.upOpt = true;
+				UI.opt.upOpt = true;
 			}
 		} if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
 			if(gameState.equals("Normal")) {
@@ -1448,7 +1231,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			} if (gameState.equals("Menu")) {
 				MainMenu.down = true;
 			} if (gameState.equals("Options")) {
-				opt.downOpt = true;
+				UI.opt.downOpt = true;
 			}
 		} if (e.getKeyCode() == KeyEvent.VK_C) {
 			if (gameState.equals("Normal")) {
@@ -1457,13 +1240,13 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			}
 		} if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 			if(gameState.equals("GJLogin")) {
-				if (GJLogin.curTextBox.equals("username")) {
-					if (USER_NAME != null && !USER_NAME.equals("")) {
-						USER_NAME = USER_NAME.substring(0, USER_NAME.length() - 1);
+				if (JoltLogin.curTextBox.equals("username")) {
+					if (userName != null && !userName.equals("")) {
+						userName = userName.substring(0, userName.length() - 1);
 					}
-				} else if (GJLogin.curTextBox.equals("token")) {
-					if (USER_TOKEN != null && !USER_TOKEN.equals("")) {
-						USER_TOKEN = USER_TOKEN.substring(0, USER_TOKEN.length() - 1);
+				} else if (JoltLogin.curTextBox.equals("token")) {
+					if (userToken != null && !userToken.equals("")) {
+						userToken = userToken.substring(0, userToken.length() - 1);
 					}
 				}
 			}
@@ -1473,7 +1256,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_SHIFT || e.getKeyCode() == KeyEvent.VK_CONTROL) {
-			player.player_run = false;
+			player.playerRun = false;
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
 			player.right = false;
@@ -1495,12 +1278,12 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		
-		if(!transition) {
+		if(!downTransition) {
 			if (e.getButton() == MouseEvent.BUTTON1) {
 				if (gameState.equals("Menu")) {
 					MainMenu.enter = true;
-				} if (gameState.equals("Options") && opt.curOpt != opt.optOptions.length-1 ) {
-					opt.enter = true;
+				} if (gameState.equals("Options") && UI.opt.curOpt != UI.opt.optOptions.length-1 ) {
+					UI.opt.enter = true;
 				} if(gameState.equals("Shop")) {
 					Shop.shopEnter = true;
 				} if(gameState.equals("Normal")) {
@@ -1513,7 +1296,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 					backControlsEnter = true;
 				} else {
 					backControlsEnter = false;
-				} if (gameState.equals("Credits") && credits.backSelect) {
+				} if (gameState.equals("Credits") && UI.credits.backSelect) {
 					creditsEnter = true;
 				}else {
 					creditsEnter = false;
@@ -1534,14 +1317,14 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 
 			}
 
-			if(mx > gjlogin.usernameTextBoxX && mx < gjlogin.usernameTextBoxX+gjlogin.UsernameTextBoxWidth
-			&& my > gjlogin.usernameTextBoxY && my < gjlogin.usernameTextBoxY+gjlogin.UsernameTextBoxHeight) {
-				GJLogin.curTextBox = "username";
-			} else if(mx > gjlogin.tokenTextBoxX && mx < gjlogin.tokenTextBoxX+gjlogin.tokenTextBoxWidth
-			&& my > gjlogin.tokenTextBoxY && my < gjlogin.tokenTextBoxY+gjlogin.tokenTextBoxHeight) {
-				GJLogin.curTextBox = "token";
+			if(mx > UI.gjlogin.usernameTextBoxX && mx < UI.gjlogin.usernameTextBoxX+UI.gjlogin.UsernameTextBoxWidth
+			&& my > UI.gjlogin.usernameTextBoxY && my < UI.gjlogin.usernameTextBoxY+UI.gjlogin.UsernameTextBoxHeight) {
+				JoltLogin.curTextBox = "username";
+			} else if(mx > UI.gjlogin.tokenTextBoxX && mx < UI.gjlogin.tokenTextBoxX+UI.gjlogin.tokenTextBoxWidth
+			&& my > UI.gjlogin.tokenTextBoxY && my < UI.gjlogin.tokenTextBoxY+UI.gjlogin.tokenTextBoxHeight) {
+				JoltLogin.curTextBox = "token";
 			} else {
-				GJLogin.curTextBox = "";
+				JoltLogin.curTextBox = "";
 			}
 
 		}
@@ -1562,7 +1345,8 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				isPressingEnter = true;
 			}
 
-			for(Button b : button) {
+			for(int i = 0; i < button.size(); i++) {
+				Button b = button.get(i);
 				b.isPressing = true;
 			}
 
@@ -1621,140 +1405,130 @@ MouseMotionListener, MouseWheelListener, WindowListener {
             }
 
 		}
-		if(gameProcessStarted && !transition && !loadingScreen) {
+		if(gameProcessStarted && !downTransition && !loadingScreen) {
 			
 			menuX = e.getX();
 			menuY = e.getY();
 
-			
-			if(gameState.equals("Start Menu")) {
-				if (menuX > 136 && menuX < 830 && menuY > 522 && menuY < 580) {
-					isSelectingEnterGame = true;
-				} else {
-					isSelectingEnterGame = false;
-				}
-			}
-			
-			if (gameState.equals("Menu")) {
-				
-				if (menuX > 10 && menuX < 400 && menuY < 415 && menuY > 351) {
-					menu.currentOption = 0;
-				} else if (menuX > 0 && menuX < 366 && menuY < 476 && menuY > 425) {
-					menu.currentOption = 1;
-				} else if (menuX > 0 && menuX < 366 && menuY < 535 && menuY > 488) {
-					menu.currentOption = 2;
-				} else if (menuX > 0 && menuX < 366 && menuY < 595 && menuY > 546) {
-					menu.currentOption = 3;
-				} else if(menuX > 360 && menuX < 408 && menuY < 534 && menuY > 484) {
-					menu.currentOption = 4;
-				} else {
-					menu.currentOption = menu.maxOption;
+			switch(gameState) {
+				case "Start Menu" -> {
+					if (menuX > 136 && menuX < 830 && menuY > 522 && menuY < 580) {
+						isSelectingEnterGame = true;
+					} else {
+						isSelectingEnterGame = false;
+					}
 				}
 				
-				if(menu.exitRequest) {
-					
-					if (menuX > 188 && menuX < 255 && menuY > 130 && menuY < 158) {
-						menu.exitYesSelect = true;
+				case "Menu" -> {
+					if (menuX > 10 && menuX < 400 && menuY < 415 && menuY > 351) {
+						UI.menu.currentOption = 0;
+					} else if (menuX > 0 && menuX < 366 && menuY < 476 && menuY > 425) {
+						UI.menu.currentOption = 1;
+					} else if (menuX > 0 && menuX < 366 && menuY < 535 && menuY > 488) {
+						UI.menu.currentOption = 2;
+					} else if (menuX > 0 && menuX < 366 && menuY < 595 && menuY > 546) {
+						UI.menu.currentOption = 3;
+					} else if(menuX > 360 && menuX < 408 && menuY < 534 && menuY > 484) {
+						UI.menu.currentOption = 4;
 					} else {
-						menu.exitYesSelect = false;
-					} if (menuX > 332 && menuX < 430 && menuY > 130 && menuY < 156) {
-						menu.exitNoSelect = true;
-					} else {
-						menu.exitNoSelect = false;
+						UI.menu.currentOption = UI.menu.maxOption;
 					}
 					
-				}
-				
-			}
-			
-			if (gameState.equals("Options")) {
-				if(!opt.nextPage) {
-					if (menuX > 216 && menuX < 750 && menuY > 144 && menuY < 195) { // 0
-						opt.curOpt = 0;
-					} else if (menuX > 216 && menuX < 750 && menuY > 208 && menuY < 262) { // 1
-						opt.curOpt = 1;
-					} else if (menuX > 216 && menuX < 750 && menuY > 276 && menuY < 332) { // 2
-						opt.curOpt = 2;
-					} else if (menuX > 216 && menuX < 750 && menuY > 345 && menuY < 398) { // 3
-						opt.curOpt = 3;
-					} else if (menuX > 216 && menuX < 750 && menuY > 412 && menuY < 468) { // 4
-						opt.curOpt = 4;
-					} else if (menuX > 216 && menuX < 750 && menuY > 480 && menuY < 535) { // 5
-						opt.curOpt = 5;
-					} else if (menuX > 216 && menuX < 750 && menuY > 548 && menuY < 602) { // 6
-						opt.curOpt = 6;
-					} else if (menuX > 2 && menuX < 168 && menuY > 72 && menuY < 123) { // 7
-						opt.curOpt = 7;
-					} else {
-						opt.curOpt = opt.optMax; // Nothing (9)
-					}
-				} else {
-					if (menuX > 215 && menuX < 751 && menuY > 142 && menuY < 196) { // 0
-						opt.curOpt = 8;
-					} else if (menuX > 2 && menuX < 168 && menuY > 72 && menuY < 123) { // 7
-						opt.curOpt = 7;
-					} else {
-						opt.curOpt = opt.optMax; // Nothing (9)
+					if(UI.menu.exitRequest) {
+						
+						if (menuX > 188 && menuX < 255 && menuY > 130 && menuY < 158) {
+							UI.menu.exitYesSelect = true;
+						} else {
+							UI.menu.exitYesSelect = false;
+						} if (menuX > 332 && menuX < 430 && menuY > 130 && menuY < 156) {
+							UI.menu.exitNoSelect = true;
+						} else {
+							UI.menu.exitNoSelect = false;
+						}
+						
 					}
 				}
-			}
-			
-			if(gameState.equals("Shop")) {
-				if (menuX > 220 && menuX < 444 && menuY > 235 && menuY < 458) {
-					Shop.medKitSelect = true;
-				} else {
-					Shop.medKitSelect = false;
-				} if (menuX > 490 && menuX < 714 && menuY > 235 && menuY < 458) {
-					Shop.bulletPackSelect = true;
-				} else {
-					Shop.bulletPackSelect = false;
-				} if(menuX > 0 && menuX < 168 && menuY > 68 && menuY < 125) {
-					Shop.ShopBackSelect = true;
-				} else {
-					Shop.ShopBackSelect = false;
-				}
-			}
-			
-			if(gameState.equals("Credits")) {
-				if(menuX > 2 && menuX < 168 && menuY > 72 && menuY < 123) {
-					credits.backSelect = true;
-				}else {
-					credits.backSelect = false;
-				}
-			}
-			
-			if(gameState.equals("Normal") && estadoCena == jogando) {
-				if(menuX > 0 && menuX < 59 && menuY > 24 && menuY < 75) {
-					pauseSelect = true;
-				} else {
-					pauseSelect = false;
-				} if(menuX > 0 && menuX < 60 && menuY > 80 && menuY < 132) {
-					shopSelect = true;
-				} else {
-					shopSelect = false;
-				}
-			}
-			
-			if(gameState.equals("Controls")) {
-
-				if(menuX > 2 && menuX < 168 && menuY > 72 && menuY < 123) {
-					backControlsSelect = true;
-				} else {
-					backControlsSelect = false;
+				
+				case "Options" -> {
+					if(!UI.opt.nextPage) {
+						if (menuX > 216 && menuX < 750 && menuY > 144 && menuY < 195) { // 0
+							UI.opt.curOpt = 0;
+						} else if (menuX > 216 && menuX < 750 && menuY > 208 && menuY < 262) { // 1
+							UI.opt.curOpt = 1;
+						} else if (menuX > 216 && menuX < 750 && menuY > 276 && menuY < 332) { // 2
+							UI.opt.curOpt = 2;
+						} else if (menuX > 216 && menuX < 750 && menuY > 345 && menuY < 398) { // 3
+							UI.opt.curOpt = 3;
+						} else if (menuX > 216 && menuX < 750 && menuY > 412 && menuY < 468) { // 4
+							UI.opt.curOpt = 4;
+						} else if (menuX > 216 && menuX < 750 && menuY > 480 && menuY < 535) { // 5
+							UI.opt.curOpt = 5;
+						} else if (menuX > 216 && menuX < 750 && menuY > 548 && menuY < 602) { // 6
+							UI.opt.curOpt = 6;
+						} else if (menuX > 2 && menuX < 168 && menuY > 72 && menuY < 123) { // 7
+							UI.opt.curOpt = 7;
+						} else {
+							UI.opt.curOpt = UI.opt.optMax; // Nothing (9)
+						}
+					} else {
+						if (menuX > 215 && menuX < 751 && menuY > 142 && menuY < 196) { // 0
+							UI.opt.curOpt = 8;
+						} else if (menuX > 2 && menuX < 168 && menuY > 72 && menuY < 123) { // 7
+							UI.opt.curOpt = 7;
+						} else {
+							UI.opt.curOpt = UI.opt.optMax; // Nothing (9)
+						}
+					}
 				}
 				
-			}
-			
-			if(gameState.equals("Game Over")) {
-				if(menuX > 0 && menuX < 500 && menuY > 408 && menuY < 464) {
-					selectBackMenu = true;
-				} else {
-					selectBackMenu = false;
+				case "Shop" -> {
+					if (menuX > 220 && menuX < 444 && menuY > 235 && menuY < 458) {
+						Shop.medKitSelect = true;
+					} else {
+						Shop.medKitSelect = false;
+					} if (menuX > 490 && menuX < 714 && menuY > 235 && menuY < 458) {
+						Shop.bulletPackSelect = true;
+					} else {
+						Shop.bulletPackSelect = false;
+					} if(menuX > 0 && menuX < 168 && menuY > 68 && menuY < 125) {
+						Shop.ShopBackSelect = true;
+					} else {
+						Shop.ShopBackSelect = false;
+					}
+				}
+				
+				case "Credits" -> {
+					if(menuX > 2 && menuX < 168 && menuY > 72 && menuY < 123) {
+						UI.credits.backSelect = true;
+					} else {
+						UI.credits.backSelect = false;
+					}
+				}
+				
+				case "Normal" -> {
+					if(cutsceneState == finishCutscene) {
+						pauseSelect = menuX > 0 && menuX < 59 && menuY > 24 && menuY < 75;
+						shopSelect = menuX > 0 && menuX < 60 && menuY > 80 && menuY < 132;
+					}
+				}
+				
+				case "Controls" -> {
+					if(menuX > 2 && menuX < 168 && menuY > 72 && menuY < 123) {
+						backControlsSelect = true;
+					} else {
+						backControlsSelect = false;
+					}
+				}
+				
+				case "Game Over" -> {
+					if(menuX > 0 && menuX < 500 && menuY > 408 && menuY < 464) {
+						selectBackMenu = true;
+					} else {
+						selectBackMenu = false;
+					}
 				}
 			}
-			
 		}
-		
 	}
 	
 	@Override
@@ -1762,18 +1536,18 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		//Down Scroll == +1
 		//Up Scroll == -1
 		if(e.getWheelRotation() == +1) {
-			if(gameState.equals("Credits") && credits.creditsScroll == 0) {
-				credits.creditsScroll-=300;
-			} if(gameState.equals("Credits") && credits.creditsScroll == -300) {
-				credits.creditsScroll-=600;
+			if(gameState.equals("Credits") && UI.credits.creditsScroll == 0) {
+				UI.credits.creditsScroll-=300;
+			} if(gameState.equals("Credits") && UI.credits.creditsScroll == -300) {
+				UI.credits.creditsScroll-=600;
 			} if(gameState.equals("Options")) {
-				opt.nextPage = true;
+				UI.opt.nextPage = true;
 			}
 		} if(e.getWheelRotation() == -1) {
 			if(gameState.equals("Credits")) {
-				credits.creditsScroll+=300;
+				UI.credits.creditsScroll+=300;
 			} if(gameState.equals("Options")) {
-				opt.nextPage = false;
+				UI.opt.nextPage = false;
 			}
 		}
 	}

@@ -1,11 +1,10 @@
 package com.notestudios.menus;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.*;
 
+import com.notestudios.graphics.UI;
 import com.notestudios.main.Game;
-import com.notestudios.main.Sound;
+import com.notestudios.util.Sound;
 
 public class Credits {
 	
@@ -14,8 +13,6 @@ public class Credits {
 	private int px = -15;
 	
 	public void tick() {
-		Game.boolCredits = true;
-		
 		if(!Game.cutsceneCredits) {
 			if(creditsScroll < -300 && creditsScroll != -600) {
 				creditsScroll = -300;
@@ -28,20 +25,19 @@ public class Credits {
 		
 		if(backSelect && Game.creditsEnter) {
 			Game.creditsEnter = false;
-			Game.boolCredits = false;
 			backSelect = false;
-			Game.menu.currentOption = 5;
+			UI.menu.currentOption = 5;
 			if(!Game.mute) {
 				Sound.backMenu.play();
 			}
-			Game.transition = true;
+			Game.downTransition = true;
 			MainMenu.enter = false;
 			Game.gameState = "Menu";
 		}
 		
 	}
 	
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		
 		g.setColor(new Color(30, 30, 31));
 		g.fillRect(0, 0, Game.WIDTH*Game.SCALE, Game.HEIGHT*Game.SCALE);
@@ -191,14 +187,14 @@ public class Credits {
 		g.setColor(Color.white);
 		if(MainMenu.english) {
 			g.drawString("Credits", 30, 48);
-		} else if(MainMenu.portugues) {
+		} else if(MainMenu.portuguese) {
 			g.drawString("Créditos", 22, 48);
 		}
 		g.setFont(MainMenu.aFont);
 		g.setColor(Color.white);
 		if(MainMenu.english) {
 			g.drawString("< Back", 30, 106);
-		} else if(MainMenu.portugues) {
+		} else if(MainMenu.portuguese) {
 			g.drawString("< Voltar", 20, 106);
 		}
 		g.setFont(new Font("Segoe UI", Font.BOLD, 12));

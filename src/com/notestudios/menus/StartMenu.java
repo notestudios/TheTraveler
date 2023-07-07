@@ -1,23 +1,22 @@
 package com.notestudios.menus;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import com.notestudios.main.Game;
-import com.notestudios.main.Sound;
+import com.notestudios.util.Sound;
 
 public class StartMenu {
 
 	public int playGameTextAlpha = 0;
 	public int maxPlayGameTextAlpha = 255;
 	public boolean animationPartTwo = false;
-
+	
 	public void tick() {
-
 		if(Game.gameState.equals("Start Menu")) {
 			if(Game.ENTER) {
 				Game.ENTER = false;
-				Game.transition = true;
+				Game.downTransition = true;
 				if(!Game.mute) {
 					Sound.newGame.play();
 				}
@@ -36,7 +35,7 @@ public class StartMenu {
 		
 	}
 	
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		
 		g.setFont(MainMenu.TheFont);
 		
@@ -45,7 +44,7 @@ public class StartMenu {
 		g.setColor(Color.white);
 		g.drawString("The", 440, 80);
 		
-		g.setFont(Game.fontPixel3);
+		g.setFont(Game.titleFont);
 		g.setColor(Color.lightGray);
 		g.drawString("TRAVELER", 220+5, 360-165);
 		
@@ -67,7 +66,6 @@ public class StartMenu {
 			g.setColor(Color.white);
 			g.drawRoundRect(136, 523, 695, 57, 16, 16);
 		}
-		
 	}
 	
 	
