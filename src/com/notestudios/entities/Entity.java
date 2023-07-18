@@ -46,7 +46,7 @@ public class Entity {
 	public static BufferedImage BigEnemy = Spritesheet.spritesheetPlayer.getSubimage(208, 96, 32, 32);
 	public static BufferedImage BigEnemyDMG = Spritesheet.spritesheetPlayer.getSubimage(112, 96, 32, 32);
 	
-	protected int maskx, masky, mwidth, mheight;
+	public int maskx, masky, mwidth, mheight;
 
 	public Entity(int x, int y, int width, int height, BufferedImage sprite) {
 		this.x = x;
@@ -98,7 +98,7 @@ public class Entity {
 	}
 
 	public static Comparator<Entity> enSorter = new Comparator<Entity>() {
-
+		
 		@Override
 		public int compare(Entity n0, Entity n1) {
 			if (n1.depth < n0.depth)
@@ -110,6 +110,7 @@ public class Entity {
 	};
 
 	public void tick() {
+		
 	}
 
 	public double calculateDistance(int x1, int y1, int x2, int y2) {

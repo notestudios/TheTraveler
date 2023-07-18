@@ -9,6 +9,8 @@ import com.notestudios.graphics.Spritesheet;
 import com.notestudios.main.Game;
 import com.notestudios.objects.Ammo;
 import com.notestudios.objects.Coin;
+import com.notestudios.objects.CollectibleBomb;
+import com.notestudios.objects.InteractibleObjects;
 import com.notestudios.objects.LifePack;
 import com.notestudios.util.Sound;
 import com.notestudios.world.Camera;
@@ -21,15 +23,11 @@ public class Player extends Entity {
 	public int index = 0;
 	public int maxIndex = 3;
 
-	public int frames2 = 0;
-	public int maxFrames2 = 30;
-	public int index2 = 0;
-	public int maxIndex2 = 2;
-
 	public int damageFrames = 0;
 	public int mx, my;
 	public int ammo = 0;
 	public int maxAmmo = 1000;
+	public int bombs = 0;
 	public int right_dir = 0, left_dir = 1, up_dir = 2, down_dir = 3;
 	public int dir = right_dir;
 	public int jumpFrames = 40;
@@ -59,13 +57,13 @@ public class Player extends Entity {
 	public boolean renderWeapon = true;
 	public boolean isStopped = false;
 	public boolean isShooting = false;
+	public boolean haveBomb = false;
 
 	public BufferedImage[] rightPlayer;
 	public BufferedImage[] leftPlayer;
 	public BufferedImage playerDamage;
 	public BufferedImage[] downPlayer;
 	public BufferedImage[] upPlayer;
-	public BufferedImage[] playerStop;
 
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
@@ -74,21 +72,17 @@ public class Player extends Entity {
 		leftPlayer = new BufferedImage[4];
 		upPlayer = new BufferedImage[4];
 		downPlayer = new BufferedImage[4];
-		playerStop = new BufferedImage[3];
-		playerDamage = Spritesheet.spritesheetPlayer.getSubimage(64, 0, 16, 16);//176, 16, 64, 80 (gigachad)
-		/*
-		 * for(int i = 0; i < 3; i++) { playerStop[i] = Game.spritesheet.getSprite(112 +
-		 * (i*16), 32, 16, 16); }
-		 */for (int i = 0; i < 4; i++) {
+		playerDamage = Spritesheet.spritesheetPlayer.getSubimage(64, 0, 16, 16);
+		for (int i = 0; i < 4; i++) {
 			rightPlayer[i] = Spritesheet.spritesheetPlayer.getSubimage((i * 16), 0, 16, 16);
 		}
-		for (int i = 0; i < 4; i++) {
+		for(int i = 0; i < 4; i++) {
 			upPlayer[i] = Spritesheet.spritesheetPlayer.getSubimage((i * 16), 32, 16, 16);
 		}
-		for (int i = 0; i < 4; i++) {
+		for(int i = 0; i < 4; i++) {
 			downPlayer[i] = Spritesheet.spritesheetPlayer.getSubimage((i * 16), 48, 16, 16);
 		}
-		for (int i = 0; i < 4; i++) {
+		for(int i = 0; i < 4; i++) {
 			leftPlayer[i] = Spritesheet.spritesheetPlayer.getSubimage((i * 16), 16, 16, 16);
 		}
 	}
@@ -97,7 +91,7 @@ public class Player extends Entity {
 
 		if(isSpamming) {
 			if(GameJolt.isLoggedIn && !Game.jolt.getTrophy(GameJolt.trophiesIDs[1]).isAchieved()) {
-				if (curSpamTime == maxSpamTime) {
+				if(curSpamTime == maxSpamTime) {
 					Game.jolt.achieveTrophy(GameJolt.trophiesIDs[1]);
 				} else {
 					curSpamTime++;
@@ -107,24 +101,24 @@ public class Player extends Entity {
 		
 		depth = 2;
 		moved = false;
-		if (right && World.isFree((int) (x + curSpeed), this.getY())) {
+		if(right && World.isFree((int) (x + curSpeed), this.getY())) {
 			moved = true;
 			//isStopped = false;
 			dir = right_dir;
 			x += curSpeed;
-			if (isJumping && !playerRun && World.isFree(getX() + 1, getY())) {
+			if(isJumping && !playerRun && World.isFree(getX() + 1, getY())) {
 				x += 1;
 			}
-		} else if (left && World.isFree((int) (x - curSpeed), this.getY())) {
+		} else if(left && World.isFree((int) (x - curSpeed), this.getY())) {
 			moved = true;
 			//isStopped = false;
 			dir = left_dir;
 			x -= curSpeed;
-			if (isJumping && !playerRun && World.isFree(getX() - 1, getY())) {
+			if(isJumping && !playerRun && World.isFree(getX() - 1, getY())) {
 				x -= 1;
 			}
 		}
-		if (up && World.isFree(this.getX(), (int) (y - curSpeed))) {
+		if(up && World.isFree(this.getX(), (int) (y - curSpeed))) {
 			moved = true;
 			//isStopped = false;
 			dir = up_dir;
@@ -132,7 +126,7 @@ public class Player extends Entity {
 			if (isJumping && !playerRun && World.isFree(getX() - 1, getY())) {
 				x -= 1;
 			}
-		} else if (down && World.isFree(this.getX(), (int) (y + curSpeed))) {
+		} else if(down && World.isFree(this.getX(), (int) (y + curSpeed))) {
 			moved = true;
 			//isStopped = false;
 			dir = down_dir;
@@ -142,7 +136,7 @@ public class Player extends Entity {
 			}
 		}
 
-		if (Game.cutsceneState == Game.enterCutscene) {
+		if(Game.cutsceneState == Game.enterCutscene) {
 			if (up || down || left) {
 				if (right) {
 					right = false;
@@ -150,8 +144,7 @@ public class Player extends Entity {
 				}
 			}
 		}
-
-		if (jump) {
+		if(jump) {
 			if (isJumping == false) {
 				jump = false;
 				jumpDown = false;
@@ -159,10 +152,10 @@ public class Player extends Entity {
 				isJumping = true;
 			}
 		}
-		if (isJumping) {
+		if(isJumping) {
 			if (jumpUp) {
 				jumpCur += jumpSpeed;
-			} else if (jumpDown) {
+			} else if(jumpDown) {
 				jumpCur -= jumpSpeed + 1.5;
 				if (jumpCur <= 0) {
 					isJumping = false;
@@ -171,30 +164,20 @@ public class Player extends Entity {
 				}
 			}
 			z = jumpCur;
-			if (jumpCur >= jumpFrames) {
+			if(jumpCur >= jumpFrames) {
 				jumpUp = false;
 				jumpDown = true;
 			}
 
 		}
 
-		if (moved) {
+		if(moved) {
 			frames++;
 			if (frames == maxFrames) {
 				frames = 0;
 				index++;
 				if (index > maxIndex) {
 					index = 0;
-				}
-			}
-		}
-		if (!moved) {
-			frames2++;
-			if (frames2 == maxFrames2) {
-				frames2 = 0;
-				index2++;
-				if (index2 > maxIndex2) {
-					index2 = 0;
 				}
 			}
 		}
@@ -293,9 +276,7 @@ public class Player extends Entity {
 			if(!Game.mute) {
 				Sound.gameOverSoundEffect.play();
 			}
-
 		}
-
 		if (!isJumping) {
 			z = 0;
 		}
@@ -306,7 +287,7 @@ public class Player extends Entity {
 		if (Game.cutsceneState == Game.finishCutscene) {
 			for (int i = 0; i < Game.entities.size(); i++) {
 				Entity atual = Game.entities.get(i);
-				if (atual instanceof Weapon) {
+				if(atual instanceof Weapon) {
 					if (Entity.isCollidding(this, atual)) {
 						if(ammo != maxAmmo || !weapon) {
 							if(!weapon) {
@@ -323,19 +304,32 @@ public class Player extends Entity {
 			}
 		}
 	}
+	
+	public void checkCollisionBomb() {
+		if(Game.cutsceneState == Game.finishCutscene) {
+			for(int i = 0; i < Game.objects.size(); i++) {
+				InteractibleObjects current = Game.objects.get(i);
+				if(current instanceof CollectibleBomb) {
+					if(InteractibleObjects.isCollidding(this, current)) {
+						
+					}
+				}
+			}
+		}
+	}
 
 	public void checkCollisionAmmo() {
 		if (Game.cutsceneState == Game.finishCutscene) {
-			for (int i = 0; i < Game.entities.size(); i++) {
-				Entity atual = Game.entities.get(i);
+			for (int i = 0; i < Game.objects.size(); i++) {
+				InteractibleObjects atual = Game.objects.get(i);
 				if (atual instanceof Ammo) {
-					if (Entity.isCollidding(this, atual)) {
+					if (InteractibleObjects.isCollidding(this, atual)) {
 						if(ammo < maxAmmo) {
 							ammo += 50;
 							if (ammo > maxAmmo) {
 								ammo = maxAmmo;
 							}
-							Game.entities.remove(atual);
+							Game.objects.remove(atual);
 						}
 					}
 				}
@@ -345,12 +339,12 @@ public class Player extends Entity {
 
 	public void checkCollisionCoin() {
 		if (Game.cutsceneState == Game.finishCutscene) {
-			for (int i = 0; i < Game.entities.size(); i++) {
-				Entity atual = Game.entities.get(i);
+			for (int i = 0; i < Game.objects.size(); i++) {
+				InteractibleObjects atual = Game.objects.get(i);
 				if (atual instanceof Coin) {
-					if (Entity.isCollidding(this, atual)) {
-						Game.playerCoins += 1;
-						Game.entities.remove(atual);
+					if (InteractibleObjects.isCollidding(this, atual)) {
+						Game.playerCoins+=1;
+						Game.objects.remove(atual);
 					}
 				}
 			}
@@ -358,18 +352,20 @@ public class Player extends Entity {
 	}
 
 	public void checkCollisionLifePack() {
-		for (int i = 0; i < Game.entities.size(); i++) {
-			Entity atual = Game.entities.get(i);
+		if (Game.cutsceneState == Game.finishCutscene) {
+			for (int i = 0; i < Game.objects.size(); i++) {
+			InteractibleObjects atual = Game.objects.get(i);
 			if (atual instanceof LifePack) {
-				if (Entity.isCollidding(this, atual)) {
+				if(InteractibleObjects.isCollidding(this, atual)) {
 					if(life < maxLife) {
 						life += 25;
 						if (life > maxLife) {
 							life = 100;
 						}
-						Game.entities.remove(atual);
+						Game.objects.remove(atual);
 					}
 				}
+			}
 			}
 		}
 	}
@@ -409,8 +405,6 @@ public class Player extends Entity {
 				}
 
 			}
-		} /*if(isStopped && !isDamaged) {
-			g.drawImage(playerStop[index2], getX() - Camera.x, getY() - Camera.y - (int) z, null);
-		}*/
+		}
 	}
 }

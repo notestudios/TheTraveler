@@ -45,101 +45,29 @@ public class MainMenu {
 	
 	static File save = new File("game.save");
 
-	public InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
+	public static InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
 	public static Font fontPixel;
 
-	public InputStream streamFont = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
+	public static InputStream streamFont = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
 	public static Font aFont;
 
-	public InputStream inputFont = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
+	public static InputStream inputFont = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
 	public static Font menuFont;
 
-	public InputStream Font1 = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
+	public static InputStream Font1 = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
 	public static Font UIFont;
 
-	public InputStream Font2 = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
+	public static InputStream Font2 = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
 	public static Font TheFont;
 
-	public InputStream Font3 = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
+	public static InputStream Font3 = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
 	public static Font RFont;
 	
-	public InputStream dFontStream = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
+	public static InputStream dFontStream = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
 	public static Font DialogFont;
 	
 	public static boolean saveExists = false;
 	public static boolean saveGame = false;
-
-	public MainMenu() {
-		try {
-			fontPixel = Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(140f);
-		} catch (FontFormatException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-
-		try {
-			TheFont = Font.createFont(Font.TRUETYPE_FONT, Font3).deriveFont(80f);
-		} catch (FontFormatException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-
-		try {
-			UIFont = Font.createFont(Font.TRUETYPE_FONT, Font1).deriveFont(55f);
-		} catch (FontFormatException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-		
-		try {
-			DialogFont = Font.createFont(Font.TRUETYPE_FONT, dFontStream).deriveFont(45f);
-		} catch (FontFormatException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-		
-		try {
-			aFont = Font.createFont(Font.TRUETYPE_FONT, streamFont).deriveFont(50f);
-		} catch (FontFormatException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-
-		try {
-			RFont = Font.createFont(Font.TRUETYPE_FONT, Font2).deriveFont(50f);
-		} catch (FontFormatException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-
-		try {
-			menuFont = Font.createFont(Font.TRUETYPE_FONT, inputFont).deriveFont(68f);
-		} catch (FontFormatException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-	}
 
 	public void tick() {
 		
@@ -409,9 +337,9 @@ public class MainMenu {
 			Game.drawString(g, "It seems that it's your first time\n"
 					+ "playing this game, i recommend to check\n"
 					+ "the controls on 'Settings > Game Controls'!\n"
-					+ "This is the early access of the game, so\n"
-					+ "if you can, please send feedback to me\n"
-					+ "for improvements! DM me: Retrozinn#6868", 480, 150);
+					+ "This is an early access, so if you can\n"
+					+ "please send feedback to me for more updates!\n"
+					+ "DM me: @retrozinn", 480, 150);
 			
 		}*/
 		
@@ -423,7 +351,7 @@ public class MainMenu {
 		}
 
 		
-		/* carregar jogo */
+		/* load game */
 		if (options[currentOption] == "carregar_jogo") {
 			g.setFont(new Font("Arial", Font.BOLD, 16));
 			g.setColor(Color.white);
@@ -465,7 +393,7 @@ public class MainMenu {
 		}
 		/***/
 
-		/* sair */
+		/* exit */
 		if (options[currentOption].equals("sair")) {
 			g.setColor(Color.white);
 			g.setFont(new Font("Segoe UI", Font.BOLD, 18));
@@ -476,7 +404,7 @@ public class MainMenu {
 			}
 		}
 		/***/
-		/* novo jogo */
+		/* new game / play */
 		if (options[currentOption] == "novo_jogo") {
 			g.setColor(Color.white);
 			g.setFont(new Font("Segoe UI", Font.BOLD, 18));
@@ -547,7 +475,7 @@ public class MainMenu {
 			g.drawString("Debug", 430, 90);
 		}
 
-		/* novo jogo */
+		/* new game */
 		g.setFont(menuFont);
 		if(currentOption == 0) {
 			g.setColor(Color.white);	
@@ -664,16 +592,15 @@ public class MainMenu {
 				}
 			}
 		}
-		if (pause) {
-			
+		if(pause) {
 			g.drawImage(Entity.UIPause, 80, 185, 16*8, 16*8, null);
-			
 			g.setColor(Color.white);
 			g.setFont(TheFont);
-			if (portuguese)
+			if (portuguese) {
 				g.drawString("Pausado", 220, 272);
-			else if (english)
+			} else if (english) {
 				g.drawString("Paused", 220, 272);
+			}
 		}
 
 		if (exitRequest) {

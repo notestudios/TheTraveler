@@ -68,7 +68,7 @@ public class World {
 						}
 						
 						case 0xFFFF00DC -> { //Bush
-							Game.entities.add(new Bush(xx * 16, yy * 16, 48, 16, Tile.BUSH_TILE));
+							Game.objects.add(new Bush(xx * 16, yy * 16, 48, 16, Tile.BUSH_TILE));
 						}
 						
 						case 0xFFFF0000 -> { //Enemy
@@ -95,19 +95,19 @@ public class World {
 						}
 						
 						case 0xFFFF6868 -> { //Life Pack
-							Game.entities.add(new LifePack(xx * 16, yy * 16, 16, 16, Entity.LIFEPACK_EN));
+							Game.objects.add(new LifePack(xx * 16, yy * 16, 16, 16, Entity.LIFEPACK_EN));
 						}
 						
 						case 0xFFFFD800 -> { //Ammo
-							Game.entities.add(new Ammo(xx * 16, yy * 16, 16, 16, Entity.BULLET_EN));
+							Game.objects.add(new Ammo(xx * 16, yy * 16, 16, 16, Entity.BULLET_EN));
 						}
 						
 						case 0xFFB6FF00 -> { //Coin
-							Game.entities.add(new Coin(xx * 16, yy * 16, 16, 16, Entity.COIN_EN));
+							Game.objects.add(new Coin(xx * 16, yy * 16, 16, 16, Entity.COIN_EN));
 						}
 						
 						case 0xFFB23535 -> { //Flower
-							Game.entities.add(new Flower(xx * 16, yy * 16, 16, 16, Tile.FLOWER_TILE));
+							Game.objects.add(new Flower(xx * 16, yy * 16, 16, 16, Tile.FLOWER_TILE));
 						}
 						
 						case 0xFF7F92FF -> {

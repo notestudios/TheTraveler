@@ -19,11 +19,12 @@ public class Button {
 	
 	public String text = "Button"+Game.button.size();
 	
-	protected int bttnType = 1;
+	protected int buttonType = 1;
 	
 	public boolean selected = false;
 	public boolean clicked = false;
 	public boolean unavailable = false;
+	public static boolean wasSelected = false;
 	
 	protected String customFontString = "Arial";
 	protected Font customFont = Game.menuFont2;
@@ -42,45 +43,43 @@ public class Button {
 	protected int opacity = 0;
 	protected String description = "";
 	public boolean isPressing = false;
+	public int animType = 0;
 
 	public Button(int x, int y, int width, int height, int type, String text) {
-		/*try {
-			image = ImageIO.read(getClass().getResource(directory));
-		} catch (IOException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "An error occurred while loading images"+e);
-		}*/
-		
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		this.bttnType = type;
+		this.buttonType = type;
 		this.text = text;
 	}
 
 	public void functions() {
-		//use this method if you want to create a new function to the button class!
+		//code here
 	}
 	
-	public void buttonAnimation(int type) {
-		switch(type) { //TODO more animations to these buttons
-			default -> {
-				if(selected && opacity < 255) {
-					opacity+=51;
-				} if(!selected && opacity > 0) {
-					opacity-=51;
-				}
-			}
-		}
-	}
 	
 	public void render(Graphics2D g) {
 		if(Game.AAliasingEnabled) {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		} else { g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); }
-		buttonAnimation(0);
-		switch(bttnType) {
+		} else {
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		}
+		//select animation
+		if(selected) {
+			if(opacity < 255) {
+				opacity+=51;
+			}
+		} else {
+			if(opacity == 255) {
+				wasSelected = true;
+			}
+			if(opacity <= 255 && opacity > 0) {
+				opacity-=51;
+			}
+		}
+		
+		switch(buttonType) {
 			case 0 -> {
 				g.setColor(customBackColor);
 				g.fillRoundRect((int)x, (int)y, getWidth(), getHeight(), 16, 16);
@@ -172,8 +171,8 @@ public class Button {
 				height = g.getFontMetrics().getHeight();
 			}
 			default -> {
-				if(bttnType>3) {
-					bttnType = 1;
+				if(buttonType>3) {
+					buttonType = 1;
 				}
 			}
 		}

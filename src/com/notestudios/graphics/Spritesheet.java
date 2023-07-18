@@ -13,7 +13,6 @@ public class Spritesheet {
 	public static BufferedImage spritesheetPlayer;
 	public static BufferedImage spritesheetTiles;
 	public static BufferedImage spritesheetUI;
-	public static BufferedImage MainMenuBackground;
 
 	public Spritesheet() {
 		reloadImages();
@@ -25,7 +24,6 @@ public class Spritesheet {
 			spritesheetPlayer = ImageIO.read(getClass().getResource("/spritesheets/Player Spritesheet.png"));
 			spritesheetTiles = ImageIO.read(getClass().getResource("/spritesheets/Tiles Spritesheet.png"));
 			spritesheetUI = ImageIO.read(getClass().getResource("/spritesheets/UI Spritesheet.png"));
-			MainMenuBackground = ImageIO.read(getClass().getResource("/images/Background240x160.png"));
 			Game.GameBackground = ImageIO.read(getClass().getResource("/images/Background.png"));
 			Game.GameBackground2 = ImageIO.read(getClass().getResource("/images/Background.png"));
 			
@@ -44,5 +42,9 @@ public class Spritesheet {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, JOptionPane.ERROR, "An error ocurred while loading the spritesheets.\n"+e, 0);
 		}
+	}
+	
+	public static BufferedImage getSprite(BufferedImage spritesheet, int x, int y, int width, int height) {
+		return spritesheet.getSubimage(x, y, width, height);
 	}
 }

@@ -15,15 +15,20 @@ import com.notestudios.util.Button;
 
 public class JoltLogin {
     
-    public static class GJLogin_Button0 extends Button {
-    	public GJLogin_Button0(int x, int y, int width, int height, int type, String text) {
+    public static class LoginButton extends Button {
+    	public LoginButton(int x, int y, int width, int height, int type, String text) {
             super(x, y, width, height, type, text);
         }
 
         public void functions() {
-            x = 330;
-            y = 380;
-            
+        	if(GameJolt.isLoggedIn) {
+        		text = "Already Logged In!";
+        	} else {
+        		text = "Login";
+        	}
+        	customTextColor = Color.black;
+        	customBackColor = new Color(204, 255, 0);
+        	customFont = new Font("Arial", Font.BOLD, 20);
             if(selected && clicked) {
                 clicked = false;
                 if(!GameJolt.isLoggedIn) {
@@ -37,47 +42,43 @@ public class JoltLogin {
                 }
             }
         }
-
+        
         public void render(Graphics2D g) {
-            //Game Jolt's Green RGB: 204, 255, 0;
-        	if(Game.AAliasingEnabled) {
-    			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    		} else { g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); }
-        	
-            int arc = 16;
-            buttonAnimation(0);
-            g.setColor(new Color(204, 255, 0));
-            g.fillRoundRect(getX(), getY(), getWidth(), getHeight(), arc, arc);
-            if(selected) {
-                g.setColor(new Color(180,210,0,opacity));
-                g.fillRoundRect(getX(), getY(), getWidth()-1, getHeight()-1, arc, arc);
-                g.drawRoundRect(getX(), getY(), getWidth()-1, getHeight()-1, arc, arc);
-            } else {
-                g.setColor(new Color(180, 200, 0));
-                g.drawRoundRect((int)x, (int)y, (int)width-1, (int)height-1, arc, arc);
-            }
+        	int arc = 16;
+			if(Game.AAliasingEnabled) {
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			} else { g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); }
+	        g.setColor(new Color(204, 255, 0));
+	        g.fillRoundRect(getX(), getY(), getWidth(), getHeight(), arc, arc);
+	        if(selected) {
+	            g.setColor(new Color(180,210,0,opacity));
+	            g.fillRoundRect(getX(), getY(), getWidth()-1, getHeight()-1, arc, arc);
+	            g.drawRoundRect(getX(), getY(), getWidth()-1, getHeight()-1, arc, arc);
+	        } else {
+	            g.setColor(new Color(180, 200, 0));
+	            g.drawRoundRect((int)x, (int)y, (int)width-1, (int)height-1, arc, arc);
+	        }
 
-            if(!unavailable) {
-                g.setColor(Color.black);
-            } else {
-                g.setColor(Color.gray);
-            }
-            if(image != null) {
-                g.drawImage(image, getX(), getY(), null);
-            } else {
-                g.setFont(new Font(customFontString, Font.BOLD, fontSize));
-                if(!GameJolt.isLoggedIn) {
-                    g.drawString("Login", getX() + ((int) width / 2) - 30, getY() + g.getFontMetrics().getHeight() + 4);
-                } else {
-                    g.drawString("Already Logged!", getX() + ((int) width / 2) - 80, getY() + g.getFontMetrics().getHeight() + 4);
-                }
-            }
-
+	        if(!unavailable) {
+	            g.setColor(Color.black);
+	        } else {
+	            g.setColor(Color.gray);
+	        }
+	        if(image != null) {
+	            g.drawImage(image, getX(), getY(), null);
+	        } else {
+	            g.setFont(new Font(customFontString, Font.BOLD, fontSize));
+	            if(!GameJolt.isLoggedIn) {
+	                g.drawString("Login", getX() + ((int) width / 2) - g.getFontMetrics().stringWidth("Login"), getY() + g.getFontMetrics().getHeight() + 4);
+	            } else {
+	                g.drawString("Already Logged!", getX() + ((int) width / 2) - g.getFontMetrics().stringWidth("Already Logged!"), getY() + g.getFontMetrics().getHeight() + 4);
+	            }
+	        }
         }
     }
     
-    public static class GJLogin_Button1 extends Button {
-    	public GJLogin_Button1(int x, int y, int width, int height, int type, String text) {
+    public static class BackButton extends Button {
+    	public BackButton(int x, int y, int width, int height, int type, String text) {
     		super(x, y, width, height, type, text);
     	}
     	public void functions() {
@@ -110,8 +111,8 @@ public class JoltLogin {
     	}
     }
     
-    public static class GJLogin_Button2 extends Button {
-    	public GJLogin_Button2(int x, int y, int width, int height, int type, String text) {
+    public static class LogoutButton extends Button {
+    	public LogoutButton(int x, int y, int width, int height, int type, String text) {
     		super(x, y, width, height, type, text);
     	}
     	public void functions() {
@@ -125,24 +126,22 @@ public class JoltLogin {
     }
     
     public BufferedImage gjLogo;
-    //public BufferedImage noteLogo;
     public BufferedImage travelerLogo;
-    public GJLogin_Button0 loginbtn;
-    public GJLogin_Button1 cancelbtn;
-    public GJLogin_Button2 logoutbtn;
+    public LoginButton loginbtn;
+    public BackButton cancelbtn;
+    public LogoutButton logoutbtn;
     public static String curTextBox = "username";
     
     public JoltLogin() {
         try {
             gjLogo = ImageIO.read(Objects.requireNonNull(getClass().getResource("/icons/gj.png")));
-            //noteLogo = ImageIO.read(Objects.requireNonNull(getClass().getResource("/icons/note-light.png")));
-            travelerLogo = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/TRAVELER logo 200x200.png")));
+            travelerLogo = ImageIO.read(getClass().getResource("/images/TRAVELER logo mini.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        loginbtn = new GJLogin_Button0(330, 380, 300, 40, 0, "Login");
-        cancelbtn = new GJLogin_Button1(330, 430, 145, 40, 0, "Cancel");
-        logoutbtn = new GJLogin_Button2(330+150, 430, 149, 40, 0, "Logout");
+        loginbtn = new LoginButton(330, 380, 300, 40, 0, "Login");
+        cancelbtn = new BackButton(330, 430, 145, 40, 0, "Cancel");
+        logoutbtn = new LogoutButton(330+150, 430, 149, 40, 0, "Logout");
         Game.button.add(loginbtn);
         Game.button.add(cancelbtn);
         Game.button.add(logoutbtn);

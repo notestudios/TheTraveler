@@ -29,7 +29,6 @@ public class PopupLogin {
 			if(Game.AAliasingEnabled) {
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			} else { g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); }
-	        buttonAnimation(0);
 	        g.setColor(new Color(204, 255, 0));
 	        g.fillRoundRect(getX(), getY(), getWidth(), getHeight(), arc, arc);
 	        if(selected) {

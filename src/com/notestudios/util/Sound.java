@@ -39,6 +39,7 @@ public class Sound {
 	//TODO: Start Menu Music
 	
 	public static List<Sound> allSounds = new ArrayList<Sound>();
+	public static List<Sound> playingSounds = new ArrayList<Sound>();
 	
 	public static void tick() {
 		if(!Game.mute) {
@@ -179,7 +180,7 @@ public class Sound {
 		}
 		
 		public void loop() {
-			//repeats the sound
+			//loops the sound
 			if (clips == null)
 				return;
 			clips[p].loop(300);
@@ -207,7 +208,7 @@ public class Sound {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			DataInputStream dis = new DataInputStream(Sound.class.getResourceAsStream(name));
-
+			
 			byte[] buffer = new byte[1024];
 			int read = 0;
 			while ((read = dis.read(buffer)) >= 0) {

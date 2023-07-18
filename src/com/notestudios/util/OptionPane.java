@@ -4,7 +4,11 @@ import javax.swing.JOptionPane;
 
 public class OptionPane {
 	
-	public static void okWindow(String title, String msg, String type) {
+	public static String error = "error";
+	public static String warning = "alert";
+	public static String info = "info";
+	
+	public static void jAlertWindow(String title, String msg, String type) {
 		switch(type) {
 			case "error" -> {
 				JOptionPane.showMessageDialog(null, msg, title, JOptionPane.ERROR_MESSAGE);

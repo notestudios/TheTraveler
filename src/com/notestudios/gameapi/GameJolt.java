@@ -34,31 +34,6 @@ public class GameJolt extends GameJoltAPI {
 		}
 	}
 	
-	public static class Trophies {
-		static boolean alreadyAchieved;
-		
-		private static boolean verifyIfAchieved(int trophyID) {
-			if(trophyID != 0) {
-				if(Game.jolt.getTrophy(trophyID).isAchieved()) {
-					return true;
-				}
-			}
-			return false;
-		}
-		
-		public static boolean achieve(int trophyID) {
-			if(verifyIfAchieved(trophyID)) {
-				try {
-					Game.jolt.achieveTrophy(trophyID);
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-				return true;
-			}
-			return false;
-		}
-	}
-	
 	public void login(String username, String token) {
         verifyUser(username, token);
         loginSuccessful = sessionOpen();
@@ -80,7 +55,7 @@ public class GameJolt extends GameJoltAPI {
 				msg = "Username or Token invalid! \nTry verifying your token or username.";
 				title = "An Game Jolt error occurred";
 			}
-			OptionPane.okWindow(title, msg, "error");
+			OptionPane.jAlertWindow(title, msg, "error");
         }
     }
     public void logout() {
@@ -106,7 +81,7 @@ public class GameJolt extends GameJoltAPI {
 				msg = "An error occurred during Log Out!\n Try again later.";
 				title = "An Game Jolt error occurred";
 			}
-            OptionPane.okWindow(title, msg, "error");
+            OptionPane.jAlertWindow(title, msg, "error");
         }
     }
 	
@@ -119,7 +94,7 @@ public class GameJolt extends GameJoltAPI {
 			writer.close();
 		} catch(IOException e) {
 			e.printStackTrace();
-			OptionPane.okWindow("Credentials Error!", "An error occurred with Game Jolt" , "error");
+			OptionPane.jAlertWindow("Credentials Error!", "An error occurred with Game Jolt" , "error");
 		}
 	}
 	
@@ -142,7 +117,7 @@ public class GameJolt extends GameJoltAPI {
 			login(username, token);
 			APIVersion = apiVersion;
 		} catch(IOException e) {
-			OptionPane.okWindow("Credentials Error!", "An error occurred with Game Jolt" , "error");
+			OptionPane.jAlertWindow("Credentials Error!", "An error occurred with Game Jolt" , "error");
 			e.printStackTrace();
 		}
 	}

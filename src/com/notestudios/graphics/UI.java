@@ -23,10 +23,8 @@ import com.notestudios.util.OptionPane;
 
 public class UI {
 
-	public static int posX = 20;
+	public static int posX = 82;
 	public static int posY = 4;
-	
-	public static boolean hasUnlockedTrophy;
 	
 	public static MainMenu menu;
 	public static Settings opt;
@@ -60,14 +58,20 @@ public class UI {
 			Game.optFont = Font.createFont(Font.TRUETYPE_FONT, Game.streamFont).deriveFont(140f);
 			Game.warningFont = Font.createFont(Font.TRUETYPE_FONT, Game.stream5).deriveFont(20f);
 			Game.travelerLogoFont = Font.createFont(Font.TRUETYPE_FONT, Game.stream6).deriveFont(160f);
+			MainMenu.fontPixel = Font.createFont(Font.TRUETYPE_FONT, MainMenu.stream).deriveFont(140f);
+			MainMenu.TheFont = Font.createFont(Font.TRUETYPE_FONT, MainMenu.Font3).deriveFont(80f);
+			MainMenu.UIFont = Font.createFont(Font.TRUETYPE_FONT, MainMenu.Font1).deriveFont(55f);
+			MainMenu.DialogFont = Font.createFont(Font.TRUETYPE_FONT, MainMenu.dFontStream).deriveFont(45f);
+			MainMenu.aFont = Font.createFont(Font.TRUETYPE_FONT, MainMenu.streamFont).deriveFont(50f);
+			MainMenu.RFont = Font.createFont(Font.TRUETYPE_FONT, MainMenu.Font2).deriveFont(50f);
+			MainMenu.menuFont = Font.createFont(Font.TRUETYPE_FONT, MainMenu.inputFont).deriveFont(68f);
 		} catch (FontFormatException | IOException e) {
 			e.printStackTrace();
-			OptionPane.okWindow("Error", "An error occurred while loading fonts\n"+e, "error");
+			OptionPane.jAlertWindow("Error", "An error occurred while loading fonts\n"+e, "error");
 		}
 	}
 	
 	public void unlockAchivementAnim(Graphics2D g, BufferedImage trophyImage, String trophyName, String trophyDescription, boolean animate) {
-		hasUnlockedTrophy = true;
 		int x;
 		int xAnim = Game.WIDTH*Game.SCALE+(Game.bigBackground.getWidth()*4);
 		int y = -16;
@@ -86,8 +90,6 @@ public class UI {
 	}
 	
 	public void tick() {
-		posX = 82;
-		posY = 4;
 	}
 	
 	public static void useAntiAliasing(Graphics2D g2D) {

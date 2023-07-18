@@ -35,12 +35,14 @@ import com.notestudios.entities.Entity;
 import com.notestudios.entities.Npc;
 import com.notestudios.entities.Player;
 import com.notestudios.gameapi.GameJolt;
+import com.notestudios.gameapi.Trophies;
 import com.notestudios.graphics.Spritesheet;
 import com.notestudios.graphics.UI;
 import com.notestudios.menus.JoltLogin;
 import com.notestudios.menus.MainMenu;
 import com.notestudios.menus.Settings;
 import com.notestudios.menus.Shop;
+import com.notestudios.objects.InteractibleObjects;
 import com.notestudios.util.Button;
 import com.notestudios.util.Sound;
 import com.notestudios.world.World;
@@ -115,6 +117,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	public static boolean loginPopup = false;
 
 	public static List<Entity> entities;
+	public static List<InteractibleObjects> objects;
 	public static List<Enemy> enemies;
 	public static List<BigEnemy> bosses;
 	public static List<Bullets> bullets;
@@ -126,7 +129,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	public static Player player;
 	public static World world;
 	
-	public static final Color defaultBgColor = new Color(39, 39, 39, 255); //old rgb(15,40,50) 
+	public static final Color defaultBgColor = new Color(39, 39, 39, 255); //old rgb(15,40,50)
 
 	public double logoTime = 0;
 	public double logoMaxTime = (60 * 4);/*default value: 4*/
@@ -184,7 +187,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	int gameID = 796130;
 	private String gamePrivateID = /******************************************************************************************************************************************************************************************************************************/"73979f3cebe0b2ce206ea1abbace9d22";
 	public static String userName = "";
-	public static String userToken;
+	public static String userToken = "";
 	
 	String[] Words = {"got some new buttons yea", "i know, title screen is bugged",
 	"frontend or backend? 🤔", "sheeeeesh", "hey you!", "potato", "this is "+currentVersion+"!", "Hey you! Yeah, you!", 
@@ -204,13 +207,12 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	String randomTip;
 	public static String showGraphics;
 	String randomText;
-	public static String currentVersion = "v4.4.7b";
+	public static String currentVersion = "v4.5.0b";
 	String newerVersion;
-	static String day = "02", month = "07", year = "2023";
+	static String day = "18", month = "07", year = "2023";
 	public static String lastUpdateEn = month+"/"+day+"/"+year, lastUpdatePt = day+"/"+month+"/"+year;
 	public static String DiscordAppID = "1087444872132313168";
 	public static String gameState = "Start Menu";
-	//got no Internet access btw
 	public static char charPressed;
 	public static GameJolt jolt;
 	RPC rpc;
@@ -254,6 +256,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		jolt = new GameJolt(gameID, gamePrivateID);
 		player = new Player(0, 0, 16, 16, Entity.playerStop);
 		entities = new ArrayList<Entity>();
+		objects = new ArrayList<InteractibleObjects>();
 		enemies = new ArrayList<Enemy>();
 		bosses = new ArrayList<BigEnemy>();
 		bullets = new ArrayList<Bullets>();
@@ -405,7 +408,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				secret = false;
 				if(!mute) { Sound.secret.play(); }
 				if(GameJolt.isLoggedIn) {
-					GameJolt.Trophies.achieve(GameJolt.trophiesIDs[4]);
+					Trophies.achieve(GameJolt.trophiesIDs[4]);
 				}
 			}
 		}
@@ -585,10 +588,6 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			
 		}
 		if(gameState.equals("Background")) {
-			//Inverted Background
-			/*g.drawImage(GameBackground, 0, bgY, null);
-				g.drawImage(GameBackground2, GameBackground2.getWidth(), bgY2,
-				 -GameBackground2.getWidth(), GameBackground2.getHeight(), null);*/
 			if(!UI.menu.pause && graphics == 2) {
 				g.drawImage(GameBackground, 0, bgY, null);
 				g.drawImage(GameBackground2, 0, bgY2, null);
@@ -598,7 +597,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				g.drawImage(GameBackground, 0, bgY, null);
 				g.drawImage(GameBackground2, 0, bgY2, null);
 				g.drawImage(bigBackground, 8, -20, bigBackground.getWidth()*2, bigBackground.getHeight()*2, null);
-				g.drawImage(defaultLargeOptionBg, 26, 130, /*144*/186, 16, null);
+				g.drawImage(defaultLargeOptionBg, 26, 130, 186, 16, null);
 			} else if(graphics == 1) {
 				g.setColor(new Color(30, 30, 31));
 				g.fillRect(0, 0, WIDTH, HEIGHT);
@@ -608,11 +607,6 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 
 			g.setColor(new Color(0, 0, 0, 60));
 			g.fillRect(0, 0, WIDTH, HEIGHT);
-			
-			/*if(!UI.menu.pause && graphics == 2) {
-				g.drawImage(GameBackground, 0, bgY, null);
-				g.drawImage(GameBackground2, 0, bgY2, null);
-			}*/
 			g.setColor(defaultBgColor);
 			g.rotate(-4.55);
 			g.fillRect(-100, -135, WIDTH+100, HEIGHT);
@@ -622,7 +616,6 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				
 				if(UI.menu.exitRequest) {
 					g.drawImage(bigBackground, -10, 4, 112+40, 50,null);
-					//g.drawImage(bigBackground, -50, 5, 200, 50, null);
 				}
 				
 				g.drawImage(defaultLargeOptionBg, -39, 87, null);
@@ -760,7 +753,6 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				g.drawImage(bigBackground, -6, 5, 132, 48, null);
 				g.drawImage(defaultLargeOptionBg, -11, 85, 160, 16, null);
 				g.drawImage(defaultLargeOptionBg, -16, 101, null);
-				//g.drawImage(defaultLargeOptionBg, -22, 117, null);
 				g.drawImage(defaultShortOptBg, 10, 149, null);
 			}
 			
@@ -994,7 +986,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		if(beta) {
 			g.setFont(Game.menuFont2);
 			g.setColor(defaultBgColor);
-			if(gameState.equals("Menu") && !loadingScreen && UI.menu.currentOption != 5) {
+			if(gameState.equals("Menu") && UI.menu.currentOption != 5) {
 				g.fillRoundRect(WIDTH*SCALE-140, 565, 150, 35, 16, 16);
 				g.setColor(Color.gray);
 				g.drawRoundRect(WIDTH*SCALE-140, 565, 150, 42, 16, 16);
