@@ -1,13 +1,11 @@
 package com.notestudios.entities;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Comparator;
 import java.util.List;
 
-import com.notestudios.graphics.Spritesheet;
+import com.notestudios.graphics.Spritesheets;
 import com.notestudios.main.Game;
 import com.notestudios.world.Camera;
 import com.notestudios.world.Node;
@@ -26,25 +24,25 @@ public class Entity {
 	protected List<Node> path;
 
 	private BufferedImage sprite;
-	public static BufferedImage LIFEPACK_EN = Spritesheet.spritesheetTiles.getSubimage(0, 32, 16, 16);
-	public static BufferedImage WEAPON_EN = Spritesheet.spritesheetTiles.getSubimage(32, 32, 16, 16);
-	public static BufferedImage playerStop = Spritesheet.spritesheetPlayer.getSubimage(64, 16, 16, 16);
-	public static BufferedImage BULLET_EN = Spritesheet.spritesheetTiles.getSubimage(16, 32, 16, 16);
-	public static BufferedImage ENEMY_EN = Spritesheet.spritesheetPlayer.getSubimage(193, 0, 16, 16);
-	public static BufferedImage GUN_RIGHT = Spritesheet.spritesheetPlayer.getSubimage(0, 64, 16, 16);
-	public static BufferedImage GUN_LEFT = Spritesheet.spritesheetPlayer.getSubimage(16, 64, 16, 16);
-	public static BufferedImage GUN_SELECT = Spritesheet.spritesheetUI.getSubimage(112, 0, 48, 32);
-	public static BufferedImage GUN_DMG_LEFT = Spritesheet.spritesheetPlayer.getSubimage(0, 80, 16, 16);
-	public static BufferedImage GUN_DMG_RIGHT = Spritesheet.spritesheetPlayer.getSubimage(16, 80, 16, 16);
-	public static BufferedImage GUN_DOWN = Spritesheet.spritesheetPlayer.getSubimage(32, 64, 16, 16);
-	public static BufferedImage ENEMY_DMG = Spritesheet.spritesheetPlayer.getSubimage(224, 0, 16, 16);
-	public static BufferedImage UIPause = Spritesheet.spritesheetUI.getSubimage(96, 80, 16, 16);
-	public static BufferedImage UIShop = Spritesheet.spritesheetUI.getSubimage(112, 80, 16, 16);
-	public static BufferedImage ShopItemSelect = Spritesheet.spritesheetUI.getSubimage(48, 80, 48, 48);
-	public static BufferedImage DefaultNPC_EN = Spritesheet.spritesheetPlayer.getSubimage(16, 96, 16, 16);
-	public static BufferedImage COIN_EN = Spritesheet.spritesheetTiles.getSubimage(64, 32, 16, 16);
-	public static BufferedImage BigEnemy = Spritesheet.spritesheetPlayer.getSubimage(208, 96, 32, 32);
-	public static BufferedImage BigEnemyDMG = Spritesheet.spritesheetPlayer.getSubimage(112, 96, 32, 32);
+	public static BufferedImage LIFEPACK_EN = Spritesheets.spritesheetTiles.getSubimage(0, 32, 16, 16);
+	public static BufferedImage WEAPON_EN = Spritesheets.spritesheetTiles.getSubimage(32, 32, 16, 16);
+	public static BufferedImage playerStop = Spritesheets.spritesheetPlayer.getSubimage(64, 16, 16, 16);
+	public static BufferedImage BULLET_EN = Spritesheets.spritesheetTiles.getSubimage(16, 32, 16, 16);
+	public static BufferedImage ENEMY_EN = Spritesheets.spritesheetPlayer.getSubimage(193, 0, 16, 16);
+	public static BufferedImage GUN_RIGHT = Spritesheets.spritesheetPlayer.getSubimage(0, 64, 16, 16);
+	public static BufferedImage GUN_LEFT = Spritesheets.spritesheetPlayer.getSubimage(16, 64, 16, 16);
+	public static BufferedImage GUN_SELECT = Spritesheets.spritesheetUI.getSubimage(112, 0, 48, 32);
+	public static BufferedImage GUN_DMG_LEFT = Spritesheets.spritesheetPlayer.getSubimage(0, 80, 16, 16);
+	public static BufferedImage GUN_DMG_RIGHT = Spritesheets.spritesheetPlayer.getSubimage(16, 80, 16, 16);
+	public static BufferedImage GUN_DOWN = Spritesheets.spritesheetPlayer.getSubimage(32, 64, 16, 16);
+	public static BufferedImage ENEMY_DMG = Spritesheets.spritesheetPlayer.getSubimage(224, 0, 16, 16);
+	public static BufferedImage UIPause = Spritesheets.spritesheetUI.getSubimage(96, 80, 16, 16);
+	public static BufferedImage UIShop = Spritesheets.spritesheetUI.getSubimage(112, 80, 16, 16);
+	public static BufferedImage ShopItemSelect = Spritesheets.spritesheetUI.getSubimage(48, 80, 48, 48);
+	public static BufferedImage DefaultNPC_EN = Spritesheets.spritesheetPlayer.getSubimage(16, 96, 16, 16);
+	public static BufferedImage COIN_EN = Spritesheets.spritesheetTiles.getSubimage(64, 32, 16, 16);
+	public static BufferedImage BigEnemy = Spritesheets.spritesheetPlayer.getSubimage(208, 96, 32, 32);
+	public static BufferedImage BigEnemyDMG = Spritesheets.spritesheetPlayer.getSubimage(112, 96, 32, 32);
 	
 	public int maskx, masky, mwidth, mheight;
 

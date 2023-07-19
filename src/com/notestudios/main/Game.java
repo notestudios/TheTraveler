@@ -36,7 +36,7 @@ import com.notestudios.entities.Npc;
 import com.notestudios.entities.Player;
 import com.notestudios.gameapi.GameJolt;
 import com.notestudios.gameapi.Trophies;
-import com.notestudios.graphics.Spritesheet;
+import com.notestudios.graphics.Spritesheets;
 import com.notestudios.graphics.UI;
 import com.notestudios.menus.JoltLogin;
 import com.notestudios.menus.MainMenu;
@@ -175,7 +175,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	public static Font travelerLogoFont;
 	
 	private final BufferedImage image;
-	public Spritesheet spritesheet;
+	public Spritesheets spritesheet;
 	public static BufferedImage GameBackground, GameBackground2;
 	File debugFile = new File("debugAccess.txt");
 	File licenseFile = new File("LICENSE");
@@ -195,21 +195,21 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	"what... just... happened...?", "New things are coming in the next update to this game! Like... a BOMB", "if you like linux, use winget on windows!",
 	"new menu style lol", "Figure is bugged", "when the impostor is SUS ඞ", "brooooooooooooooooooooooo", "bruh", "cool",
 	"kaboom", "hi", "here's your attention again.", "spider-man goes crazy :0", "Got your attention haha ;)", "[...] thread == null!", "this is a random title!",
-	currentVersion+" is on!", "lmao", "I know your discord username haha", "hmm, achivements...", "bro, VS Imposter Alternated is a mod of a mod :O"};
+	currentVersion+" is on!", "lmao", "I know your discord username haha", "hmm, achivements...", "bro, VS Imposter Alternated is a mod of a mod :0"};
 	
-	String[] tipsEn = {"Press 'C' to save the game! ", "is this a... tip?", "You can run pressing 'Shift'!", "idk whats the next tip bru", 
+	String[] tipsEn = {"Press 'C' to save the game! ", "cool tip", "You can run pressing 'Shift'!", "idk whats the next tip bru", 
 			"Move using W, A, S, D keys!", "There are maps that you can't use minimap!", "You can use the menus with the arrow keys!", "spam pressing E", 
 			"Login with you Game Jolt Account!", "Config > Scroll Down > Game Jolt Login", "Use 'Shift' or 'Ctrl' to run!", "Unlock new Achivements with Game Jolt!"};
 	
 	String[] tipsPt = {"Pressione 'C' para salvar o jogo!", "Você pode correr pressionando 'Shift'!", "Você também pode usar o menu com as setas!",
-			"qual a próxima dica mesmo?", "Mova-se usando as teclas W, A, S, D!", "Há mapas que o minimapa não pode ser usado!", "spam segurando E", 
+			"qual a próxima dica mesmo?", "Mova-se usando as teclas W, A, S, D!", "Há mapas que o minimapa não pode ser usado!", "spame bullets segurando E", 
 			"Faça login com sua conta Game Jolt!", "Config > Scroll Down > Game Jolt Login", "Use 'Shift' ou 'Ctrl' para correr!", "Desbloqueie novas conquistas com o Game Jolt!"};
 	String randomTip;
 	public static String showGraphics;
 	String randomText;
-	public static String currentVersion = "v4.5.0b";
+	public static String currentVersion = "v4.4.10";
 	String newerVersion;
-	static String day = "18", month = "07", year = "2023";
+	static String day = "19", month = "07", year = "2023";
 	public static String lastUpdateEn = month+"/"+day+"/"+year, lastUpdatePt = day+"/"+month+"/"+year;
 	public static String DiscordAppID = "1087444872132313168";
 	public static String gameState = "Start Menu";
@@ -240,10 +240,10 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		devMode = devFile.exists();
 		debug = debugFile.exists();
 		secret = amogus.exists();
-		/* TODO: remove this code in version 4.6.0! */
+		//TODO: remove this code in version 4.6.0!
 		File oldCredentials = new File("GJ");
 		if(oldCredentials.exists()) { oldCredentials.renameTo(gameCredentialsFile); }
-		/***/
+		/**/
 		randomText = Words[rand.nextInt(Words.length)];
 		addKeyListener(this);
 		addMouseListener(this);
@@ -252,7 +252,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT * SCALE));
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		createFrame();
-		spritesheet = new Spritesheet();
+		spritesheet = new Spritesheets();
 		jolt = new GameJolt(gameID, gamePrivateID);
 		player = new Player(0, 0, 16, 16, Entity.playerStop);
 		entities = new ArrayList<Entity>();
@@ -261,11 +261,12 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		bosses = new ArrayList<BigEnemy>();
 		bullets = new ArrayList<Bullets>();
 		npc = new Npc(32, 32, 16, 16, Entity.DefaultNPC_EN);
-		entities.add(player); entities.add(npc);
-		world = new World(World.levelsFolder+"level"+curLevel+".png");
+		entities.add(player);
+		entities.add(npc);
+		world = new World(World.mapsFolder+"level"+curLevel+".png");
+		World.initializeMinimap();
 		reloadAllUI();
 		rpc = new RPC();
-		World.initializeMinimap();
 		loginPopup = true;
 		if (configSave.exists()) {
 			String saver = Settings.loadConfig();
@@ -344,12 +345,6 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	public static BufferedImage defaultShortOptBg;
 	public static BufferedImage defaultLargeOptionBg;
 	public static BufferedImage menuCreditsIcon;
-
-	public static BufferedImage newGameOptionBg;
-	public static BufferedImage loadGameOptionBg;
-	public static BufferedImage settingsOptionBg;
-	public static BufferedImage creditsOptionBg;
-	public static BufferedImage quitGameOptionBg;
 	
 	public void tick() {
 		if(gameState.equals("Settings") || gameState.equals("settings")
@@ -364,9 +359,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 			updPresenceTime = 0;
 			UpdateRPC.tick();
 		}
-		
 		Sound.tick();
-		
 		loginPopup = showPopup == 1;
 		arrSelectSprite = MainMenu.arrSelect == 1;
 		licenseOK = licenseFile.exists();
@@ -543,6 +536,10 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 		
 		if(gameState.equals("Menu") || gameState.equals("Normal") || gameState.equals("")) {
 			world.render(g);
+			for(int i = 0; i < objects.size(); i++) {
+				InteractibleObjects io = objects.get(i);
+				io.render(g);
+			}
 			entities.sort(Entity.enSorter);
 			for(int i = 0; i < entities.size(); i++) {
 				Entity e = entities.get(i);
@@ -620,7 +617,6 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 				
 				g.drawImage(defaultLargeOptionBg, -39, 87, null);
 				g.drawImage(defaultLargeOptionBg, -39, 89, null);
-				g.drawImage(newGameOptionBg, -40, 89, null);
 				g.drawImage(defaultLargeOptionBg, -50, 104, null);
 				if(UI.menu.currentOption == 4) {
 					if(MainMenu.english) {

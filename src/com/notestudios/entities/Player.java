@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import com.notestudios.gameapi.GameJolt;
-import com.notestudios.graphics.Spritesheet;
+import com.notestudios.graphics.Spritesheets;
 import com.notestudios.main.Game;
 import com.notestudios.objects.Ammo;
 import com.notestudios.objects.Coin;
@@ -72,18 +72,18 @@ public class Player extends Entity {
 		leftPlayer = new BufferedImage[4];
 		upPlayer = new BufferedImage[4];
 		downPlayer = new BufferedImage[4];
-		playerDamage = Spritesheet.spritesheetPlayer.getSubimage(64, 0, 16, 16);
+		playerDamage = Spritesheets.spritesheetPlayer.getSubimage(64, 0, 16, 16);
 		for (int i = 0; i < 4; i++) {
-			rightPlayer[i] = Spritesheet.spritesheetPlayer.getSubimage((i * 16), 0, 16, 16);
+			rightPlayer[i] = Spritesheets.spritesheetPlayer.getSubimage((i * 16), 0, 16, 16);
 		}
 		for(int i = 0; i < 4; i++) {
-			upPlayer[i] = Spritesheet.spritesheetPlayer.getSubimage((i * 16), 32, 16, 16);
+			upPlayer[i] = Spritesheets.spritesheetPlayer.getSubimage((i * 16), 32, 16, 16);
 		}
 		for(int i = 0; i < 4; i++) {
-			downPlayer[i] = Spritesheet.spritesheetPlayer.getSubimage((i * 16), 48, 16, 16);
+			downPlayer[i] = Spritesheets.spritesheetPlayer.getSubimage((i * 16), 48, 16, 16);
 		}
 		for(int i = 0; i < 4; i++) {
-			leftPlayer[i] = Spritesheet.spritesheetPlayer.getSubimage((i * 16), 16, 16, 16);
+			leftPlayer[i] = Spritesheets.spritesheetPlayer.getSubimage((i * 16), 16, 16, 16);
 		}
 	}
 

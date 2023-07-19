@@ -6,7 +6,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
-import com.notestudios.graphics.Spritesheet;
+import com.notestudios.graphics.Spritesheets;
 import com.notestudios.main.Game;
 import com.notestudios.world.AStar;
 import com.notestudios.world.Camera;
@@ -29,8 +29,8 @@ public class Enemy extends Entity {
 		super(x, y, width, height, sprite);
 
 		sprites = new BufferedImage[2];
-		sprites[0] = Spritesheet.spritesheetPlayer.getSubimage(192, 0, 16, 16);
-		sprites[1] = Spritesheet.spritesheetPlayer.getSubimage(192 + 16, 0, 16, 16);
+		sprites[0] = Spritesheets.spritesheetPlayer.getSubimage(192, 0, 16, 16);
+		sprites[1] = Spritesheets.spritesheetPlayer.getSubimage(192 + 16, 0, 16, 16);
 	}
 
 	public void tick() {

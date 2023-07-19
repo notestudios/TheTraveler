@@ -6,7 +6,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.notestudios.gameapi.GameJolt;
-import com.notestudios.graphics.Spritesheet;
+import com.notestudios.graphics.Spritesheets;
 import com.notestudios.graphics.UI;
 import com.notestudios.main.Game;
 import com.notestudios.world.Camera;
@@ -31,8 +31,8 @@ public class BigEnemy extends Entity{
 		super(x, y, width, height, sprite);
 
 		sprites = new BufferedImage[2];
-		sprites[0] = Spritesheet.spritesheetPlayer.getSubimage(144, 96, 32, 32);
-		sprites[1] = Spritesheet.spritesheetPlayer.getSubimage(176, 96, 32, 32);
+		sprites[0] = Spritesheets.spritesheetPlayer.getSubimage(144, 96, 32, 32);
+		sprites[1] = Spritesheets.spritesheetPlayer.getSubimage(176, 96, 32, 32);
 	}
 
 	public void tick() {

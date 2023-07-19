@@ -17,7 +17,7 @@ import com.notestudios.entities.Entity;
 import com.notestudios.entities.Particle;
 import com.notestudios.entities.Player;
 import com.notestudios.entities.Weapon;
-import com.notestudios.graphics.Spritesheet;
+import com.notestudios.graphics.Spritesheets;
 import com.notestudios.main.Game;
 import com.notestudios.objects.Ammo;
 import com.notestudios.objects.Bush;
@@ -29,7 +29,7 @@ public class World {
 	public static Tile[] tiles;
 	public static int WIDTH, HEIGHT;
 	public static final int TILE_SIZE = 16;
-	public static String levelsFolder = "/levels/";
+	public static String mapsFolder = "/maps/";
 	public BufferedImage defaultTileFloor;
 	public BufferedImage map;
 	public int[] pixels;
@@ -180,7 +180,7 @@ public class World {
 		Game.entities = new ArrayList<Entity>();
 		Game.enemies = new ArrayList<Enemy>();
 		Game.bosses = new ArrayList<BigEnemy>();
-		Game.player = new Player(0, 0, 16, 16, Spritesheet.spritesheetPlayer.getSubimage(0, 0, 16, 16));
+		Game.player = new Player(0, 0, 16, 16, Spritesheets.spritesheetPlayer.getSubimage(0, 0, 16, 16));
 		Game.entities.add(Game.player);
 		Game.bossFight = false;
 		Game.world = new World("/levels/" + level);
@@ -196,7 +196,7 @@ public class World {
 		Game.entities = new ArrayList<Entity>();
 		Game.enemies = new ArrayList<Enemy>();
 		Game.bosses = new ArrayList<BigEnemy>();
-		Game.player = new Player(0, 0, 16, 16, Spritesheet.spritesheetPlayer.getSubimage(0, 0, 16, 16));
+		Game.player = new Player(0, 0, 16, 16, Spritesheets.spritesheetPlayer.getSubimage(0, 0, 16, 16));
 		Game.entities.add(Game.player);
 		Game.world = new World("/levels/level" + Game.curLevel + ".png");
 		initializeMinimap();

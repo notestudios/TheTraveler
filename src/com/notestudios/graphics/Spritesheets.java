@@ -8,13 +8,13 @@ import javax.swing.JOptionPane;
 
 import com.notestudios.main.Game;
 
-public class Spritesheet {
+public class Spritesheets {
 	public BufferedImage spritesheet;
 	public static BufferedImage spritesheetPlayer;
 	public static BufferedImage spritesheetTiles;
 	public static BufferedImage spritesheetUI;
 
-	public Spritesheet() {
+	public Spritesheets() {
 		reloadImages();
 	}
 	
@@ -27,16 +27,10 @@ public class Spritesheet {
 			Game.GameBackground = ImageIO.read(getClass().getResource("/images/Background.png"));
 			Game.GameBackground2 = ImageIO.read(getClass().getResource("/images/Background.png"));
 			
-			Game.bigBackground = Spritesheet.spritesheetUI.getSubimage(0, 0, 112, 48);
-			Game.defaultShortOptBg = Spritesheet.spritesheetUI.getSubimage(0, 48, 80, 16);
-			Game.defaultLargeOptionBg = Spritesheet.spritesheetUI.getSubimage(0, 64, 144, 16);
-			Game.menuCreditsIcon = Spritesheet.spritesheetUI.getSubimage(96, 96, 16, 16);
-			
-			Game.newGameOptionBg = Spritesheet.spritesheetUI.getSubimage(0, 64, 144, 16);
-			Game.loadGameOptionBg = Spritesheet.spritesheetUI.getSubimage(0, 64, 144, 16);
-			Game.settingsOptionBg = Spritesheet.spritesheetUI.getSubimage(0, 64, 144, 16);
-			Game.creditsOptionBg = Spritesheet.spritesheetUI.getSubimage(0, 64, 144, 16);
-			Game.quitGameOptionBg = Spritesheet.spritesheetUI.getSubimage(0, 64, 144, 16);
+			Game.bigBackground = Spritesheets.spritesheetUI.getSubimage(0, 0, 112, 48);
+			Game.defaultShortOptBg = Spritesheets.spritesheetUI.getSubimage(0, 48, 80, 16);
+			Game.defaultLargeOptionBg = Spritesheets.spritesheetUI.getSubimage(0, 64, 144, 16);
+			Game.menuCreditsIcon = Spritesheets.spritesheetUI.getSubimage(96, 96, 16, 16);
 			
 		} catch (IOException e) {
 			e.printStackTrace();

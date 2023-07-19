@@ -326,22 +326,6 @@ public class MainMenu {
 	}
 
 	public void render(Graphics2D g) {
-		/*
-		g.setFont(RFont);
-		g.setColor(Color.white);
-		g.drawString("Ok...", 580, 320);*/
-		/*if(Game.firstTimeInGame) {
-			
-			g.setColor(Color.white);
-			g.setFont(Game.fontPixel2);
-			Game.drawString(g, "It seems that it's your first time\n"
-					+ "playing this game, i recommend to check\n"
-					+ "the controls on 'Settings > Game Controls'!\n"
-					+ "This is an early access, so if you can\n"
-					+ "please send feedback to me for more updates!\n"
-					+ "DM me: @retrozinn", 480, 150);
-			
-		}*/
 		
 		if(GameJolt.isLoggedIn) {
 			String currentUser = GameJolt.user.getName();
@@ -668,12 +652,5 @@ public class MainMenu {
 				}
 			}
 		}
-		if (optNew) {
-			g.setColor(new Color(0xFF2500));
-			g.fillOval(342, 490, 10, 10);
-			g.setColor(Color.black);
-			g.drawOval(342, 490, 10, 10);
-		}
-		
 	}
 }

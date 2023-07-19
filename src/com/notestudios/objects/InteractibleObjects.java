@@ -1,9 +1,11 @@
 package com.notestudios.objects;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import com.notestudios.entities.Entity;
+import com.notestudios.main.Game;
+import com.notestudios.world.Camera;
 
 public class InteractibleObjects {
 	
@@ -60,6 +62,10 @@ public class InteractibleObjects {
 		return this.height;
 	}
 	
+	public void tick() {
+		
+	}
+	
 	public double calculateDistance(int x1, int y1, int x2, int y2) {
 		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 	}
@@ -68,6 +74,16 @@ public class InteractibleObjects {
 		Rectangle e1Mask = new Rectangle(e1.getX() + e1.maskx, e1.getY() + e1.masky, e1.mwidth, e1.mheight);
 		Rectangle e2Mask = new Rectangle(io2.getX() + io2.maskx, io2.getY() + io2.masky, io2.mwidth, io2.mheight);
 		return e1Mask.intersects(e2Mask);
+	}
+	
+	public void render(Graphics g) {
+		g.drawImage(sprite, getX() - Camera.x, getY() - Camera.y, null);
+		
+		if (!Game.debug) {
+		} else if (Game.debug) {
+			g.fillRect(getX() + maskx - Camera.x, getY() + masky - Camera.y, mwidth, mheight);
+			g.setColor(new Color(0, 0, 255, 125));
+		}
 	}
 
 }

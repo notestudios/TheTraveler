@@ -24,6 +24,8 @@ public class JoltLogin {
         	if(GameJolt.isLoggedIn) {
         		text = "Already Logged In!";
         	} else {
+        		textOffsetX = 25;
+        		textOffsetY = 4;
         		text = "Login";
         	}
         	customTextColor = Color.black;
@@ -40,6 +42,12 @@ public class JoltLogin {
                         Game.saveLogin = true;
                     }
                 }
+            } if(selected) {
+            	if(opacity < 255) {
+            		opacity+=51;
+            	}
+            } else {
+            	opacity = 0;
             }
         }
         
@@ -69,9 +77,9 @@ public class JoltLogin {
 	        } else {
 	            g.setFont(new Font(customFontString, Font.BOLD, fontSize));
 	            if(!GameJolt.isLoggedIn) {
-	                g.drawString("Login", getX() + ((int) width / 2) - g.getFontMetrics().stringWidth("Login"), getY() + g.getFontMetrics().getHeight() + 4);
+	                g.drawString("Login", getX() + ((int)width / 2) - g.getFontMetrics().stringWidth("Login") + textOffsetX, getY() + g.getFontMetrics().getHeight() + textOffsetY);
 	            } else {
-	                g.drawString("Already Logged!", getX() + ((int) width / 2) - g.getFontMetrics().stringWidth("Already Logged!"), getY() + g.getFontMetrics().getHeight() + 4);
+	                g.drawString("Already Logged!", getX() + ((int)width / 2) - g.getFontMetrics().stringWidth("Already Logged!") + textOffsetX, getY() + g.getFontMetrics().getHeight() + textOffsetY);
 	            }
 	        }
         }

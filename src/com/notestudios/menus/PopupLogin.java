@@ -21,7 +21,13 @@ public class PopupLogin {
 					Game.downTransition = true;
 					Game.gameState = "GJLogin";
 				}
-			}
+			} if(selected) {
+            	if(opacity < 255) {
+            		opacity+=51;
+            	}
+            } else {
+            	opacity = 0;
+            }
 		}
 		
 		public void render(Graphics2D g) {
