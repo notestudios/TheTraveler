@@ -185,7 +185,7 @@ MouseMotionListener, MouseWheelListener, WindowListener {
 	public static File gamejoltCredentialsFile = new File(".gj-credentials");
 	public static File amogus = new File("amogus.txt");
 	int gameID = 796130;
-	private String gamePrivateID = /******************************************************************************************************************************************************************************************************************************/"73979f3cebe0b2ce206ea1abbace9d22";
+	private String gamePrivateID = "I'm not giving that info too easily";
 	public static String userName = "";
 	public static String userToken = "";
 	
