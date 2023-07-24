@@ -8,6 +8,7 @@
 <img src="https://github.com/notestudios/TheTraveler/blob/master/assets/images/BannerGitHub.png?raw=true" alt="The Traveler Logo"></a>
 </center>
 <br>
+
   This is **The Traveler** source code on GitHub! You can make mods, optimize the game 
 and make any changes you want!
 
