@@ -1,6 +1,7 @@
 package com.notestudios.graphics;
 
 public class Pixel {
+	
 	static final int WHITE = 0xffffffff;
 	static final int RED = 0xffff0000;
 	static final int GREEN = 0xff00ff00;
@@ -9,7 +10,7 @@ public class Pixel {
 	static final int PINK = 0xffff00ff;
 	static final int YELLOW = 0xffffff00;
 
-	static final int[] colors = new int[] { WHITE, RED, GREEN, BLUE, CYAN, PINK, YELLOW };
+	static final int[] colors = { WHITE, RED, GREEN, BLUE, CYAN, PINK, YELLOW };
 
 	public static int getRandomColor() {
 		return colors[(int) (Math.random() * (colors.length - 1))];

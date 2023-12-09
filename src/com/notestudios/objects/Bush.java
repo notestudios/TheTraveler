@@ -6,7 +6,7 @@ public class Bush extends InteractibleObjects {
 
 	public Bush(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
-		depth = 0;
 	}
+	
 
 }

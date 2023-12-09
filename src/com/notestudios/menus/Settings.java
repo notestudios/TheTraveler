@@ -1,8 +1,6 @@
 package com.notestudios.menus;
 
 import java.awt.Color;
-import java.awt.Desktop;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,541 +9,336 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-import com.notestudios.entities.Entity;
+import com.notestudios.graphics.UI;
 import com.notestudios.main.Game;
 import com.notestudios.util.Button;
+import com.notestudios.util.Popup;
 import com.notestudios.util.Sound;
 
 public class Settings {
 
-	public String[] optOptions = { "currentLanguage", "graphics", "controls", "verInfo",
-	"minimap", "mute", "gunTile", "Back", "AAliasing", "Nothing"};
-	public int maxOption = optOptions.length-1;
+	public List<Button> settingsButtons;
 	public static String curLanguage = "";
-	public static boolean english = false;
-	public static boolean portugues = false;
-	public int optMax = optOptions.length - 1;
-	public boolean downOpt;
-	public boolean upOpt;
-	public boolean nextPage = false;
-	public int curPage = 0;
+	public boolean down;
+	public boolean up;
 	public static int mute = 0;
-	public boolean leftOpt;
-	public boolean rightOpt;
+	public boolean left;
+	public boolean right;
 	public int curOpt = 0;
 	public boolean esc = false;
-	public boolean versionInfoRequest = true;
-	public boolean enter = false;
-	public static boolean back = false;
 	public static int minimap = 1;
-	public static int AntiAliasing = 0;
+	public static int antiAliasing = 0;
+	private static File configSave = Game.configSave;
 	
-	static class Settings_Button0 extends Button {
-		public Settings_Button0(int x, int y, int width, int height, int type, String text) {
-			super(x, y, width, height, type, text);
-			//directory = "";
-		}
-		
+	public Button backButton = new Button(10, 50, 60, 50, "<  Settings") {
+		@Override
 		public void functions() {
-			textOffsetX=-170;
-			textOffsetY=-20;
-			customFont = MainMenu.menuFont;
-			customBackColor = new Color(66, 66, 66);
-			customTextColor = Color.white;
-			if(selected && clicked) {
+			if(MainMenu.portuguese) text = "<  Config."; else text = "<  Settings";
+			
+			customFont = MainMenu.aFont;
+			x = 10;
+			width = 160;
+			height = 50;
+			if(clicked) {
 				clicked = false;
-				Game.downTransition = true;
-				Game.gameState = "GJLogin";
+				UI.doTransition = true;
+				if(!Game.mute) Sound.backMenu.play();
+				quitSettingsMenu("Menu");
 			}
 		}
-	}
+	};
 	
+	public Button selectLanguage = new Button(150, 240, 300, 50, "Language: Default") {
+		@Override
+		public void functions() {
+			customFont = MainMenu.aFont;
+			if(MainMenu.english) text = "Lang.: English"; else if(MainMenu.portuguese) text = "Idioma: Português"; 
+			
+			if(clicked) {
+				clicked = false;
+				if(!Game.mute) Sound.menuEnter.play();
+				UI.doTransition = true;
+				if(MainMenu.english) { // English -> Portuguese
+					MainMenu.portuguese = true;
+					MainMenu.english = false;
+					MainMenu.curLanguage = "Português";
+					MainMenu.Eng = 0; MainMenu.Por = 1;
+				} else if(MainMenu.portuguese) { // Portuguese -> English 
+					MainMenu.portuguese = false;
+					MainMenu.english = true;
+					MainMenu.curLanguage = "English";
+					MainMenu.Eng = 1; MainMenu.Por = 0;
+				}
+				Game.saveConfig = true;
+			}
+		}
+	};
 	
-	public Settings_Button0 gjButton;
+	public Button changeGraphicsPreset = new Button(60, 300, 340, 50, "Graphics: Default") {
+		@Override
+		public void functions() {
+			if(MainMenu.portuguese) text = "Gráficos: "+Game.showGraphics; else text = "Graphics: "+Game.showGraphics;
+			
+			customFont = MainMenu.aFont;
+			x = selectLanguage.getX() + selectLanguage.getWidth() + 6;
+			y = selectLanguage.getY();
+			if(clicked) {
+				clicked = false;
+				if (Game.graphicsQuality == 2) {
+					Game.graphicsQuality = 1;
+					if(!Game.mute) Sound.menuEnter.play();
+					Game.saveConfig = true;
+				} else if (Game.graphicsQuality == 1) {
+					Game.graphicsQuality = 2;
+					if(!Game.mute) Sound.menuEnter.play();
+					Game.saveConfig = true;
+				}
+			}
+		}
+	};
+	
+	public Button gameControls = new Button(60, 450, 340, 50, "Game Controls >") {
+		@Override
+		public void functions() {
+			if(MainMenu.portuguese) text = "Control. do Jogo >"; else text = "Game Controls >";
+			
+			customFont = MainMenu.aFont;
+			x = selectLanguage.getX();
+			y = selectLanguage.getY() + selectLanguage.getHeight() + 6;
+			if(clicked) {
+				clicked = false;
+				quitSettingsMenu("Controls");
+				if(!Game.mute) Sound.menuEnter.play();
+				UI.doTransition = true;
+			}
+		}
+	};
+	
+	public Button gameInfo = new Button(60, 600, 310, 50, "About >") {
+		@Override
+		public void functions() {
+			if(MainMenu.portuguese) text = "Sobre >"; else text = "About >";
+			
+			customFont = MainMenu.aFont;
+			x = useMinimap.getX() + useMinimap.getWidth() + 6;
+			y = useMinimap.getY();
+			if(clicked) {
+				clicked = false;
+				if(!Game.mute) Sound.menuEnter.play();
+				new Popup("About", Arrays.asList("Game: The Traveler", "Version: "+Game.currentVersion, 
+						"Last Updated: "+Game.lastUpdated, "OS: "+System.getProperty("os.name"), 
+						"OS Version: " + System.getProperty("os.version")));
+			}
+		}
+	};
+	
+	public Button useMinimap = new Button(60, 750, 330, 50, "Minimap: Default") {
+		@Override
+		public void functions() {
+			if(MainMenu.portuguese) 
+				if(Game.useMinimap) text = "Minimapa: Ligado"; else text = "Minimapa: Deslig.";
+			else 
+				if(Game.useMinimap)  text = "Minimap: ON"; else text = "Minimap: OFF";
+			
+			customFont = MainMenu.aFont;
+			x = gameControls.getX();
+			y = gameControls.getY() + gameControls.getHeight() + 6;
+			if(clicked) {
+				clicked = false;
+				if(!Game.mute) Sound.menuEnter.play();
+				
+				if(!Game.useMinimap) {
+					Game.useMinimap = true;
+					minimap = 1;
+				} else {
+					Game.useMinimap = false;
+					minimap = 0;
+				}
+				Game.saveConfig = true;
+			}
+		}
+	};
+	
+	public Button muteAudio = new Button(60, 900, 300, 50, "Mute: N/A") {
+		@Override
+		public void functions() {
+			if(MainMenu.portuguese) {
+				if(Game.mute) text = "Deslig. Sons: Sim"; else text = "Deslig. Sons: Não";
+			} else {
+				if(Game.mute) text = "Mute: Yes"; else text = "Mute: No";
+			}
+			customFont = MainMenu.aFont;
+			x = gameControls.getX() + gameControls.getWidth() + 6;
+			y = gameControls.getY();
+			if(clicked) {
+				clicked = false;
+				if(!Game.mute) Sound.menuEnter.play();
+				
+				if (!Game.mute) {
+					Game.mute = true;
+					mute = 1;
+				} else {
+					Game.mute = false;
+					mute = 0;
+				}
+				Game.saveConfig = true;
+			}
+		}
+	};
+	
+	public Button useAntiAliasing = new Button(60, 1050, 645, 50, "Anti-Alias.: Default") {
+		@Override
+		public void functions() {
+			String state;
+			if(MainMenu.portuguese) 
+				if(Game.antiAliasingEnabled) state = "Ligado"; else state = "Desligado";
+			else 
+				if(Game.antiAliasingEnabled) state = "ON"; else state = "OFF";
+			
+			text = "Anti-Aliasing: "+state;
+			customFont = MainMenu.aFont;
+			width = 645;
+			x = useMinimap.getX();
+			y = useMinimap.getY() + useMinimap.getHeight() + 6;
+			if(clicked) {
+				clicked = false;
+				if(Game.graphicsQuality == 1) {
+					if(!Game.mute) Sound.errorSound.play();
+				} else {
+					if(!Game.mute) Sound.menuEnter.play();
+					
+					if(!Game.antiAliasingEnabled) {
+						Game.antiAliasingEnabled = true;
+						antiAliasing = 1;
+					} else {
+						Game.antiAliasingEnabled = false;
+						antiAliasing = 0;
+					}
+					Game.saveConfig = true;
+				}
+			}
+		}
+	};
+	
+	public Button loginGameJolt = new Button(80, 300, 645, 50,
+			"Game Jolt Login  >") {
+		public void functions() {
+			if(!Game.jolt.isLoggedIn)
+				if(MainMenu.portuguese) text = "Fazer Login  >"; else text = "Login with Game Jolt  >";
+			else 
+				if(MainMenu.portuguese) text = "Opções do Game Jolt  >"; else text = "Game Jolt Account Options  >";
+			
+			customFont = MainMenu.aFont;
+			if(!selected) {
+				if(generalAlpha == 255 &&
+						generalAlpha > 200) 
+					generalAlpha-=5;
+				else 
+					generalAlpha = 200;
+			} else {
+				if(generalAlpha < 255)
+					generalAlpha+=5;
+			}
+			customBackColor = new Color(220, 220, 0, generalAlpha);
+			customTextColor = Color.black;
+			x = useAntiAliasing.getX();
+			y = useAntiAliasing.getY() + useAntiAliasing.getHeight() + 6;
+			if(clicked) {
+				clicked = false;
+				UI.doTransition = true;
+				quitSettingsMenu("GJLogin");
+			}
+		}
+		
+		public void render(Graphics2D g) {
+        	UI.useAntiAliasing(g);
+        	if(selected) {
+				if(selectAlpha < 255) {
+					selectAlpha+=51;
+					wasSelected = true;
+				}
+			} else { 
+				if(wasSelected && selectAlpha <= 255 && selectAlpha > 0) 
+					selectAlpha-=51;
+			}
+	        g.setColor(new Color(204, 255, 0));
+	        g.fillRoundRect(getX(), getY(), getWidth(), getHeight(), arc, arc);
+	        if(selected || selectAlpha > 0) {
+	            g.setColor(new Color(180,210,0,selectAlpha));
+	            g.fillRoundRect(getX(), getY(), getWidth()-1, getHeight()-1, arc, arc);
+	            g.drawRoundRect(getX(), getY(), getWidth()-1, getHeight()-1, arc, arc);
+	        } else {
+	            g.setColor(new Color(180, 200, 0));
+	            g.drawRoundRect((int)x, (int)y, (int)width-1, (int)height-1, arc, arc);
+	        }
+	        if(!unavailable) 
+	            g.setColor(Color.black);
+	         else 
+	            g.setColor(Color.gray);
+	        
+            g.setFont(customFont);
+            g.drawString(text, getX() + (getWidth() / 2) - (g.getFontMetrics().stringWidth(text)/2) + textOffsetX, getY() + (g.getFontMetrics().getHeight()/2) + textOffsetY);
+        }
+	};
 	
 	public Settings() {
-		gjButton = new Settings_Button0(52*Game.SCALE+2, (96-45)*Game.SCALE,
-				Game.defaultLargeOptionBg.getWidth()*Game.SCALE-34, Game.defaultLargeOptionBg.getHeight()*Game.SCALE-8,
-				0, "Game Jolt Login Menu  >");
-		Game.button.add(gjButton);
+		reloadSavedSettings();
+		settingsButtons = Collections.unmodifiableList(Arrays.asList(
+			backButton,
+			selectLanguage,
+			changeGraphicsPreset,
+			gameControls,
+			gameInfo,
+			useMinimap,
+			muteAudio,
+			useAntiAliasing,
+			loginGameJolt
+		));
+		
+		Button.buttons.addAll(settingsButtons);
 	}
 	
 	
 	public void tick() {
-		if (back) {
-			back = false;
-			Game.gameState = "Menu";
-		}
-		if (downOpt) {
-			downOpt = false;
-			if(!Game.mute)
-			Sound.menuSelect.play();
-			curOpt++;
-			if (curOpt > optMax) {
-				curOpt = 0;
-			}
-		}
-		if (upOpt) {
-			upOpt = false;
-			if(!Game.mute)
-			Sound.menuSelect.play();
-			curOpt--;
-			if (curOpt < 0) {
-				curOpt = optMax;
-			}
-		}
+		for(Button b : settingsButtons) b.functions();
 		
-		if(leftOpt) {
-			leftOpt = false;
-			if(!Game.mute)
-			Sound.menuSelect.play();
-			curOpt = 7;
-		} if(rightOpt) {
-			rightOpt = false;
-			if(!Game.mute)
-			Sound.menuSelect.play();
-			curOpt = 0;
-		}
-		
-		if (esc) {
+		if(esc) {
 			esc = false;
-			if(!Game.mute) {
-				Sound.backMenu.play();
-			}
+			if(!Game.mute) Sound.backMenu.play();
+			
 			Game.gameState = "Menu";
-			Game.downTransition = true;
+			UI.doTransition = true;
 			Game.saveConfig = true;
 		}
-		if (esc && versionInfoRequest == false && Game.gameState.equals("Options")) {
+		if(esc && Game.gameState.equals("Settings")) {
 			esc = false;
-			Game.downTransition = true;
+			UI.doTransition = true;
 			Game.gameState = "Menu";
-			if (enter) {
-				enter = false;
-			}
-		}
-		if (optOptions[curOpt].equals("currentLanguage")) {
-			if (MainMenu.english) {
-				MainMenu.curLanguage = "English";
-				MainMenu.Eng = 1;
-				MainMenu.Por = 0;
-			} if (MainMenu.portuguese) {
-				MainMenu.curLanguage = "Português";
-				MainMenu.Eng = 0;
-				MainMenu.Por = 1;
-			}
-			if(enter) {
-				enter = false;
-				if(!Game.mute) { Sound.menuEnter.play(); }
-				Game.npc.curIndex = 0;
-				if (MainMenu.english) {
-					//english language -> portuguese launguage
-					Game.downTransition = true;
-					MainMenu.portuguese = true;
-					MainMenu.english = false;
-					MainMenu.curLanguage = "Português";
-					Game.saveConfig = true;
-				} else if (MainMenu.portuguese) {
-					//portuguese launguage -> english language
-					Game.downTransition = true;
-					MainMenu.portuguese = false;
-					MainMenu.english = true;
-					MainMenu.curLanguage = "English";
-					Game.saveConfig = true;
-				}
-			}
-		}
-		if (optOptions[curOpt].equals("graphics")) {
-			if (enter && Game.graphics == 2) {
-				enter = false;
-				Game.graphics = 1;
-				if(!Game.mute) {
-					Sound.menuEnter.play();
-				}
-				Game.saveConfig = true;
-			} else if (enter && Game.graphics == 1) {
-				enter = false;
-				Game.graphics = 2;
-				if(!Game.mute) {
-					Sound.menuEnter.play();
-				}
-				Game.saveConfig = true;
-			}
-		}
-		if (optOptions[curOpt].equals("controls")) {
-			if (enter) {
-				enter = false;
-				Game.gameState = "Controls";
-				if(!Game.mute) {
-					Sound.menuEnter.play();
-				}
-				Game.downTransition = true;
-				Game.saveConfig = true;
-			}
-		}
-		if (optOptions[curOpt].equals("verInfo")) {
-			if (enter) {
-				enter = false;
-				if(!Game.mute) {
-					Sound.menuEnter.play();
-				}
-				if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-				    try {
-						Desktop.getDesktop().browse(new URI("https://gamejolt.com/games/ttraveler/796130"));//gamejolt://play/123456
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (URISyntaxException e) {
-						e.printStackTrace();
-					}
-				}
-				Game.saveConfig = true;
-			}
-		}
-		if (optOptions[curOpt].equals("Back")) {
-			if (enter) {
-				enter = false;
-				back = true;
-				if(!Game.mute) {
-					Sound.backMenu.play();
-				}
-				Game.downTransition = true;
-				Game.saveConfig = true;
-			}
-		}
-		
-		if (optOptions[curOpt].equals("minimap")) {
-			if (enter && !Game.minimapRender) {
-				enter = false;
-				if(!Game.mute) {
-					Sound.menuEnter.play();
-				}
-				Game.minimapRender = true;
-				Game.saveConfig = true;
-				minimap = 1;
-			} else if (enter && Game.minimapRender) {
-				enter = false;
-				if(!Game.mute) {
-					Sound.menuEnter.play();
-				}
-				Game.minimapRender = false;
-				Game.saveConfig = true;
-				minimap = 0;
-			}
-		}
-		if (optOptions[curOpt].equals("mute")) {
-			if (enter && !Game.mute) {
-				enter = false;
-				if(!Game.mute) {
-					Sound.menuEnter.play();
-				}
-				mute = 1;
-				Game.mute = true;
-				Game.saveConfig = true;
-			} else if (enter && Game.mute) {
-				enter = false;
-				if(!Game.mute) {
-					Sound.menuEnter.play();
-				}
-				mute = 0;
-				Game.mute = false;
-				Game.saveConfig = true;
-			}
-		}
-		if (optOptions[curOpt].equals("gunTile")) {
-			if (enter && !Game.arrSelectSprite && Game.graphics == 2) {
-				enter = false;
-				if(!Game.mute) {
-					Sound.menuEnter.play();
-				}
-				Game.arrSelectSprite = true;
-				MainMenu.arrSelect = 1;
-				Game.saveConfig = true;
-			} else if (enter && Game.arrSelectSprite  && Game.graphics == 2) {
-				enter = false;
-				if(!Game.mute) {
-					Sound.menuEnter.play();
-				}
-				Game.arrSelectSprite = false;
-				MainMenu.arrSelect = 0;
-				Game.saveConfig = true;
-			} else if(enter && Game.graphics == 1){
-				enter = false;
-				if(!Game.mute) {
-					Sound.errorSound.play();
-				}
-			} else {
-				enter = false;
-			}
-		}
-		
-		if(optOptions[curOpt] != "AAliasing" && optOptions[curOpt] != "Back" && optOptions[curOpt] != "Nothing") {
-			nextPage = false;
-		} else if(optOptions[curOpt] == "AAliasing") {
-			nextPage = true;
-		}
-		
-		if(optOptions[curOpt] == "AAliasing") {
-			if(enter && Game.graphics == 1) {
-				enter = false;
-				if(!Game.mute) {
-					Sound.errorSound.play();
-				}
-			} else if(enter && Game.graphics == 2) {
-				enter = false;
-				if(!Game.AAliasingEnabled) {
-					enter = false;
-					if(!Game.mute) {
-						Sound.menuEnter.play();
-					}
-					Game.AAliasingEnabled = true;
-					AntiAliasing = 1;
-				} else if(Game.AAliasingEnabled) {
-					enter = false;
-					if(!Game.mute) {
-						Sound.menuEnter.play();
-					}
-					Game.AAliasingEnabled = false;
-					AntiAliasing = 0;
-				}
-				Game.saveConfig = true;
-			}
-		}
-		if(nextPage) {
-			gjButton.functions();
 		}
 	}
 	
 	
 	
 	public void render(Graphics2D g) {
-		if (Game.gameState == "Options") {
-			g.setColor(Color.white);
-			if (MainMenu.english) {
-				g.setFont(MainMenu.TheFont);
-				g.setColor(Color.white);
-				g.drawString("Settings", 30, 48);
-
-				g.setFont(MainMenu.aFont);
-				g.setColor(Color.white);
-				g.drawString("< Back", 30, 106);
-				g.setFont(new Font("Segoe UI", Font.BOLD, 12));
-				g.drawString("(ESC)", 125, 90);
-				if(!nextPage) {
-					g.setFont(MainMenu.menuFont);
-					g.drawString("Game Language < " + MainMenu.curLanguage + " >", 258, (360 - 180));
-					if (Game.graphics == 2) {
-						g.drawString("Graphics Quality < " + Game.showGraphics + " >", 278, (432 - 180));
-					} else if (Game.graphics == 1) {
-						g.drawString("Graphics Quality < " + Game.showGraphics + " >", 280, (432 - 180));
-					}
-					g.drawString("View Game Controls.", 316, (498 - 180));
-					g.drawString("See Current Version Info", 270, (567 - 180));
-					if (Game.minimapRender)
-						g.drawString("Disable Minimap", 355, (567 + 65 - 178));
-					else if (!Game.minimapRender) {
-						g.drawString("Enable Minimap", 360, (567 + 65 - 178));
-					}
-					if (Game.mute) {
-						g.drawString("Unmute Sounds", 355/*305*/, (567 + 135 - 180));
-					} else if (!Game.mute) {
-						g.drawString("Mute Sounds", 375/*325*/, (567 + 135 - 180));
-					}
-					if(Game.graphics == 2) {
-						g.setColor(Color.white);
-					} else {
-						g.setColor(Color.lightGray);
-					}
-					if (Game.arrSelectSprite) {
-						g.drawString("Disable ArrSelect", 340, (567 + 135 + 65 - 176));
-					} else if (!Game.arrSelectSprite) {
-						g.drawString("Enable ArrSelect", 342, (567 + 135 + 65 - 176));
-					}
-					//g.setColor(Color.white);
-				} else if(nextPage) {
-					gjButton.render(g);
-					
-					g.setFont(MainMenu.menuFont);
-					if(Game.graphics == 2) {
-						g.setColor(Color.white);
-					} else {
-						g.setColor(Color.lightGray);
-					}
-					g.drawString("Anti-Aliasing < " + Game.AAliasingEnabled + " >", 300, (360 - 180));
-					
-				}
-				
-			} else if (MainMenu.portuguese) {
-				g.setFont(MainMenu.TheFont);
-				g.setColor(Color.white);
-				g.drawString("Config.", 48, 48);
-
-				g.setFont(MainMenu.aFont);
-				g.setColor(Color.white);
-				g.drawString("< Voltar", 25, 106);
-				g.setFont(new Font("Segoe UI", Font.BOLD, 12));
-				g.drawString("(ESC)", 125, 90);
-				
-				if(!nextPage) {
-					g.setFont(MainMenu.menuFont);
-					g.drawString("Idioma do Jogo < " + MainMenu.curLanguage + " >", 231, (360 - 180));
-					if (Game.graphics == 2) {
-						g.drawString("Qualidade Gráfica < " + Game.showGraphics + " >", 265, ((432 - 2 - 180)));
-					} else if (Game.graphics == 1) {
-						g.drawString("Qualidade Gráfica < " + Game.showGraphics + " >", 255, ((432 - 2 - 180)));
-					}
-					g.drawString("Ver Controles do Jogo", 290, (498 - 178));
-					g.drawString("Ver Info. da Versão Atual", 265, (567 - 180));
-					if (Game.minimapRender)
-						g.drawString("Dasativar Minimapa", 322, (567 + 65 - 178));
-					else if (!Game.minimapRender) {
-						g.drawString("Ativar Minimapa", 352, (567 + 65 - 178));
-					}
-					if (Game.mute) {
-						g.drawString("Ativar os Sons", /*315*/355, (567 + 135 - 178));
-					} else if (!Game.mute) {
-						g.drawString("Desativar os Sons", /*285*/326, (567 + 135 - 178));
-					}
-					if(Game.graphics == 2) {
-						g.setColor(Color.white);
-					} else {
-						g.setColor(Color.lightGray);
-					}
-					if (Game.arrSelectSprite) {
-						g.drawString("Desativar o ArrSprite", 295, (567 + 135 + 65 - 176));
-					} else if (!Game.arrSelectSprite) {
-						g.drawString("Ativar o ArrSprite", 328, (567 + 135 + 65 - 176));
-					}
-					//g.setColor(Color.white);
-				} else if(nextPage) {
-					gjButton.render(g);
-					g.setFont(MainMenu.menuFont);
-					g.drawString("Anti-Aliasing < " + Game.AAliasingEnabled + " >", 300, (360 - 180));
-				}
-			}
-			g.setColor(Color.white);
-			if (optOptions[curOpt] == "currentLanguage") {
-				if (Game.arrSelectSprite) {
-					g.drawImage(Entity.GUN_SELECT, 140, 160, null);
-				} else {
-					g.drawRoundRect(211, 140, 135 * Game.SCALE, 14 * Game.SCALE, 14, 14);
-				}
-
-			}
-			if (back == false && optOptions[curOpt] == "Back") {
-				if (Game.arrSelectSprite) {
-					g.drawImage(Entity.GUN_SELECT, 220, 85, -48, 32, null);
-				} else {
-					g.drawRoundRect(-32, 68, 50 * Game.SCALE, 14 * Game.SCALE, 14, 14);
-				}
-			}
-			if (optOptions[curOpt] == "graphics") {
-				if (Game.arrSelectSprite) {
-					g.drawImage(Entity.GUN_SELECT, 140, 230, null);
-				} else {
-					g.drawRoundRect(211, 140 + 68, 135 * Game.SCALE, 14 * Game.SCALE, 14, 14);
-				}
-			}
-			if (optOptions[curOpt] == "controls") {
-				if (Game.arrSelectSprite) {
-					g.drawImage(Entity.GUN_SELECT, 140, 295, null);
-				} else {
-					g.drawRoundRect(211, 140 + 68 + 68, 135 * Game.SCALE, 14 * Game.SCALE, 14, 14);
-				}
-			}
-			if (optOptions[curOpt] == "verInfo") {
-				if (Game.arrSelectSprite) {
-					g.drawImage(Entity.GUN_SELECT, 140, 360, null);
-				} else {
-					g.drawRoundRect(211, 140 + 68 + 68 + 68, 135 * Game.SCALE, 14 * Game.SCALE, 14, 14);
-				}
-
-			}
-			if (optOptions[curOpt] == "minimap") {
-				if (Game.arrSelectSprite) {
-					g.drawImage(Entity.GUN_SELECT, 140, 430, null);
-				} else {
-					g.drawRoundRect(211, 140 + 68 + 68 + 68 + 68, 135 * Game.SCALE, 14 * Game.SCALE, 14, 14);
-				}
-			}
-			if (optOptions[curOpt] == "mute") {
-				if (Game.arrSelectSprite) {
-					g.drawImage(Entity.GUN_SELECT, 140, 498, null);
-				} else {
-					g.drawRoundRect(211, 140 + 68 + 68 + 68 + 68 + 68, 135 * Game.SCALE, 14 * Game.SCALE, 14, 14);
-				}
-			}
-			if (optOptions[curOpt] == "gunTile") {
-				if (Game.arrSelectSprite) {
-					g.drawImage(Entity.GUN_SELECT, 140, 568, null);
-				} else {
-					g.drawRoundRect(211, 140 + 68 + 68 + 68 + 68 + 68 + 68, 135 * Game.SCALE, 14 * Game.SCALE, 14, 14);
-				}
-			}
-			if (optOptions[curOpt] == "AAliasing") {
-				if (Game.arrSelectSprite) {
-					g.drawImage(Entity.GUN_SELECT, 140, 160, null);
-				} else {
-					g.drawRoundRect(211, 140, 135 * Game.SCALE, 14 * Game.SCALE, 14, 14);
-				}
-			}
-			if (optOptions[curOpt] == "verInfo" && versionInfoRequest) {
-				//JOptionPane.showMessageDialog(null, "(Info. text here)");
-				g.setFont(MainMenu.aFont);
-				g.setColor(Color.yellow);
-				g.drawString("" + Game.currentVersion, 810, 375);
-				g.setFont(new Font("Segoe UI", Font.BOLD, 16));
-				g.setColor(Color.white);
-				if(MainMenu.portuguese) {
-					g.drawString(""+Game.lastUpdatePt, 810, 390);
-					//g.drawString("You can now download the newest version clicking here!", 268, 420);
-				} else if(MainMenu.english) {
-					g.drawString(""+Game.lastUpdateEn, 810, 390);
-					//g.drawString("You can now download the newest version clicking here!", 268, 420);
-				}
-			}
-			
-			if(nextPage) {
-				g.setColor(Color.lightGray);
-				g.fillRect(Game.WIDTH*Game.SCALE-8, 278/*28*/+7, 8, Game.HEIGHT*2);
-				g.setColor(Color.white);
-				g.fillRect(Game.WIDTH*Game.SCALE-8, 278, 8, Game.HEIGHT*2);
-			} else if(!nextPage) {
-				g.setColor(Color.lightGray);
-				g.fillRect(Game.WIDTH*Game.SCALE-8, 40+7, 8, Game.HEIGHT*2);
-				g.setColor(Color.white);
-				g.fillRect(Game.WIDTH*Game.SCALE-8, 40, 8, Game.HEIGHT*2);
-			}
-			
-			if(!nextPage) {
-				g.setFont(new Font("Segoe UI", Font.BOLD, 16));
-				g.setColor(Game.defaultBgColor);
-				g.fillRoundRect(700, 545, 55, 20, 16, 16);
-				g.setColor(Color.yellow);
-				g.drawString("BETA", 709, 361+200);
-				g.setColor(Color.white);
-				g.drawRoundRect(700, 545, 55, 20, 16, 16);
-			} else if(nextPage) {
-				g.setFont(new Font("Segoe UI", Font.BOLD, 16));
-				g.setColor(Game.defaultBgColor);
-				g.fillRoundRect(700, 545-410, 55, 20, 16, 16);
-				g.setColor(Color.yellow);
-				g.drawString("Beta", 711, 361-210);
-				g.setColor(Color.white);
-				g.drawRoundRect(700, 545-410, 55, 20, 16, 16);
-			}
-		}
+		UI.useAntiAliasing(g);
+		g.setColor(new Color(39, 39, 39, 220));
+		g.fillRoundRect(5, 5, Game.window.getWidth() - 10, Game.window.getHeight() - 10, 30, 30);
+		g.setColor(Color.white);
+		g.drawRoundRect(5, 5, Game.window.getWidth() - 10, Game.window.getHeight() - 10, 30, 30);
+		
+		for(Button b : settingsButtons) 
+			b.render(g);
 	}
 	
-	public static void applyCfgSave(String str) {
+	private static void applyCfgSave(String str) {
 		String[] spl = str.split("/");
 		for (int i = 0; i < spl.length; i++) {
 			String[] spl2 = spl[i].split(":");
 			switch (spl2[0]) {
-			//optOptions = { "currentLanguage", "graphics", "controls", "verInfo",
-			//"minimap", "mute", "gunTile", "Back", "AAliasing", "Nothing"};
 			case "english":
 				MainMenu.Eng = Integer.parseInt(spl2[1]);
 				break;
@@ -553,10 +346,7 @@ public class Settings {
 				MainMenu.Por = Integer.parseInt(spl2[1]);
 				break;
 			case "quality":
-				Game.graphics = Integer.parseInt(spl2[1]);
-				break;
-			case "arrowSelect":
-				MainMenu.arrSelect = Integer.parseInt(spl2[1]);
+				Game.graphicsQuality = Short.parseShort(spl2[1]);
 				break;
 			case "mute":
 				mute = Integer.parseInt(spl2[1]);
@@ -565,23 +355,23 @@ public class Settings {
 				minimap = Integer.parseInt(spl2[1]);
 				break;
 			case "anti-aliasing":
-				AntiAliasing = Integer.parseInt(spl2[1]);
+				antiAliasing = Integer.parseInt(spl2[1]);
 				break;
 			case "showPopup":
-				Game.showPopup = Integer.parseInt(spl2[1]);
+				Game.showPopup = Short.parseShort(spl2[1]);
 				break;
 			}
 			
 		}
 	}
 
-	public static String loadConfig() {
+	private static String loadConfig() {
 		String line = "";
-		File save = new File("config.save");
+		File save = new File("settings.save");
 		if (save.exists()) {
 			try {
 				String singleLine = null;
-				BufferedReader reader = new BufferedReader(new FileReader("config.save"));
+				BufferedReader reader = new BufferedReader(new FileReader("settings.save"));
 				try {
 					while ((singleLine = reader.readLine()) != null) {
 						String[] trans = singleLine.split(":");
@@ -604,21 +394,18 @@ public class Settings {
 		return line;
 	}
 
-	public static void saveConfig(String[] val1, int[] val2) {
+	public void saveConfig(String[] val1, int[] val2) {
 		BufferedWriter write = null;
 		try {
-			write = new BufferedWriter(new FileWriter("config.save"));
+			write = new BufferedWriter(new FileWriter("settings.save"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		for (int i = 0; i < val1.length; i++) {
+		for(int i = 0; i < val1.length; i++) {
 			String current = val1[i];
 			current += ":";
-
 			char[] value = Integer.toString(val2[i]).toCharArray();
-
-			for (int n = 0; n < value.length; n++) {
+			for(int n = 0; n < value.length; n++) {
 				current += value[n];
 			}
 			try {
@@ -636,4 +423,18 @@ public class Settings {
 		}
 	}
 	
+	public static void reloadSavedSettings() {
+		if(configSave.exists()) {
+			applyCfgSave(loadConfig());
+			Game.mute = mute == 1;
+			Game.useMinimap = minimap == 1;
+			Game.antiAliasingEnabled = antiAliasing == 1;
+		}
+	}
+	
+	public void quitSettingsMenu(String nextState) {
+		Button.buttons.removeAll(settingsButtons);
+		Game.gameState = nextState;
+		Game.ui.settings = null;
+	}
 }

@@ -29,12 +29,12 @@ public class Particle extends Entity {
 		y += dy * spd;
 		curLife++;
 		if (lifeTime == curLife) {
-			Game.entities.remove(this);
+			Entity.entities.remove(this);
 		}
 	}
 
 	public void render(Graphics g) {
-		if (Game.graphics == 2) {
+		if (Game.graphicsQuality == 2) {
 			g.fillRect(getX() - Camera.x, getY() - Camera.y, width, height);
 			g.setColor(color);
 		}

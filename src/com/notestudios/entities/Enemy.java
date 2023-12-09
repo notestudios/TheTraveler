@@ -4,14 +4,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.util.Random;
+import java.util.List;
 
 import com.notestudios.graphics.Spritesheets;
 import com.notestudios.main.Game;
 import com.notestudios.world.AStar;
 import com.notestudios.world.Camera;
 import com.notestudios.world.Vector2i;
-import com.notestudios.world.World;
 
 public class Enemy extends Entity {
 	public int maxLife;
@@ -24,6 +23,8 @@ public class Enemy extends Entity {
 	public boolean enemyHurt = false;
 	private boolean isDamaged;
 	private int damageFrames = 10, curDamage = 0;
+
+	public static List<Enemy> enemies;
 
 	public Enemy(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
@@ -49,15 +50,14 @@ public class Enemy extends Entity {
 
 		} else {
 			Game.player.isDamaged = true;
-			if (!Game.player.isJumping && Game.rand.nextInt(10) < 8) {
-				Game.player.life-=Game.rand.nextInt(2);
-			}
+			if (!Game.player.isJumping && Game.getRandom().nextInt(10) < 8) 
+				Game.player.life-=Game.getRandom().nextInt(2);
 		}
-		if (Game.rand.nextInt(100) < 50) {
+		if (Game.getRandom().nextInt(100) < 50) {
 			followPath(path);
 		}
 		if (x % 16 == 0 && y % 16 == 0) {
-			if (new Random().nextInt(100) < 10) {
+			if (Game.getRandom().nextInt(100) < 10) {
 				Vector2i start = new Vector2i(((int) (x / 16)), ((int) (y / 16)));
 				Vector2i end = new Vector2i(((int) (Game.player.x / 16)), ((int) (Game.player.y / 16)));
 				path = AStar.findPath(Game.world, start, end);
@@ -88,22 +88,22 @@ public class Enemy extends Entity {
 	}
 
 	public void selfDestroy() {
-		if (Game.graphics == 2) {
-			World.generateParticles(10, getX(), getY(), 1, 1, Color.red);
+		if (Game.graphicsQuality == 2) {
+			Game.world.generateParticles(10, getX(), getY(), 1, 1, Color.red);
 		}
-		Game.enemies.remove(this);
-		Game.entities.remove(this);
+		Enemy.enemies.remove(this);
+		Entity.entities.remove(this);
 		return;
 	}
 
 	public void colliddingBullet() {
-		for (int i = 0; i < Game.bullets.size(); i++) {
-			Entity e = Game.bullets.get(i);
+		for (int i = 0; i < Bullets.bullets.size(); i++) {
+			Entity e = Bullets.bullets.get(i);
 			if (e instanceof Bullets) {
 				if (Entity.isCollidding(this, e)) {
 					isDamaged = true;
 					enemyLife--;
-					Game.bullets.remove(i);
+					Bullets.bullets.remove(i);
 					return;
 				}
 			}
@@ -112,8 +112,8 @@ public class Enemy extends Entity {
 
 	public boolean isCollidding(int xnext, int ynext) {
 		Rectangle enemyCurrent = new Rectangle(xnext + maskx, ynext + masky, mwidth, mheight);
-		for (int i = 0; i < Game.enemies.size(); i++) {
-			Enemy e = Game.enemies.get(i);
+		for (int i = 0; i < Enemy.enemies.size(); i++) {
+			Enemy e = Enemy.enemies.get(i);
 			if (e == this)
 				continue;
 			Rectangle targetEnemy = new Rectangle(e.getX() + maskx, e.getY() + masky, mwidth, mheight);
@@ -142,8 +142,8 @@ public class Enemy extends Entity {
 			g.drawImage(sprites[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		}
 
-		if (!Game.debug) {
-		} else if (Game.debug) {
+		if (!Game.debugMode) {
+		} else if (Game.debugMode) {
 			g.fillRect(getX() + maskx - Camera.x, getY() + masky - Camera.y, mwidth, mheight);
 			g.setColor(Color.blue);
 		}

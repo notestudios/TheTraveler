@@ -6,7 +6,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
-import com.notestudios.main.Game;
+import com.notestudios.menus.MainMenu;
 
 public class Spritesheets {
 	public BufferedImage spritesheet;
@@ -20,21 +20,14 @@ public class Spritesheets {
 	
 	public void reloadImages() {
 		try {
-			//spritesheet = ImageIO.read(getClass().getResource(path));
-			spritesheetPlayer = ImageIO.read(getClass().getResource("/spritesheets/Player Spritesheet.png"));
-			spritesheetTiles = ImageIO.read(getClass().getResource("/spritesheets/Tiles Spritesheet.png"));
-			spritesheetUI = ImageIO.read(getClass().getResource("/spritesheets/UI Spritesheet.png"));
-			Game.GameBackground = ImageIO.read(getClass().getResource("/images/Background.png"));
-			Game.GameBackground2 = ImageIO.read(getClass().getResource("/images/Background.png"));
-			
-			Game.bigBackground = Spritesheets.spritesheetUI.getSubimage(0, 0, 112, 48);
-			Game.defaultShortOptBg = Spritesheets.spritesheetUI.getSubimage(0, 48, 80, 16);
-			Game.defaultLargeOptionBg = Spritesheets.spritesheetUI.getSubimage(0, 64, 144, 16);
-			Game.menuCreditsIcon = Spritesheets.spritesheetUI.getSubimage(96, 96, 16, 16);
+			spritesheetPlayer = ImageIO.read(getClass().getResourceAsStream("/spritesheets/Player Spritesheet.png"));
+			spritesheetTiles = ImageIO.read(getClass().getResourceAsStream("/spritesheets/Tiles Spritesheet.png"));
+			spritesheetUI = ImageIO.read(getClass().getResourceAsStream("/spritesheets/UI Spritesheet.png"));
+			MainMenu.menuCreditsIcon = Spritesheets.spritesheetUI.getSubimage(96, 96, 16, 16);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, JOptionPane.ERROR, "An error ocurred while loading the spritesheets.\n"+e, 0);
+			JOptionPane.showMessageDialog(null, JOptionPane.ERROR, "An error ocurred while loading sprite sheets.\n"+e, 0);
 		}
 	}
 	

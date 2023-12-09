@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import com.notestudios.main.Game;
-import com.notestudios.world.World;
 
 public class Bomb extends Entity {
 
@@ -25,8 +24,8 @@ public class Bomb extends Entity {
 		if(curTime == maxTime) {
 			curTime = 0;
 			exploded = true;
-			for(int i = 0; i < Game.entities.size(); i++) {
-				Entity en = Game.entities.get(i);
+			for(int i = 0; i < Entity.entities.size(); i++) {
+				Entity en = Entity.entities.get(i);
 				if(calculateDistance(getX(), getY(), en.getX(), en.getY()) < 50) {
 					if(en instanceof Enemy) {
 						((Enemy) en).enemyLife-=enemyDamage;
@@ -36,8 +35,8 @@ public class Bomb extends Entity {
 				}
 			}
 			Game.player.bombs-=1;
-			World.generateParticles(14, getX(), getY(), 1, 1, Color.gray);
-			Game.entities.remove(this);
+			Game.world.generateParticles(14, getX(), getY(), 1, 1, Color.gray);
+			Entity.entities.remove(this);
 		}
 	}
 	

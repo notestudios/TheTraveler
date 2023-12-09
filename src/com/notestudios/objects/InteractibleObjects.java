@@ -1,7 +1,10 @@
 package com.notestudios.objects;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import com.notestudios.entities.Entity;
 import com.notestudios.main.Game;
@@ -14,9 +17,10 @@ public class InteractibleObjects {
 	protected int width;
 	protected int height;
 	public int depth = 0;
-	BufferedImage sprite;
+	public BufferedImage sprite;
 	
 	protected int maskx, masky, mwidth, mheight;
+	public static List<InteractibleObjects> objects;
 
 	public InteractibleObjects(int x, int y, int width, int height, BufferedImage sprite) {
 		this.x = x;
@@ -78,9 +82,8 @@ public class InteractibleObjects {
 	
 	public void render(Graphics g) {
 		g.drawImage(sprite, getX() - Camera.x, getY() - Camera.y, null);
-		
-		if (!Game.debug) {
-		} else if (Game.debug) {
+		if (!Game.debugMode) {
+		} else if (Game.debugMode) {
 			g.fillRect(getX() + maskx - Camera.x, getY() + masky - Camera.y, mwidth, mheight);
 			g.setColor(new Color(0, 0, 255, 125));
 		}
