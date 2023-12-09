@@ -136,8 +136,8 @@ MouseMotionListener, MouseWheelListener {
 	
 	public static String showGraphics;
 	public static String randomText;
-	public static final String currentVersion = "v4.5.0b";
-	private static final String day = "25", month = "11", year = "2023";
+	public static final String currentVersion = "v4.5.0";
+	private static final String day = "09", month = "12", year = "2023";
 	public final static String lastUpdated = year+"/"+month+"/"+day;
 	public static String gameState = "Menu";
 	
