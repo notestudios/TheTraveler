@@ -1,7 +1,6 @@
 # The Traveler
   **The Traveler** Game on GitHub!
-  > Release Version: **4.4.7** <br>
-  > In Development: **4.5.0b**
+  > Release: **4.5.0** <br>
 <center>
 <a href="https://gamejolt.com/games/ttraveler/796130">
 <img src="https://github.com/notestudios/TheTraveler/blob/master/assets/images/BannerGitHub.png?raw=true" alt="The Traveler Logo"></a>
