@@ -8,15 +8,39 @@
 </center>
 <br>
 
-  This is **The Traveler** source code on GitHub! You can make mods, optimize the game 
-and make any changes you want!
+  This is **The Traveler** source code on GitHub! You can mod the game, help optimizing, create new game levels and make any changes you want to it!
 
-### Info.
+## Compiling from source
+This will guide you how to compile the game and run it with from the source code.
+
+### Compiling
+  This repository uses [Gradle](https://gradle.org/) for building and running, you can [Install Gradle Tool](https://gradle.org/install/) or use the project one.
+
+  - Windows: Open a new Windows Terminal, Powershell or CMD window on the project path and use the following comand:
+    ```
+    .\gradlew.bat build
+    ```
+  - Linux/macOS: Open a new terminal in the project folder and run:
+    ```
+    ./gradlew build
+    ```
+
+### Running
+  To run the project build you made previously, in the same terminal window, run the following command:
+  - Windows: Open a new Windows Terminal, Powershell or CMD window on the project path and use the following comand
+    ```
+    .\gradlew.bat run
+    ```
+  - Linux/macOS: Open a new terminal in the project folder and run:
+    ```
+    ./gradlew run
+    ```
+  After that, the game will start, if it does not start, [open a new issue here](https://github.com/retrozinndev/TheTraveler/issues/new), copy and paste the output of the used command in the issue content and I will help you! Have fun!
+
+## Contributing
   #### License
-  This repository is using the <a href="https://www.gnu.org/licenses/gpl-3.0.en.html#license-text">
-  GNU General Public License v3</a>, so, if you want, you 
-  can help getting the game better for everyone! **The code can be modified or removed 
-  at any time**!
+  This repository is using the [GNU General Public License v3](ttps://www.gnu.org/licenses/gpl-3.0.en.html#license-text), so you 
+  can help getting the game better for everyone! See the [License Permissions](https://choosealicense.com/licenses/gpl-3.0/) for more information. **The code can be modified at any time**!
 
-  This game has some bugs and other things to fix, so if you can, please help me getting the game better. 
+  This game has some bugs and other things to do, so if you can, please help me getting the game better. 
 I'll be happy for your help!
