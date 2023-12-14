@@ -39,7 +39,7 @@ This will guide you how to compile the game and run it with from the source code
 
 ## Contributing
   #### License
-  This repository is using the [GNU General Public License v3](ttps://www.gnu.org/licenses/gpl-3.0.en.html#license-text), so you 
+  This repository is using the [GNU General Public License v3](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text), so you 
   can help getting the game better for everyone! See the [License Permissions](https://choosealicense.com/licenses/gpl-3.0/) for more information. **The code can be modified at any time**!
 
   This game has some bugs and other things to do, so if you can, please help me getting the game better. 
