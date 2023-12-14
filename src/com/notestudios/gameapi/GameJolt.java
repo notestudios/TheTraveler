@@ -7,66 +7,75 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+import javax.swing.JOptionPane;
+
 import org.gamejolt.GameJoltAPI;
 import org.gamejolt.User;
 
+import com.notestudios.graphics.UI;
 import com.notestudios.main.Game;
 import com.notestudios.menus.MainMenu;
-import com.notestudios.util.OptionPane;
 
 public class GameJolt extends GameJoltAPI {
 	
-	public static File gameCredentialsFile = new File(Game.gameCredentialsFile.getName());
-	public static File originalCredentialsFile = new File(Game.gamejoltCredentialsFile.getName());
-	public static User user;
-	public static boolean isLoggingInFromFile = false;
-	public static boolean loginSuccessful;
-	public static boolean logoutSuccessful;
-	public String APIVersion; //initialize when a ".gj-credentials" file exists (Version 0.2.1)
-	public static boolean isLoggedIn = false;
-	public static int[] trophiesIDs = {/*loginAch*/193422, /*SPAM*/193423, /*why he's so big*/193917, /*dev*/193424, 
-			/*amogus*/198581};
+	public final File gameCredentialsFile = Game.gameCredentialsFile;
+	public final File originalCredentialsFile = Game.gamejoltCredentialsFile;
+	private static final int gameID = 796130;
+	private static final String gamePrivateID = "";// Create a game on <https://gamejolt.com/> and get one private api key and paste it here!
+	private User user;
+	public Trophies trophies;
+	public boolean isLoggingInFromFile = false;
+	public boolean loginSuccessful;
+	public boolean logoutSuccessful;
+	public String APIVersion; //initializes when a ".gj-credentials" file exists
+	public String userToken = "";
+	public String userName = "";
+	public boolean isLoggedIn = false;
 	
 	public GameJolt(int ID, String PrivateID) {
 		super(ID, PrivateID);
-		if(gameCredentialsFile.exists() || Game.gamejoltCredentialsFile.exists()) {
-			isLoggingInFromFile = true;
-		}
+		if(!PrivateID.isEmpty()) 
+			System.out.println("Initializing Game Jolt API...");
+		else 
+			System.out.println("GameJolt: API Key is null!\nTip: Get one by creating a new game on Game Jolt!"
+					+ "\n Create here: <https://gamejolt.com/dashboard/games/add>");
+		trophies = new Trophies();
+		isLoggingInFromFile = gameCredentialsFile.exists() || Game.gamejoltCredentialsFile.exists();
 	}
 	
 	public void login(String username, String token) {
         verifyUser(username, token);
         loginSuccessful = sessionOpen();
-        if (loginSuccessful) {
+        if(loginSuccessful) {
             user = getUser(username);
             System.out.println("Authentication successful: "+user.getName());
-			GameJolt.isLoggedIn = true;
-			if(!isLoggingInFromFile) { Game.downTransition = true; Game.gameState = "GJLogin"; }
+			isLoggedIn = true;
+			if(!isLoggingInFromFile) { UI.doTransition = true; Game.gameState = "GJLogin"; }
 			if(Game.devMode) {
-				Trophies.achieve(GameJolt.trophiesIDs[3]);
+				trophies.achieve(Trophies.trophyList.get("omg you're the dev??!?!?!??!?"));
 			}
 			return;
         } else {
 			String msg, title;
-			if(MainMenu.Por == 1 && MainMenu.portuguese) {
+			if(MainMenu.portuguese) {
 				msg = "Usuário ou Token inválidos!\nTente verificar o seu Token ou Usuário";
 				title = "Ocorreu um erro do Game Jolt!";
 			} else {
 				msg = "Username or Token invalid! \nTry verifying your token or username.";
 				title = "An Game Jolt error occurred";
 			}
-			OptionPane.jAlertWindow(title, msg, "error");
+			JOptionPane.showMessageDialog(null, msg, title, JOptionPane.ERROR_MESSAGE);
         }
     }
     public void logout() {
         logoutSuccessful = sessionClose();
         if (logoutSuccessful) {
-        	Game.userToken = "";
-        	GameJolt.isLoggedIn = false;
+        	userToken = "";
+        	isLoggedIn = false;
         	if(gameCredentialsFile.exists()) { gameCredentialsFile.delete(); }
         	if(originalCredentialsFile.exists()) { originalCredentialsFile.delete(); }
             System.out.println("Logout successful!");
-			Game.downTransition = true;
+			UI.doTransition = true;
 			Game.gameState = "Menu";
 			
 			return;
@@ -81,7 +90,7 @@ public class GameJolt extends GameJoltAPI {
 				msg = "An error occurred during Log Out!\n Try again later.";
 				title = "An Game Jolt error occurred";
 			}
-            OptionPane.jAlertWindow(title, msg, "error");
+			JOptionPane.showMessageDialog(null, msg, title, JOptionPane.ERROR_MESSAGE);
         }
     }
 	
@@ -94,7 +103,7 @@ public class GameJolt extends GameJoltAPI {
 			writer.close();
 		} catch(IOException e) {
 			e.printStackTrace();
-			OptionPane.jAlertWindow("Credentials Error!", "An error occurred with Game Jolt" , "error");
+			JOptionPane.showMessageDialog(null, "An error occurred with Game Jolt", "Credentials Error!", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
@@ -117,8 +126,17 @@ public class GameJolt extends GameJoltAPI {
 			login(username, token);
 			APIVersion = apiVersion;
 		} catch(IOException e) {
-			OptionPane.jAlertWindow("Credentials Error!", "An error occurred with Game Jolt" , "error");
+			JOptionPane.showMessageDialog(null, "An error occurred with Game Jolt", "Credentials Error!", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 	}
+	
+	public static int getID() {
+		return gameID;
+	}
+	
+	public static String getPrivateID() {
+		return gamePrivateID;
+	}
+	
 }

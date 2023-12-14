@@ -4,13 +4,15 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.List;
+import java.util.Random;
 
-import com.notestudios.gameapi.GameJolt;
+import com.notestudios.gameapi.Trophies;
 import com.notestudios.graphics.Spritesheets;
-import com.notestudios.graphics.UI;
 import com.notestudios.main.Game;
+import com.notestudios.world.AStar;
 import com.notestudios.world.Camera;
-import com.notestudios.world.World;
+import com.notestudios.world.Vector2i;
 
 public class BigEnemy extends Entity{
 	
@@ -25,7 +27,10 @@ public class BigEnemy extends Entity{
 	private boolean isDamaged;
 	int damageFrames = 10, curDamage = 0;
 	public double speed = 0.5;
+	public static boolean bossfight = false;
 	public boolean followPlayer = false;
+
+	public static List<BigEnemy> bosses;
 
 	public BigEnemy(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
@@ -42,17 +47,16 @@ public class BigEnemy extends Entity{
 		width = 32;
 		height = 32;
 		depth = 1;
-		Game.bossFight = true;
-		
+		bossfight = true;
 		if (!isColliddingWithPlayer()/* && followPlayer*/) {
-			/*
+			
 			if (path == null || path.size() == 0) {
 				Vector2i start = new Vector2i(((int) (x / 16)), ((int) (y / 16)));
 				Vector2i end = new Vector2i(((int) (Game.player.x / 16)), ((int) (Game.player.y / 16)));
 				path = AStar.findPath(Game.world, start, end);
 
-			}*/
-			
+			}
+			/* Old movements
 			if (getX() < Game.player.getX() && World.isFreeDynamic((int) (getX() + speed), this.getY(), 32, 32) && !isCollidding((int) (getX() + speed), this.getY())) {
 				moved = true;
 				x += speed; 
@@ -66,26 +70,26 @@ public class BigEnemy extends Entity{
 				moved = true;
 				y -= speed;
 			}
-			
+			*/
 		} else {
 			Game.player.isDamaged = true;
 			if (!Game.player.isJumping) {
-				Game.rand.nextInt(10);
-				Game.player.life -= Game.rand.nextInt(6);
+				Game.getRandom().nextInt(10);
+				Game.player.life -= Game.getRandom().nextInt(6);
 			}
-		}/*
-		if (Game.rand.nextInt(100) < 50) {
+		}
+		if (Game.getRandom().nextInt(100) < 50) {
 			followPath(path);
-		}*/
-		/*
+		}
+		
 		if (x % 16 == 0 && y % 16 == 0) {
 			if (new Random().nextInt(100) < 10) {
 				Vector2i start = new Vector2i(((int) (x / 16)), ((int) (y / 16)));
 				Vector2i end = new Vector2i(((int) (Game.player.x / 16)), ((int) (Game.player.y / 16)));
 				path = AStar.findPath(Game.world, start, end);
 			}
-		}*/
-		/* Animação */
+		}
+		/* Animation */
 		frames++;
 		if (frames == maxFrames) {
 			frames = 0;
@@ -98,7 +102,7 @@ public class BigEnemy extends Entity{
 
 		if (enemyLife <= 0) {
 			selfDestroy();
-			Game.bossFight = false;
+			bossfight = false;
 			return;
 		}
 		if (isDamaged) {
@@ -111,47 +115,44 @@ public class BigEnemy extends Entity{
 	}
 
 	public void selfDestroy() {
-		if (Game.graphics == 2) {
-			World.generateParticles(40, getX()+8, getY()+8, 2, 2, Color.blue);
+		if (Game.graphicsQuality == 2) {
+			Game.world.generateParticles(40, getX()+8, getY()+8, 2, 2, Color.blue);
 		}
 
-		Game.bossFight = false;
-
-		if(Game.gameState.equals("Normal")) {
+		bossfight = false;
+		
+		/*if(Game.gameState.equals("Normal")) {
 			UI.menu.pause = false;
 			World.nextLevel("level"+Game.curLevel+".png");
 			Game.gameState = "Credits";
 			Game.cutsceneState = Game.enterCutscene;
 			Game.downTransition = true;
+		}*/
+		if(Game.jolt.isLoggedIn) {
+			Game.jolt.trophies.achieve(Trophies.trophyList.get("why is he so big?"));
 		}
-		if(GameJolt.isLoggedIn) {
-			if(!Game.jolt.getTrophy(GameJolt.trophiesIDs[2]).isAchieved()) {
-				Game.jolt.achieveTrophy(GameJolt.trophiesIDs[2]);
-			}
-		}
-		Game.entities.remove(this);
-		Game.bosses.remove(this);
+		Entity.entities.remove(this);
+		bosses.remove(this);
 		return;
 	}
 
 	public void colliddingBullet() {
-		for (int i = 0; i < Game.bullets.size(); i++) {
-			Entity e = Game.bullets.get(i);
+		for (int i = 0; i < Bullets.bullets.size(); i++) {
+			Entity e = Bullets.bullets.get(i);
 			if (e instanceof Bullets) {
 				if (Entity.isCollidding(this, e)) {
 					isDamaged = true;
 					enemyLife--;
-					Game.bullets.remove(i);
+					Bullets.bullets.remove(i);
 					return;
 				}
 			}
 		}
 	}
-
 	public boolean isCollidding(int xnext, int ynext) {
 		Rectangle enemyCurrent = new Rectangle(xnext + maskx, ynext + masky, mwidth, mheight);
-		for (int i = 0; i < Game.bosses.size(); i++) {
-			BigEnemy e = Game.bosses.get(i);
+		for (int i = 0; i < bosses.size(); i++) {
+			BigEnemy e = bosses.get(i);
 			if (e == this)
 				continue;
 			Rectangle targetEnemy = new Rectangle(e.getX() + maskx, e.getY() + masky, mwidth, mheight);
@@ -180,8 +181,8 @@ public class BigEnemy extends Entity{
 			g.drawImage(sprites[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		}
 
-		if (!Game.debug) {
-		} else if (Game.debug) {
+		if (!Game.debugMode) {
+		} else if (Game.debugMode) {
 			g.fillRect(getX() + maskx - Camera.x, getY() + masky - Camera.y, mwidth, mheight);
 			g.setColor(Color.blue);
 		}

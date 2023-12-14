@@ -1,12 +1,15 @@
 package com.notestudios.entities;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Comparator;
 import java.util.List;
 
 import com.notestudios.graphics.Spritesheets;
 import com.notestudios.main.Game;
+import com.notestudios.main.Window;
 import com.notestudios.world.Camera;
 import com.notestudios.world.Node;
 import com.notestudios.world.Vector2i;
@@ -45,6 +48,7 @@ public class Entity {
 	public static BufferedImage BigEnemyDMG = Spritesheets.spritesheetPlayer.getSubimage(112, 96, 32, 32);
 	
 	public int maskx, masky, mwidth, mheight;
+	public static List<Entity> entities;
 
 	public Entity(int x, int y, int width, int height, BufferedImage sprite) {
 		this.x = x;
@@ -91,8 +95,8 @@ public class Entity {
 	}
 
 	public void updateCamera() {
-		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH / 2), 0, World.WIDTH * 16 - Game.WIDTH);
-		Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT / 2), 0, World.HEIGHT * 16 - Game.HEIGHT);
+		Camera.x = Camera.clamp(this.getX() - (Window.WIDTH / 2), 0, World.getWidth() * 16 - Window.WIDTH);
+		Camera.y = Camera.clamp(this.getY() - (Window.HEIGHT / 2), 0, World.getHeight() * 16 - Window.HEIGHT);
 	}
 
 	public static Comparator<Entity> enSorter = new Comparator<Entity>() {
@@ -106,7 +110,8 @@ public class Entity {
 			return 0;
 		}
 	};
-
+	
+	
 	public void tick() {
 		
 	}
@@ -115,12 +120,11 @@ public class Entity {
 		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 	}
 
-	// 80,64
 	protected void followPath(List<Node> path) {
 		if (path != null) {
 			if (path.size() > 0) {
 				Vector2i target = path.get(path.size() - 1).tile;
-				/* X */
+				
 				if (x < target.x * 16) {
 					moved = true;
 					x++;
@@ -128,7 +132,7 @@ public class Entity {
 					moved = true;
 					x--;
 				}
-				/* Y */
+				
 				if (y < target.y * 16) {
 					moved = true;
 					y++;
@@ -153,8 +157,8 @@ public class Entity {
 	public void render(Graphics g) {
 		g.drawImage(sprite, getX() - Camera.x, getY() - Camera.y, null);
 		
-		if (!Game.debug) {
-		} else if (Game.debug) {
+		if (!Game.debugMode) {
+		} else if (Game.debugMode) {
 			g.fillRect(getX() + maskx - Camera.x, getY() + masky - Camera.y, mwidth, mheight);
 			g.setColor(new Color(0, 0, 255, 125));
 		}
