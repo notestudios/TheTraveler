@@ -13,8 +13,33 @@
 ## Compiling from source
 This will guide you how to compile the game and run it with from the source code.
 
+### Cloning Repository
+You can clone this repo [Installing Git](https://git-scm.com/downloads) (recommended) or just downloading the source here, on GitHub:
+
+   - Using Git CLI: open a new terminal in the desired folder and paste:
+     ```
+     git clone https://github.com/retrozinndev/TheTraveler.git
+     ```
+     It will start cloning the repo in your current working directory.
+
+  - Using GitHub:
+    
+    1. Select the desired branch in the left corner(stable: master; development: beta):
+       
+       ![Branch list dropdown](https://github.com/retrozinndev/TheTraveler/assets/65513943/cb173d4f-7828-4517-ba0c-009a578e115b)
+    
+    3. Click in the green **<>Code** dropdown in the right corner of the project files:
+
+       ![<>Code dropdown](https://github.com/retrozinndev/TheTraveler/assets/65513943/b2e3e50a-1b38-4706-a391-b9dda7d5e898)
+
+    4. In the opened menu: click on the **Download ZIP** button:
+
+       ![Download ZIP button](https://github.com/retrozinndev/TheTraveler/assets/65513943/e5db811b-b6cf-4b91-8af0-5b2875d75349)
+
+    5. Open your system's **Downloads** folder and extract the downloaded ZIP file ([RAR](https://www.win-rar.com/download.html), [7zip](https://www.7-zip.org/download.html))
+    
 ### Compiling
-  This repository uses [Gradle](https://gradle.org/) for building and running, you can [Install Gradle Tool](https://gradle.org/install/) or use the project one.
+This repository uses [Gradle](https://gradle.org/) for building and running, you can [Install Gradle Tool](https://gradle.org/install/) or use the project one.
 
   - Windows: Open a new Windows Terminal, Powershell or CMD window on the project path and use the following comand:
     ```
