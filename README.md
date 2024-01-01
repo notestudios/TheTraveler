@@ -52,11 +52,11 @@ This repository uses [Gradle](https://gradle.org/) for building and running, you
 
 ### Running
   To run the project build you made previously, in the same terminal window, run the following command:
-  - Windows: Open a new Windows Terminal, Powershell or CMD window on the project path and use the following comand
+  - Windows: In the project folder, use the following comand:
     ```
     .\gradlew.bat run
     ```
-  - Linux/macOS: Open a new terminal in the project folder and run:
+  - Linux/macOS: In the project folder, run:
     ```
     ./gradlew run
     ```
