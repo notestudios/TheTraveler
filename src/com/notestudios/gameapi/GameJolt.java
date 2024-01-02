@@ -27,8 +27,8 @@ public final class GameJolt extends GameJoltAPI {
 	private final File originalCredentialsFile = Game.gamejoltCredentialsFile;
 	
 	// API Keys:
-	private static final int gameID = 796130;
-	private static final String gamePrivateID = "b3fdf3fdf75fc16b5a08e33e6446834d";
+	private static final int gameID = 0;
+	private static final String gamePrivateID = "";
 	// Create a game on <https://gamejolt.com/>, get your Game ID and Private Game ID then paste it here!
 	
 	private User user;
