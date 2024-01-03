@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     // This dependency is used by the application.
-    implementation("com.google.guava:guava:32.1.1-jre")
+    implementation("com.google.guava:guava:33.0.0-jre")
     // Game Libraries
     implementation(files("libs/discord-rpc.jar", "libs/GJAPI.jar"))
 }
@@ -31,7 +31,7 @@ sourceSets {
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
-    targetCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_21
 }
