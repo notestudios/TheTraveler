@@ -63,7 +63,7 @@ This repository uses [Gradle](https://gradle.org/) for building and running, you
   After that, the game will start, if it does not start, [open a new issue here](https://github.com/retrozinndev/TheTraveler/issues/new), copy and paste the output of the used command in the issue content and I will help you! Have fun!
 
 ## Required Libraries
-  See under the [Libs folder]() for more information.
+  See under the [Libs folder](https://github.com/retrozinndev/TheTraveler/tree/master/libs#third-party-libraries) for more information.
  
 ## Contributing
   #### License
