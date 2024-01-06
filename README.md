@@ -63,11 +63,8 @@ This repository uses [Gradle](https://gradle.org/) for building and running, you
   After that, the game will start, if it does not start, [open a new issue here](https://github.com/retrozinndev/TheTraveler/issues/new), copy and paste the output of the used command in the issue content and I will help you! Have fun!
 
 ## Required Libraries
-  This repo requires, until now, two third-party libraries:
-   - [Game Jolt API for Java](https://github.com/ashleygwinnell/Game-Jolt-Java-Game-API) | [Download JAR](https://github.com/ashleygwinnell/Game-Jolt-Java-Game-API/blob/master/GJAPI.jar?raw=true)
-   - [Discord RPC for Java](https://github.com/Vatuu/discord-rpc) | [Download JAR](https://github.com/Vatuu/discord-rpc/releases/download/1.6.2/discord-rpc.jar) <br><br>
-   
-   Credits to [ashleygwinnell](https://github.com/ashleygwinnell/) for the Java Game Jolt API and [Vatuu](https://github.com/Vatuu) for the Java Discord RPC.
+  See under the [Libs folder]() for more information.
+ 
 ## Contributing
   #### License
   This repository is using the [GNU General Public License v3](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text), so you 
