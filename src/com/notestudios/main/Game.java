@@ -1,14 +1,8 @@
 package com.notestudios.main;
 
-import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -24,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-
-import javax.swing.JFrame;
 
 import com.notestudios.discord.Discord;
 import com.notestudios.entities.BigEnemy;
@@ -48,14 +40,12 @@ import com.notestudios.util.Button;
 import com.notestudios.util.Sound;
 import com.notestudios.world.World;
 
-public class Game extends Canvas implements Runnable, KeyListener, MouseListener,
+public class Game implements Runnable, KeyListener, MouseListener,
 MouseMotionListener, MouseWheelListener {
 	
 	public static final long serialVersionUID = 1L;
 
 	private Thread thread;
-	
-	private Toolkit toolkit = Toolkit.getDefaultToolkit();
 	
 	public int fps = 0;
 	public static int playerCoins = 0;
@@ -129,7 +119,7 @@ MouseMotionListener, MouseWheelListener {
 	public static String showGraphics;
 	public static String randomText;
 	public static final String currentVersion = "HAPPY NEW YEAR! v4.5.1";
-	private static final String day = "02", month = "01", year = "2024";
+	private static final String day = "06", month = "01", year = "2024";
 	public final static String lastUpdated = year+"/"+month+"/"+day;
 	public static String gameState = "Menu";
 	
@@ -137,10 +127,6 @@ MouseMotionListener, MouseWheelListener {
 	public static GameJolt jolt;
 	private final Discord discord;
 	public static Window window = new Window();
-	public static JFrame frame = new JFrame();
-	
-	private final Cursor gameCursor = toolkit.createCustomCursor(toolkit.createImage(getClass().getResource("/cursors/curBig.png")), new Point(0, 0), "cur");
-	private final Image gameIcon = toolkit.createImage(getClass().getResource("/icons/Icon.png"));
 	
 	/* This project is under the GNU GPLv3 License:
 	 * License: <https://www.gnu.org/licenses/gpl-3.0.html>
@@ -149,10 +135,8 @@ MouseMotionListener, MouseWheelListener {
 	
 	private Game() {
 		System.out.println("Starting The Traveler...");
-		addKeyListener(this);
-		addMouseListener(this);
-		addMouseWheelListener(this);
-		addMouseMotionListener(this);
+		window.addListeners(this); // input handlers will change in the future
+		window.init();
 		random = new Random();
 		beta = currentVersion.endsWith("b");
 		devMode = devFile.exists();
@@ -161,10 +145,8 @@ MouseMotionListener, MouseWheelListener {
 		randomText = words.get(random.nextInt(words.size()));
 		spritesheet = new Spritesheets();
 		Settings.reloadSavedSettings();
-		setPreferredSize(new Dimension(window.getWidth(), window.getHeight()));
 		img = new BufferedImage(Window.WIDTH, Window.HEIGHT, BufferedImage.TYPE_INT_RGB);
 		System.out.println("Generating window...");
-		window.createFrame(frame, "The Traveler", false, false, this, gameIcon, gameCursor);
 		jolt = new GameJolt();
 		reloadAllUI();
 		Entity.entities = new ArrayList<Entity>();
@@ -268,7 +250,7 @@ MouseMotionListener, MouseWheelListener {
 			UI.doTransition = true;
 			gameState = "Shop";
 		}
-		if((!hasFocus() && gameState.equals("Normal")) && !devMode) {
+		if((!window.hasFocus() && gameState.equals("Normal")) && !devMode) {
 			MainMenu.pauseMenu.pauseMode = true;
 			MainMenu.pauseMenu.openPauseMenu = true;
 		}
@@ -319,9 +301,9 @@ MouseMotionListener, MouseWheelListener {
 	}
 	
 	private void render() {
-		BufferStrategy bs = getBufferStrategy();
+		BufferStrategy bs = window.getBufferStrategy();
 		if (bs == null) {
-			createBufferStrategy(3);
+			window.createBufferStrategy(3);
 			return;
 		}
 		Graphics2D g = (Graphics2D) img.getGraphics();
@@ -392,7 +374,7 @@ MouseMotionListener, MouseWheelListener {
 		double delta = 0;
 		int frames = 0;
 		double timer = System.currentTimeMillis();
-		requestFocus();
+		window.requestFocus();
 		while(isRunning) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;

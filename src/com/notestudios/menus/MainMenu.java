@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 
 import com.notestudios.graphics.UI;
 import com.notestudios.main.Game;
+import com.notestudios.main.Window;
 import com.notestudios.util.Button;
 import com.notestudios.util.Sound;
 
@@ -290,7 +291,7 @@ public class MainMenu {
 		Game.showLoginPopup = !Game.jolt.isLoggedIn && !Game.gamejoltCredentialsFile.exists()
 				&& !Game.gameCredentialsFile.exists();
 		
-		Game.window.info(Game.frame).setTitle("The Traveler | "+Game.randomText);
+		Game.window.info(Window.frame).setTitle("The Traveler | "+Game.randomText);
 		
 		menuButtons = Collections.unmodifiableList(Arrays.asList(
 				playBtn,

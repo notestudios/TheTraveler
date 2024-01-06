@@ -1,23 +1,47 @@
 package com.notestudios.main;
 
+import java.awt.Canvas;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
-public class Window {
-	// In a future update, Window will handle the game canvas.
+public class Window extends Canvas {
+
+	private Toolkit toolkit = Toolkit.getDefaultToolkit();
 	private static double mx = 0, my = 0;
 	public static boolean mouseExited = true;
 	public static int WIDTH = 240;
 	public static int HEIGHT = 160;
 	public static int SCALE = 4;
+	public static JFrame frame = new JFrame();
+	private final Cursor gameCursor = toolkit.createCustomCursor(toolkit.createImage(getClass().getResource("/cursors/curBig.png")), new Point(0, 0), "cur");
+	private final Image gameIcon = toolkit.createImage(getClass().getResource("/icons/Icon.png"));
 	
+	public void init() {
+		setPreferredSize(new Dimension(getWidth(), getHeight()));
+		createFrame(frame, "The Traveler", false, false, this, gameIcon, gameCursor);
+	}
+
+	public void addListeners(Game listenerGame) {
+		addKeyListener(listenerGame);
+		addMouseListener(listenerGame);
+		addMouseWheelListener(listenerGame);
+		addMouseMotionListener(listenerGame);
+	}
+
+	public Canvas getCanvas() {
+		return this;
+	}
+
 	public final class WindowInfo {
 		public JFrame frame;
 		public WindowInfo(JFrame frame) {
