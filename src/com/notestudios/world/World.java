@@ -11,10 +11,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 
 import com.notestudios.entities.BigEnemy;
 import com.notestudios.entities.Bullets;
@@ -22,7 +20,6 @@ import com.notestudios.entities.Enemy;
 import com.notestudios.entities.Entity;
 import com.notestudios.entities.Particle;
 import com.notestudios.entities.Player;
-import com.notestudios.entities.Weapon;
 import com.notestudios.graphics.Minimap;
 import com.notestudios.main.Game;
 import com.notestudios.main.Window;
@@ -32,6 +29,7 @@ import com.notestudios.objects.Coin;
 import com.notestudios.objects.Flower;
 import com.notestudios.objects.InteractibleObjects;
 import com.notestudios.objects.LifePack;
+import com.notestudios.objects.Weapon;
 
 public class World {
 	public static Tile[] tiles;
@@ -41,7 +39,7 @@ public class World {
 	public BufferedImage defaultTileFloor;
 	public BufferedImage map;
 	public int[] pixels;
-	public static int curLevel = 1, maxLevel = 13;
+	public static int curLevel = 1, maxLevel = 14;
 	public File saveFile = new File("game.save");
 	
 	public World(String path) {
@@ -77,32 +75,35 @@ public class World {
 							InteractibleObjects.objects.add(new Bush(xx * tileSize, yy * tileSize, 48, 16, Tile.BUSH_TILE));
 						break;
 						case 0xFFFF0000: //Enemy
-							Enemy en = new Enemy(xx * tileSize, yy * tileSize, 16, 16, Entity.ENEMY_EN);
+							Enemy en = new Enemy(xx * tileSize, yy * tileSize, 16, 16, Enemy.ENEMY_EN);
 							Entity.entities.add(en);
 							Enemy.enemies.add(en);
 						break;
 						case 0xFFFF7FB6: //BigEnemy (Boss)
-							BigEnemy bigEn = new BigEnemy(xx * tileSize, yy * tileSize, 32, 32, Entity.BigEnemy);
+							BigEnemy bigEn = new BigEnemy(xx * tileSize, yy * tileSize, 32, 32, BigEnemy.bigEnemyIdle);
 							Entity.entities.add(bigEn);
 							BigEnemy.bosses.add(bigEn);
 							bigEn.setX(xx*tileSize);
 							bigEn.setY(yy*tileSize);
 						break;
 						case 0xFF0026FF: //Player
+							if(Game.player == null) 
+								Player.init();
+							
 							Game.player.setX(xx * tileSize);
 							Game.player.setY(yy * tileSize);
 						break;
 						case 0xFFFF6A00: //Weapon
-							Entity.entities.add(new Weapon(xx * tileSize, yy * tileSize, 16, 16, Entity.WEAPON_EN));
+							InteractibleObjects.objects.add(new Weapon(xx * tileSize, yy * tileSize, 16, 16, Weapon.WEAPON_EN));
 						break;
 						case 0xFFFF6868: //Life Pack
-							InteractibleObjects.objects.add(new LifePack(xx * tileSize, yy * tileSize, 16, 16, Entity.LIFEPACK_EN));
+							InteractibleObjects.objects.add(new LifePack(xx * tileSize, yy * tileSize, 16, 16, LifePack.LIFEPACK_EN));
 						break;
 						case 0xFFFFD800: //Ammo
-							InteractibleObjects.objects.add(new Ammo(xx * tileSize, yy * tileSize, 16, 16, Entity.BULLET_EN));
+							InteractibleObjects.objects.add(new Ammo(xx * tileSize, yy * tileSize, 16, 16, Ammo.BULLET_EN));
 						break;
 						case 0xFFB6FF00: //Coin
-							InteractibleObjects.objects.add(new Coin(xx * tileSize, yy * tileSize, 16, 16, Entity.COIN_EN));
+							InteractibleObjects.objects.add(new Coin(xx * tileSize, yy * tileSize, 16, 16, Coin.COIN_EN));
 						break;
 						case 0xFFB23535: //Flower
 							InteractibleObjects.objects.add(new Flower(xx * tileSize, yy * tileSize, 16, 16, Tile.FLOWER_TILE));
@@ -115,14 +116,9 @@ public class World {
 				}
 			}
 		} catch (IOException e) {
+			System.err.println("IOException occurred at the "+getClass().getSimpleName()+" constructor:");
 			e.printStackTrace();
-		} finally {
-			if(Game.debugMode) JOptionPane.showMessageDialog(null, "Level "+curLevel+" successfully loaded!");
 		}
-	}
-	
-	public void addNewMapObject(List<Object> objList, int x, int y, int width, int height, BufferedImage sprite) {
-		objList.add(new Entity(x * tileSize, y * tileSize, width, height, sprite));
 	}
 
 	public void generateParticles(int amount, int x, int y, int w, int h, Color color) {
@@ -180,9 +176,9 @@ public class World {
 	}
 
 	public void loadLevel(String levelName) {
-		System.out.println("Traveling to the another level: "+levelName);
+		System.out.println("Traveling to: "+levelName);
 		clearObjects();
-		Player.initialize();
+		Player.init();
 		BigEnemy.bossfight = false;
 		Game.world = new World(mapsFolder + levelName + ".png");
 		Minimap.initialize();
@@ -193,11 +189,21 @@ public class World {
 	public void resetLevel() {
 		System.out.println("Resetting current level: "+curLevel);
 		clearObjects();
-		Player.initialize();
+		Player.init();
 		Game.world = new World(mapsFolder+"level"+curLevel+".png");
 		Minimap.initialize();
 		Game.gameState = "Normal";
 		return;
+	}
+	
+	public void tick() {
+		if(Enemy.enemies.size() == 0 && BigEnemy.bosses.size() == 0) {
+			curLevel++;
+			if(curLevel > maxLevel) {
+				curLevel = 1;
+			}
+			loadLevel("level" + curLevel);
+		}
 	}
 
 	public void render(Graphics g) {

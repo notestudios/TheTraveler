@@ -24,11 +24,15 @@ public class BigEnemy extends Entity{
 
 	public double enemyLife = maxLife;
 	public boolean enemyHurt = false;
-	private boolean isDamaged;
+	public boolean isDamaged;
 	int damageFrames = 10, curDamage = 0;
 	public double speed = 0.5;
 	public static boolean bossfight = false;
 	public boolean followPlayer = false;
+
+	public static BufferedImage bigEnemyDamaged = Spritesheets.entities.getSprite(112, 96, 32, 32);
+
+	public static BufferedImage bigEnemyIdle = Spritesheets.entities.getSprite(208, 96, 32, 32);
 
 	public static List<BigEnemy> bosses;
 
@@ -36,8 +40,8 @@ public class BigEnemy extends Entity{
 		super(x, y, width, height, sprite);
 
 		sprites = new BufferedImage[2];
-		sprites[0] = Spritesheets.spritesheetPlayer.getSubimage(144, 96, 32, 32);
-		sprites[1] = Spritesheets.spritesheetPlayer.getSubimage(176, 96, 32, 32);
+		sprites[0] = Spritesheets.entities.getSprite(144, 96, 32, 32);
+		sprites[1] = Spritesheets.entities.getSprite(176, 96, 32, 32);
 	}
 
 	public void tick() {
@@ -176,7 +180,7 @@ public class BigEnemy extends Entity{
 			g.drawImage(sprites[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		}
 		if (isDamaged) {
-			g.drawImage(BigEnemyDMG, getX() - Camera.x, getY() - Camera.y, getWidth(), getHeight(), null);
+			g.drawImage(bigEnemyDamaged, getX() - Camera.x, getY() - Camera.y, getWidth(), getHeight(), null);
 		} else if (!isDamaged) {
 			g.drawImage(sprites[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		}

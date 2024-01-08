@@ -6,13 +6,13 @@ import java.awt.image.BufferedImage;
 import com.notestudios.graphics.Spritesheets;
 
 public class Tile {
-	public static BufferedImage TILE_FLOOR = Spritesheets.spritesheetTiles.getSubimage(0, 0, 16, 16);
-	public static BufferedImage TILE_FLOOR2 = Spritesheets.spritesheetTiles.getSubimage(16, 0, 16, 16);
-	public static BufferedImage TILE_FLOOR3 = Spritesheets.spritesheetTiles.getSubimage(32, 0, 16, 16);
-	public static BufferedImage TILE_FLOOR4 = Spritesheets.spritesheetTiles.getSubimage(48, 0, 16, 16);
-	public static BufferedImage TILE_WALL = Spritesheets.spritesheetTiles.getSubimage(0, 16, 16, 16);
-	public static BufferedImage FLOWER_TILE = Spritesheets.spritesheetTiles.getSubimage(96, 0, 16, 16);
-	public static BufferedImage BUSH_TILE = Spritesheets.spritesheetTiles.getSubimage(64, 0, 32, 16);
+	public static BufferedImage TILE_FLOOR = Spritesheets.tiles.getSprite(0, 0, 16, 16);
+	public static BufferedImage TILE_FLOOR2 = Spritesheets.tiles.getSprite(16, 0, 16, 16);
+	public static BufferedImage TILE_FLOOR3 = Spritesheets.tiles.getSprite(32, 0, 16, 16);
+	public static BufferedImage TILE_FLOOR4 = Spritesheets.tiles.getSprite(48, 0, 16, 16);
+	public static BufferedImage TILE_WALL = Spritesheets.tiles.getSprite(0, 16, 16, 16);
+	public static BufferedImage FLOWER_TILE = Spritesheets.tiles.getSprite(96, 0, 16, 16);
+	public static BufferedImage BUSH_TILE = Spritesheets.tiles.getSprite(64, 0, 32, 16);
 	
 	private BufferedImage sprite;
 	private int x, y;

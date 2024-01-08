@@ -5,12 +5,12 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
 
 import com.notestudios.entities.BigEnemy;
-import com.notestudios.entities.Entity;
 import com.notestudios.main.Game;
 import com.notestudios.main.Window;
 import com.notestudios.menus.Controls;
@@ -20,7 +20,10 @@ import com.notestudios.menus.JoltLogin;
 import com.notestudios.menus.LoadingScreen;
 import com.notestudios.menus.MainMenu;
 import com.notestudios.menus.Settings;
-import com.notestudios.menus.Shop;
+import com.notestudios.objects.Ammo;
+import com.notestudios.objects.Coin;
+import com.notestudios.objects.CollectibleBomb;
+import com.notestudios.shop.Shop;
 import com.notestudios.util.DialogBox;
 import com.notestudios.util.Popup;
 import com.notestudios.util.Transition;
@@ -46,6 +49,7 @@ public class UI {
 	public int layer = 0;
 	
 	private String curMenu = "MainMenu";
+	public static BufferedImage GUN_SELECT = Spritesheets.ui.getSprite(112, 0, 48, 32);
 	
 	public void reloadEssentials() {
 		trans = new Transition();
@@ -75,7 +79,7 @@ public class UI {
 	public void tick() {
 		switch(Game.gameState) {
 			case "Menu":
-				if(!MainMenu.pauseMenu.showPauseMenu) menu.tick();
+				if(!MainMenu.pauseMenu.pauseMode) menu.tick();
 				else MainMenu.pauseMenu.tick();
 				
 			break;
@@ -105,12 +109,12 @@ public class UI {
 				
 				controls.tick();
 			break;
-			/*case "Shop":
+			case "Shop":
 				if(shop == null)
 					shop = new Shop();
 				
 				shop.tick();
-			break; being redesigned and optimized, check @retrozinndev on gamejolt for updates!*/
+			break;
 			case "Credits":
 				if(credits == null)
 					credits = new Credits();
@@ -147,12 +151,12 @@ public class UI {
 		
 		switch(Game.gameState) {
 			case "Menu":
-				if(!MainMenu.pauseMenu.showPauseMenu) {
+				if(!MainMenu.pauseMenu.pauseMode) {
 					if(menu == null)
 						menu = new MainMenu();
 					
 					menu.render(g);
-				} else if(MainMenu.pauseMenu.showPauseMenu || MainMenu.pauseMenu.openPauseMenu)
+				} else if(MainMenu.pauseMenu.pauseMode || MainMenu.pauseMenu.openPauseMenu)
 					MainMenu.pauseMenu.render(g);
 			break;
 			case "Normal":
@@ -210,17 +214,24 @@ public class UI {
 			int hpBarX = (Game.window.getWidth()/2) - (hpBarWidth/2), hpBarY = 30;
 			createHPBar(g, hpBarX, 30, hpBarWidth, 35, 16, Game.player.life, Game.player.maxLife, "");
 			
-			g.drawImage(Entity.BULLET_EN, hpBarX + Entity.BULLET_EN.getWidth() + 30, 
+			g.drawImage(Ammo.BULLET_EN, hpBarX + 5, 
 					hpBarY+hpBarHeight+6, 48, 48, null);
-			g.drawImage(Entity.COIN_EN, hpBarX+hpBarWidth-110, 
+			g.drawImage(Coin.COIN_EN, hpBarX+hpBarWidth-110, 
 					hpBarY+hpBarHeight+6, 48, 48, null);
-			
+			if(Game.player.haveBomb) {
+				g.drawImage(CollectibleBomb.bomb, hpBarX + (hpBarWidth/2) - CollectibleBomb.bomb.getWidth()-16, 
+						hpBarY+hpBarHeight+6, 48, 48, null);
+			}
 			g.setFont(MainMenu.UIFont);
-			g.drawString(Integer.toString(Game.player.ammo), hpBarX + Entity.BULLET_EN.getWidth()+Entity.BULLET_EN.getWidth() + 72, 
+			g.drawString(Integer.toString(Game.player.ammo), hpBarX + Ammo.BULLET_EN.getWidth() + 48, 
 					hpBarY+hpBarHeight+g.getFontMetrics().getHeight()-2);
 			
-			g.drawString(Integer.toString(Game.playerCoins), hpBarX+hpBarWidth+Entity.COIN_EN.getWidth()+32-110, 
+			g.drawString(Integer.toString(Game.playerCoins), hpBarX+hpBarWidth+Coin.COIN_EN.getWidth()+32-110, 
 					hpBarY+hpBarHeight+g.getFontMetrics().getHeight()-2);
+			if(Game.player.haveBomb) {
+				g.drawString(Integer.toString(Game.player.bombs), hpBarX + (hpBarWidth/2)+20, 
+						hpBarY+hpBarHeight+g.getFontMetrics().getHeight()-2);
+			}
 			
 			/* Big Enemy HP Bar */
 			if(BigEnemy.bossfight) 

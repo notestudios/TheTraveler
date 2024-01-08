@@ -2,8 +2,9 @@ package com.notestudios.menus;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
-import com.notestudios.entities.Entity;
+import com.notestudios.graphics.Spritesheets;
 import com.notestudios.graphics.UI;
 import com.notestudios.main.Game;
 import com.notestudios.main.Window;
@@ -14,7 +15,7 @@ public class PauseMenu {
 	public String[] menuOptions = {"Resume", "Load", "Settings", "Credits", "Quit"};
 	public int currentOption = 0;
 	public final int maxOptions = menuOptions.length - 1;
-	public boolean showPauseMenu = false;
+	public boolean pauseMode = false;
 	public boolean closePauseMenu = false;
 	public boolean openPauseMenu = false;
 	public static int width = 400;
@@ -24,22 +25,21 @@ public class PauseMenu {
 	public static int y = 16;
 	public static int defaultArc = 30;
 	
-	private double defaultSpeed = 20;
-	private double closeSpeed = defaultSpeed;
-	private boolean finishedCloseAni = false;
+	public int timeLimit, maxTime = 60;
 	
-	private double openSpeed = defaultSpeed;
-	private boolean finishedOpenAni = false;
+	private double defaultSpeed = 20, closeSpeed = defaultSpeed, openSpeed = defaultSpeed;
+	public boolean finishedCloseAni = false, finishedOpenAni = false;
+	
+	public static BufferedImage UIPause = Spritesheets.ui.getSprite(96, 80, 16, 16);
 	
 	public void tick() {
 		for(Button b : MainMenu.menuButtons) 
 			b.functions();
 		
-		if(MainMenu.esc && showPauseMenu) {
+		if(MainMenu.esc) {
 			MainMenu.esc = false;
-			closePauseMenu = true;
+			closePauseMenu = !openPauseMenu;
 		}
-		
 		if(openPauseMenu) 
 			open();
 		if(closePauseMenu) 
@@ -47,6 +47,8 @@ public class PauseMenu {
 	}
 	
 	private void open() {
+		closePauseMenu = false;
+		pauseMode = true;
 		if(x < defaultPauseX) {
 			x+=(int)openSpeed;
 			if(openSpeed > 2) 
@@ -54,7 +56,6 @@ public class PauseMenu {
 		} else {
 			finishedOpenAni = true;
 		} if(finishedOpenAni) {
-			finishedOpenAni = false;
 			openPauseMenu = false;
 			Game.gameState = "Menu";
 			openSpeed = defaultSpeed;
@@ -62,15 +63,14 @@ public class PauseMenu {
 	}
 	
 	private void close() {
+		openPauseMenu = false;
 		if(x+width > 0) {
 			x-=(int)closeSpeed;
 			if(closeSpeed > 4) 
 				closeSpeed-=0.5;
-		} else 
-			finishedCloseAni = true;
+		} else { finishedCloseAni = true; }
 		if(finishedCloseAni) {
-			finishedCloseAni = false;
-			showPauseMenu = false;
+			pauseMode = false;
 			closePauseMenu = false;
 			Game.gameState = "Normal";
 			closeSpeed = defaultSpeed;
@@ -86,13 +86,13 @@ public class PauseMenu {
 		g.drawRoundRect(PauseMenu.x, PauseMenu.y, PauseMenu.width, PauseMenu.height, PauseMenu.defaultArc, PauseMenu.defaultArc);
 		
 		// Pause indicator
-		g.drawImage(Entity.UIPause, x + 100, y + 175, 16*5, 16*5, null);
+		g.drawImage(PauseMenu.UIPause, x + 100, y + 175, 16*5, 16*5, null);
 		g.setColor(Color.white);
 		g.setFont(MainMenu.aFont);
 		if (MainMenu.portuguese)
-			g.drawString("Pausado", x + 100 + Entity.UIPause.getWidth()*5, y + 230);
+			g.drawString("Pausado", x + 100 + PauseMenu.UIPause.getWidth()*5, y + 230);
 		else if (MainMenu.english)
-			g.drawString("Paused", x + 100 + Entity.UIPause.getWidth()*5, y + 230);
+			g.drawString("Paused", x + 100 + PauseMenu.UIPause.getWidth()*5, y + 230);
 		
 		// The Traveler
 		if(!Game.ui.menu.exitRequest) {

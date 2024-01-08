@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.List;
 
+import com.notestudios.graphics.Spritesheets;
 import com.notestudios.main.Game;
 import com.notestudios.menus.MainMenu;
 import com.notestudios.util.DialogBox;
@@ -15,6 +16,7 @@ public class Npc extends Entity {
 	public boolean alreadyTriggered = false;
 	
 	private List<String> dialogs;
+	public static BufferedImage defaultNPC = Spritesheets.entities.getSprite(16, 96, 16, 16);
 	
 	public Npc(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);

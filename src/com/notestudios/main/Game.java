@@ -1,14 +1,8 @@
 package com.notestudios.main;
 
-import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -25,10 +19,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import javax.swing.JFrame;
-
 import com.notestudios.discord.Discord;
 import com.notestudios.entities.BigEnemy;
+import com.notestudios.entities.Bomb;
 import com.notestudios.entities.Bullets;
 import com.notestudios.entities.Enemy;
 import com.notestudios.entities.Entity;
@@ -42,30 +35,19 @@ import com.notestudios.graphics.UI;
 import com.notestudios.menus.JoltLogin;
 import com.notestudios.menus.MainMenu;
 import com.notestudios.menus.Settings;
-import com.notestudios.menus.Shop;
 import com.notestudios.objects.InteractibleObjects;
 import com.notestudios.util.Button;
-import com.notestudios.util.Popup;
 import com.notestudios.util.Sound;
 import com.notestudios.world.World;
 
-import net.arikia.dev.drpc.DiscordRPC;
-
-public class Game extends Canvas implements Runnable, KeyListener, MouseListener,
+public class Game implements Runnable, KeyListener, MouseListener,
 MouseMotionListener, MouseWheelListener {
 	
 	public static final long serialVersionUID = 1L;
 
 	private Thread thread;
-	private static KeyEvent ke;
-	private static MouseEvent me;
 	
-	private Toolkit toolkit = Toolkit.getDefaultToolkit();
-	
-	private final int maxUpdPresenceTime = (60*2);
-	private int updPresenceTime = 0;
 	public int fps = 0;
-	
 	public static int playerCoins = 0;
 	public static final short enterCutscene = 1;
 	public static final short finishCutscene = 2;
@@ -115,7 +97,7 @@ MouseMotionListener, MouseWheelListener {
 	public static final InputStream stream6 = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
 	public static Font travelerLogoFont;
 	
-	private final BufferedImage image;
+	private BufferedImage img;
 	public Spritesheets spritesheet;
 	private File debugFile = new File("enableDebug.txt");
 	private File licenseFile = new File("LICENSE.txt");
@@ -125,19 +107,19 @@ MouseMotionListener, MouseWheelListener {
 	gamejoltCredentialsFile = new File(".gj-credentials");
 	public File amogus = new File("amogus.txt");
 	
-	private List<String> words = Arrays.asList("finally, the main menu is not bugged anymore!",
+	private List<String> words = Arrays.asList("christmas is approching fast!",
 	"frontend or backend?", "hello there", "potato", "this is "+currentVersion+"!", "what's up?", 
-	"fun fact: the developer likes coding ;)", "shop is unavailable...",
-	"v5 when?", "finally the 'kaboom' random title makes sense",
-	"the new design doesn't match with the game, but it's cool", "SUS ඞ", "Pablo.", "bruh", "cool game",
-	"kaboom", "3 months without any updates bro", "here's your attention again.", "Got your attention haha ;)", "thread == null!", "this is a random title!",
-	currentVersion+" is here!", "lmao", "I know your discord username haha", "hmm, achivements...", "bro, VS Imposter Alternated is a mod of a mod :0", 
-	"finally the update has come!");
+	"fun fact: the developer likes coding ;)", "shop is available!!",
+	"v5 when?", "finally the 'kaboom' title makes sense",
+	"the new design is cool!", "SUS ඞ", "Pablo.", "bruh", "cool game", "kaboom", "3 months without any updates bro", 
+	"here's your attention again.", "Got your attention haha ;)", "thread == null!", "this is a random title!",
+	currentVersion+" is here!", "lmao", "I know your discord username haha", "hmm, achivements...", 
+	"Indie Cross v2???", "finally the update has come!", "bug fixing is what i do most!");
 	
 	public static String showGraphics;
 	public static String randomText;
-	public static final String currentVersion = "v4.5.0";
-	private static final String day = "09", month = "12", year = "2023";
+	public static final String currentVersion = "HAPPY NEW YEAR! v4.5.1";
+	private static final String day = "06", month = "01", year = "2024";
 	public final static String lastUpdated = year+"/"+month+"/"+day;
 	public static String gameState = "Menu";
 	
@@ -145,51 +127,34 @@ MouseMotionListener, MouseWheelListener {
 	public static GameJolt jolt;
 	private final Discord discord;
 	public static Window window = new Window();
-	public static JFrame frame = new JFrame();
-	
-	private final Cursor gameCursor = toolkit.createCustomCursor(toolkit.createImage(getClass().getResource("/cursors/curBig.png")), new Point(0, 0), "cur");
-	private final Image gameIcon = toolkit.createImage(getClass().getResource("/icons/Icon.png"));
 	
 	/* This project is under the GNU GPLv3 License:
 	 * License: <https://www.gnu.org/licenses/gpl-3.0.html>
 	 * Dev: <https://www.github.com/retrozinndev>
 	*/
 	
-	public Game() {
+	private Game() {
 		System.out.println("Starting The Traveler...");
-		addKeyListener(this);
-		addMouseListener(this);
-		addMouseMotionListener(this);
-		addMouseWheelListener(this);
+		window.addListeners(this); // input handlers will change in the future
+		window.init();
 		random = new Random();
 		beta = currentVersion.endsWith("b");
 		devMode = devFile.exists();
 		debugMode = debugFile.exists();
 		amogusSecret = amogus.exists();
 		randomText = words.get(random.nextInt(words.size()));
-		Settings.reloadSavedSettings();
-		{
-			//TODO: Remove this code on next update!
-			File oldFile = new File("config.save");
-			if(oldFile.exists()) {
-				oldFile.delete();
-				System.out.println("Game has deleted the old settings file");
-			}
-		}
-		setPreferredSize(new Dimension(Window.WIDTH * Window.SCALE, Window.HEIGHT * Window.SCALE));
-		image = new BufferedImage(Window.WIDTH, Window.HEIGHT, BufferedImage.TYPE_INT_RGB);
-		System.out.println("Generating window...");
-		window.createFrame(frame, "The Traveler", false, false, this, gameIcon, gameCursor);
-		jolt = new GameJolt(GameJolt.getID(), GameJolt.getPrivateID());
-		reloadAllUI();
 		spritesheet = new Spritesheets();
+		Settings.reloadSavedSettings();
+		img = new BufferedImage(Window.WIDTH, Window.HEIGHT, BufferedImage.TYPE_INT_RGB);
+		System.out.println("Generating window...");
+		jolt = new GameJolt();
+		reloadAllUI();
 		Entity.entities = new ArrayList<Entity>();
 		InteractibleObjects.objects = new ArrayList<InteractibleObjects>();
 		Enemy.enemies = new ArrayList<Enemy>();
 		BigEnemy.bosses = new ArrayList<BigEnemy>();
 		Bullets.bullets = new ArrayList<Bullets>();
-		Player.initialize();
-		npc = new Npc(32, 32, 16, 16, Entity.DefaultNPC_EN); Entity.entities.add(npc);
+		npc = new Npc(32, 32, 16, 16, Npc.defaultNPC); Entity.entities.add(npc);
 		world = new World(World.mapsFolder+"level"+World.curLevel+".png");
 		Minimap.initialize();
 		discord = new Discord();
@@ -197,7 +162,6 @@ MouseMotionListener, MouseWheelListener {
 			File loginFile = null;
 			if(gamejoltCredentialsFile.exists()) { loginFile = gamejoltCredentialsFile; }
 			else if(gameCredentialsFile.exists()) { loginFile = gameCredentialsFile; }
-			else if(gameCredentialsFile.exists() && gamejoltCredentialsFile.exists()) { loginFile = gamejoltCredentialsFile; } 
 			jolt.autoLogin(loginFile);
 			showPopup = 0;
 			showLoginPopup = false;
@@ -235,42 +199,34 @@ MouseMotionListener, MouseWheelListener {
 	}
 	
 	private void tick() {
-		if(Discord.isInstalled()) {
-			updPresenceTime++;
-			if(updPresenceTime == maxUpdPresenceTime) {
-				updPresenceTime = 0;
-				DiscordRPC.discordRunCallbacks();
-				discord.richPresence.update();
-			}
-		}
+		if(Discord.isInstalled()) { discord.runPresence(); }
 		Sound.tick();
 		showLoginPopup = showPopup == 1;
 		licenseOK = licenseFile.exists();
-		
-		if (graphicsQuality == 2) {
-			if(MainMenu.portuguese)
-				showGraphics = "Alta";
-			else 
-				showGraphics = "High";
-		} else if (graphicsQuality == 1) {
-			if (MainMenu.portuguese)
-				showGraphics = "Baixa";
-			else 
-				showGraphics = "Low";
-		}
 		player.updateCamera();
 		if (gameState.equals("Menu") && cutsceneState == enterCutscene) {
 			player.setX(64);
 			player.setY(416);
 			player.right = false;
 		}
+		if(MainMenu.pauseMenu.finishedOpenAni || MainMenu.pauseMenu.finishedCloseAni) {
+			MainMenu.pauseMenu.timeLimit++;
+			if(MainMenu.pauseMenu.timeLimit >= MainMenu.pauseMenu.maxTime) {
+				MainMenu.pauseMenu.timeLimit = 0;
+				MainMenu.pauseMenu.finishedOpenAni = false;
+				MainMenu.pauseMenu.finishedCloseAni = false;
+			}
+		}
+		if(MainMenu.pauseMenu.finishedCloseAni && ui.menu.loadGameSave) {
+			ui.menu.loadGameSave = false;
+			ui.menu.load();
+		}
 		if(amogusSecret) {
 			if(!gameState.equals("Menu") && !gameState.equals("Normal") && !ui.ls.loadingScreen) {
 				amogusSecret = false;
 				if(!mute) Sound.secret.play();
 			}
-			if(jolt.isLoggedIn) 
-				jolt.trophies.achieve(Trophies.trophyList.get("sussus amogus"));
+			if(jolt.isLoggedIn) { jolt.trophies.achieve(Trophies.trophyList.get("sussus amogus")); }
 		}
 		if(saveGame) {
 			saveGame = false;
@@ -287,44 +243,41 @@ MouseMotionListener, MouseWheelListener {
 		} if(saveLogin) {
 		    saveLogin = false;
 		    if(!gamejoltCredentialsFile.exists()) 
-		    	jolt.fileSave(jolt.gameCredentialsFile.getName(), jolt.userName, jolt.userToken);
+		    	jolt.fileSave(gameCredentialsFile.getName(), jolt.userName, jolt.userToken);
 		}
-		if(gameState.equals("Settings")) { ui.settings.tick(); }
 		if(f1Shop) {
-			if(gameState.equals("Normal")) {
-				gameState = "Menu";
-				MainMenu.pauseMenu.showPauseMenu = true;
-				MainMenu.pauseMenu.openPauseMenu = true;
-			}
-			new Popup("Work in Progress", Arrays.asList("The Shop is currently unavailable due to", 
-					"the UI redesign and optimization work.", "Stay tuned on Game Jolt (@retrozinndev) for updates!"));
 			f1Shop = false;
+			UI.doTransition = true;
+			gameState = "Shop";
 		}
-		
+		if((!window.hasFocus() && gameState.equals("Normal")) && !devMode) {
+			MainMenu.pauseMenu.pauseMode = true;
+			MainMenu.pauseMenu.openPauseMenu = true;
+		}
 		if(ESC) {
 			ESC = false;
 			if(gameState.equals("Credits")) {
 				gameState = "Menu";
 				UI.doTransition = true;
 				if(!mute) Sound.backMenu.play();
-			} if(MainMenu.esc && !MainMenu.pauseMenu.showPauseMenu && gameState.equals("Normal")) {
+			} if(MainMenu.esc && !MainMenu.pauseMenu.pauseMode && gameState.equals("Normal")) {
 				gameState = "Menu";
-				MainMenu.pauseMenu.showPauseMenu = true;
+				MainMenu.pauseMenu.pauseMode = true;
 				MainMenu.pauseMenu.openPauseMenu = true;
 				MainMenu.esc = false;
 				if(!mute) Sound.pauseGame.play();
 			}
 		}
 		if(gameState.equals("Normal")) {
-			QExitGame = false;
 			if(cutsceneState == finishCutscene && !dialogMode) {
-				for (int i = 0; i < Entity.entities.size(); i++) {
-					Entity e = Entity.entities.get(i);
-					e.tick();
-				}
-				for (int i = 0; i < Bullets.bullets.size(); i++) {
+				for(int i = 0; i < Entity.entities.size(); i++) {
+					Entity.entities.get(i).tick();
+				} for(int i = 0; i < InteractibleObjects.objects.size(); i++) {
+					InteractibleObjects.objects.get(i).tick();
+				} for(int i = 0; i < Bullets.bullets.size(); i++) {
 					Bullets.bullets.get(i).tick();
 				}
+				world.tick();
 			} else if(cutsceneState == enterCutscene) {
 				if (player.getX() < 162) {
 					player.updateCamera();
@@ -338,26 +291,24 @@ MouseMotionListener, MouseWheelListener {
 					cutsceneState = finishCutscene;
 				}
 			}
-			if (Enemy.enemies.size() == 0 && BigEnemy.bosses.size() == 0) {
-				World.curLevel++;
-				if (World.curLevel > World.maxLevel) {
-					World.curLevel = 1;
-				}
-				world.loadLevel("level" + World.curLevel);
-			}
+		}
+		if(Bomb.canTriggerAchievement && Bomb.explodedEnemies >= Bomb.maxEnemies && Bomb.explodedEnemies <= 25) {
+			Bomb.canTriggerAchievement = false;
+			Bomb.explodedEnemies = 0;
+			Bomb.triggerAchievement();
 		}
 		ui.tick();
 	}
 	
 	private void render() {
-		BufferStrategy bs = this.getBufferStrategy();
+		BufferStrategy bs = window.getBufferStrategy();
 		if (bs == null) {
-			createBufferStrategy(3);
+			window.createBufferStrategy(3);
 			return;
 		}
-		Graphics2D g = (Graphics2D) image.getGraphics();
+		Graphics2D g = (Graphics2D) img.getGraphics();
 		UI.useAntiAliasing(g);
-		if((gameState.equals("Menu") && MainMenu.pauseMenu.showPauseMenu) || gameState.equals("Normal")) {
+		if((gameState.equals("Menu") && MainMenu.pauseMenu.pauseMode) || gameState.equals("Normal")) {
 			world.render(g);
 			for(int i = 0; i < InteractibleObjects.objects.size(); i++) {
 				InteractibleObjects io = InteractibleObjects.objects.get(i);
@@ -380,9 +331,10 @@ MouseMotionListener, MouseWheelListener {
 		
 		g.dispose();
 		g = (Graphics2D) bs.getDrawGraphics();
-		g.drawImage(image, 0, 0, window.getWidth(), window.getHeight(), null);
+		g.drawImage(img, 0, 0, window.getWidth(), window.getHeight(), null);
 		
 		ui.render(g);
+		
 		if(beta) {
 			g.setFont(Game.menuFont2);
 			int w = g.getFontMetrics().stringWidth(currentVersion)+ 12, h = 35;
@@ -398,7 +350,7 @@ MouseMotionListener, MouseWheelListener {
 			if (!Game.debugMode) {
 				g.setFont(Game.menuFont2);
 				g.setColor(new Color(255, 255, 0));
-				g.drawString("The Traveler " + Game.currentVersion + " | Where is the LICENSE file?", 5, Window.HEIGHT*Window.SCALE-8);
+				g.drawString("The Traveler " + Game.currentVersion + " | Where is the LICENSE file?", 5, window.getHeight()-8);
 			}
 		}
 		bs.show();
@@ -422,7 +374,7 @@ MouseMotionListener, MouseWheelListener {
 		double delta = 0;
 		int frames = 0;
 		double timer = System.currentTimeMillis();
-		requestFocus();
+		window.requestFocus();
 		while(isRunning) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
@@ -442,19 +394,6 @@ MouseMotionListener, MouseWheelListener {
 		stop();
 	}
 	
-	public static int getKeyReleased() {
-		return ke.getKeyCode();
-	}
-	public static int getKeyTyped() {
-		return ke.getKeyChar();
-	}
-	public static int getKeyPressed() {
-		return ke.getKeyCode();
-	}
-	public static int getMouseClicked() {
-		return me.getButton();
-	}
-	
 	@Override
 	public void keyTyped(KeyEvent e) {
         charPressed = e.getKeyChar();
@@ -470,7 +409,6 @@ MouseMotionListener, MouseWheelListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		ke = e;
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 			if(!dialogMode) {
 				ESC = true;
@@ -483,12 +421,11 @@ MouseMotionListener, MouseWheelListener {
 			player.jump = true;
 		} if (e.getKeyCode() == KeyEvent.VK_E) {
 			player.keyShoot = true;
-			player.isSpamming = true;
+		} if(e.getKeyCode() == KeyEvent.VK_Z) {
+			player.placeBomb = true;
 		} if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			ENTER = true;
-			if(gameState.equals("Shop")) {
-				Shop.shopEnter = true;
-			} if (gameState.equals("Menu")) {
+			if (gameState.equals("Menu")) {
 				ui.menu.enter = true;
 			} if(gameState.equals("GJLogin")) {
 				if(JoltLogin.curTextBox.equals("token")) {
@@ -520,17 +457,15 @@ MouseMotionListener, MouseWheelListener {
 				ui.menu.left = true;
 			}
 		} if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
-			if(gameState.equals("Normal")) {
-				player.up = true;
-			} if (gameState.equals("Menu")) {
+			player.up = true;
+			if(gameState.equals("Menu")) {
 				ui.menu.up = true;
-			} if (gameState.equals("Settings")) {
+			} if(gameState.equals("Settings")) {
 				ui.settings.up = true;
 			}
 		} if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
-			if(gameState.equals("Normal")) {
-				player.down = true;
-			} if (gameState.equals("Menu")) {
+			player.down = true;
+			if (gameState.equals("Menu")) {
 				ui.menu.down = true;
 			} if (gameState.equals("Settings")) {
 				ui.settings.down = true;
@@ -555,19 +490,16 @@ MouseMotionListener, MouseWheelListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_SHIFT || e.getKeyCode() == KeyEvent.VK_CONTROL) {
-			player.isRunning = false;
-		}if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
 			player.right = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
+		} if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
 			player.left = false;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
+		} if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
 			player.up = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
+		} if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
 			player.down = false;
-		} if(e.getKeyCode() == KeyEvent.VK_E) {
-			player.isSpamming = false;
+		} if(e.getKeyCode() == KeyEvent.VK_SHIFT || e.getKeyCode() == KeyEvent.VK_CONTROL) {
+			player.isRunning = false;
 		}
 	}
 
@@ -577,8 +509,6 @@ MouseMotionListener, MouseWheelListener {
 			if (e.getButton() == MouseEvent.BUTTON1) {
 				if (gameState.equals("Menu")) {
 					ui.menu.enter = true;
-				} if(gameState.equals("Shop")) {
-					Shop.shopEnter = true;
 				}
 			}
 			if(Window.getMouseX() > ui.gjlogin.usernameTextBoxX && Window.getMouseX() < ui.gjlogin.usernameTextBoxX+ui.gjlogin.UsernameTextBoxWidth
@@ -604,9 +534,8 @@ MouseMotionListener, MouseWheelListener {
 				player.mx = (e.getX() / Window.SCALE);
 				player.my = (e.getY() / Window.SCALE);
 			}
-			for(Button b : Button.buttons) {
+			for(Button b : Button.buttons) 
 				b.isPressing = b.selected && !b.unavailable;
-			}
 		}
 	}
 

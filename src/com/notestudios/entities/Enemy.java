@@ -13,16 +13,18 @@ import com.notestudios.world.Camera;
 import com.notestudios.world.Vector2i;
 
 public class Enemy extends Entity {
-	public int maxLife;
 
 	private int frames = 0, maxFrames = 20, index = 0, maxIndex = 1;
 
 	private BufferedImage[] sprites;
 
-	public int enemyLife = 5;
-	public boolean enemyHurt = false;
-	private boolean isDamaged;
+	public int maxLife = 5, enemyLife = maxLife;
+	public boolean isDamaged;
 	private int damageFrames = 10, curDamage = 0;
+
+	public static BufferedImage ENEMY_DMG = Spritesheets.entities.getSprite(224, 0, 16, 16);
+
+	public static BufferedImage ENEMY_EN = Spritesheets.entities.getSprite(193, 0, 16, 16);
 
 	public static List<Enemy> enemies;
 
@@ -30,8 +32,8 @@ public class Enemy extends Entity {
 		super(x, y, width, height, sprite);
 
 		sprites = new BufferedImage[2];
-		sprites[0] = Spritesheets.spritesheetPlayer.getSubimage(192, 0, 16, 16);
-		sprites[1] = Spritesheets.spritesheetPlayer.getSubimage(192 + 16, 0, 16, 16);
+		sprites[0] = Spritesheets.entities.getSprite(192, 0, 16, 16);
+		sprites[1] = Spritesheets.entities.getSprite(192 + 16, 0, 16, 16);
 	}
 
 	public void tick() {
@@ -137,7 +139,7 @@ public class Enemy extends Entity {
 			g.drawImage(sprites[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		}
 		if (isDamaged) {
-			g.drawImage(ENEMY_DMG, getX() - Camera.x, getY() - Camera.y, getWidth(), getHeight(), null);
+			g.drawImage(Enemy.ENEMY_DMG, getX() - Camera.x, getY() - Camera.y, getWidth(), getHeight(), null);
 		} else if (!isDamaged) {
 			g.drawImage(sprites[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		}

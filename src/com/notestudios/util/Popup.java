@@ -18,7 +18,9 @@ public final class Popup {
 	private int width = 80, height = 60;
 	private String biggerString;
 	private String title;
-	private List<String> text;
+	private List<String> textList = new ArrayList<>();
+	private String textString;
+	private boolean useListInstead = false;
 	private int backOpacity, maxBackOpacity = 190;
 	public int opacity, maxOpacity = 255;
 	private int defaultAddictiveY = 150, addictiveY = defaultAddictiveY;
@@ -44,12 +46,26 @@ public final class Popup {
 	
 	public Popup(String title, List<String> text) {
 		this.title = title;
-		this.text = text;
+		this.textList = text;
+		this.useListInstead = true;
 		Game.ui.layer+=1;
 		closeButton.layer = 1;
 		popups.add(this);
 		Button.buttons.add(this.closeButton);
 		biggerString = text.stream().max(Comparator.comparingInt(String::length)).get();
+		createAni = true;
+	}
+	
+	public Popup(String title, String text) {
+		this.title = title;
+		this.textString = text;
+		Game.ui.layer+=1;
+		closeButton.layer = 1;
+		popups.add(this);
+		Button.buttons.add(this.closeButton);
+		textList.add(title); textList.add(text);
+		biggerString = this.textList.stream().max(Comparator.comparingInt(String::length)).get();
+		textList.remove(title); textList.remove(text);
 		createAni = true;
 	}
 	
@@ -101,7 +117,11 @@ public final class Popup {
 		else 
 			width = g.getFontMetrics().stringWidth(biggerString)+12 + 30;
 		
-		height = g.getFontMetrics().getHeight()*(text.size()) + 100;
+		if(!useListInstead) {
+			height = g.getFontMetrics().getHeight()+110;
+		} else {
+			height = g.getFontMetrics().getHeight()*(textList.size()) + 100;
+		}
 		
 		x = (Game.window.getWidth()/2) - (width/2);
 		y = (Game.window.getHeight()/2) - (height/2);
@@ -121,9 +141,13 @@ public final class Popup {
 		
 		g.setFont(Game.menuFont2);
 		g.setColor(new Color(255, 255, 255, opacity));
-		for(int i = 0; i < text.size(); i++) {
-			g.drawString(text.get(i), x+(width/2)-(g.getFontMetrics().stringWidth(biggerString)/2), 
-					y+(g.getFontMetrics().getHeight()*2)+addictiveY+(i*g.getFontMetrics().getHeight())+32);
+		if(useListInstead) {
+			for(int i = 0; i < textList.size(); i++) 
+				g.drawString(textList.get(i), x+(width/2)-(g.getFontMetrics().stringWidth(biggerString)/2), 
+						y+(g.getFontMetrics().getHeight()*2)+addictiveY+(i*g.getFontMetrics().getHeight())+32);
+		} else {
+			g.drawString(textString, x+(width/2)-(g.getFontMetrics().stringWidth(biggerString)/2), 
+					y+(g.getFontMetrics().getHeight()*2)+addictiveY+32);
 		}
 		closeButton.render(g);
 	}

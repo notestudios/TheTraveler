@@ -7,11 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.*;
 
 import com.notestudios.graphics.UI;
 import com.notestudios.main.Game;
@@ -51,7 +47,7 @@ public class Sound {
 					gameMusic.pause();
 					creditsMusic.pause();
 					optionsMenuMusic.pause();
-					if (!MainMenu.pauseMenu.showPauseMenu) 
+					if (!MainMenu.pauseMenu.pauseMode) 
 						if (!UI.doTransition) menuMusicloop.loop();
 					else 
 						if (!UI.doTransition) menuMusicloop.loop();
@@ -105,12 +101,14 @@ public class Sound {
 		public Clip[] clips;
 		private int p;
 		private int count;
+		private AudioFormat audioFormat;
 		
 		public Clips(byte[] buffer, int count)
 				throws LineUnavailableException, IOException, UnsupportedAudioFileException {
 			if (buffer == null)
 				return;
-
+			
+			audioFormat = getAudioFormat(buffer);
 			clips = new Clip[count];
 			this.count = count;
 
@@ -118,6 +116,20 @@ public class Sound {
 				clips[i] = AudioSystem.getClip();
 				clips[i].open(AudioSystem.getAudioInputStream(new ByteArrayInputStream(buffer)));
 			}
+		}
+		
+		private AudioFormat getAudioFormat(byte[] buffer) throws UnsupportedAudioFileException, IOException {
+			try(ByteArrayInputStream bais = new ByteArrayInputStream(buffer)) {
+				AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(bais); 
+					return audioInputStream.getFormat();
+			}
+		}
+		
+		public AudioFormat getAudioFormat() {
+			if(audioFormat != null)
+				return audioFormat;
+			
+			return null;
 		}
 
 		public void play() {

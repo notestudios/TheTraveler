@@ -18,8 +18,12 @@ import net.arikia.dev.drpc.callbacks.SpectateGameCallback;
 public class Discord extends DiscordEventHandlers implements DisconnectedCallback, 
 ErroredCallback, JoinGameCallback, JoinRequestCallback, ReadyCallback, SpectateGameCallback {
 	
-	private String appID = "1087444872132313168";
 	public RichPresence richPresence;
+	
+	private String appID = "1087444872132313168";
+	
+	private final int maxUpdPresenceTime = (60*2);
+	private int updPresenceTime = 0;
 	
 	public Discord() {
 		System.out.println("Loading Discord RPC...");
@@ -39,6 +43,15 @@ ErroredCallback, JoinGameCallback, JoinRequestCallback, ReadyCallback, SpectateG
 	@Override
 	public void apply(int arg0, String arg1) {
 		
+	}
+	
+	public void runPresence() {
+		updPresenceTime++;
+		if(updPresenceTime == maxUpdPresenceTime) {
+			updPresenceTime = 0;
+			DiscordRPC.discordRunCallbacks();
+			richPresence.update();
+		}
 	}
 	
 	public static boolean isInstalled() {

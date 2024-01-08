@@ -1,7 +1,5 @@
 package com.notestudios.discord;
 
-import java.util.Objects;
-
 import com.notestudios.main.Game;
 import com.notestudios.menus.MainMenu;
 import com.notestudios.world.World;
@@ -13,11 +11,12 @@ public class RichPresence extends DiscordRichPresence {
 	
 	private String presenceEN;
 	private String presencePT;
+	private String gameLogo = "game_logo", notestudiosLogo = "notestudios_logo", terminalIcon = "terminal_logo";
 	
 	public final void update() {
 		switch(Game.gameState) {
 			case "Menu":
-				if(!MainMenu.pauseMenu.showPauseMenu) {
+				if(!MainMenu.pauseMenu.pauseMode) {
 					presencePT = "Nos Menus";
 					presenceEN = "In the Menus";
 				} else {
@@ -26,8 +25,8 @@ public class RichPresence extends DiscordRichPresence {
 				}
 			break;
 			case "Normal":
-				presencePT = "Jogando";
-				presenceEN = "Playing";
+				presencePT = "Jogando - Level "+World.curLevel;
+				presenceEN = "Playing - Level "+World.curLevel;
 			break;
 			case "Settings":
 				presencePT = "Nas Configurações";
@@ -54,43 +53,32 @@ public class RichPresence extends DiscordRichPresence {
 				presenceEN = "In the Game Over screen";
 			break;
 			case "GJLogin":
-				presencePT = "No Menu de Login do Game Jolt";
-				presenceEN = "In Game Jolt Login Menu";
+				presencePT = "Na tela de Login";
+				presenceEN = "Logging In";
 			break;
 			default:
-				presencePT = "Carregando...";
-				presenceEN = "Loading...";
+				presencePT = "Vazio";
+				presenceEN = "Void";
 			break;
 		}
 		applyNewPresence();
 	}
 	
 	private void applyNewPresence() {
-		DiscordRichPresence rich = new DiscordRichPresence.Builder("Loading").setDetails("Loading")
-				.setBigImage("game_logo", "Loading").setSmallImage("notestudios_logo", "Note Studios").build();
+		DiscordRichPresence rich = new DiscordRichPresence.Builder("Playing").build();
 		if(!Game.devMode) {
-			if(!Objects.equals(Game.gameState, "Normal")) {
+			if(Game.gameState.equals("Normal")) {
 				if(MainMenu.english) {
-					rich = new DiscordRichPresence.Builder(Game.gameState).setDetails(presenceEN).setBigImage("game_logo", "Playing The Traveler")
-							.setSmallImage("notestudios_logo", "Note Studios").build();
+					rich = new DiscordRichPresence.Builder(Game.gameState).setDetails(presenceEN).setBigImage(gameLogo, "Playing The Traveler")
+							.setSmallImage(notestudiosLogo, "Note Studios").build();
 				} else if(MainMenu.portuguese) {
-					rich = new DiscordRichPresence.Builder(Game.gameState).setDetails(presencePT).setBigImage("game_logo", "Jogando The Traveler")
-							.setSmallImage("notestudios_logo", "Note Studios").build();
-				}
-			} if(Game.gameState.equals("Normal")) {
-				if(MainMenu.english) {
-					rich = new DiscordRichPresence.Builder(Game.gameState).setDetails("Playing - At Level: "+World.curLevel)
-							.setBigImage("game_logo", "Playing The Traveler").setSmallImage("notestudios_logo", 
-									"Note Studios").build();
-				} else if(MainMenu.portuguese) {
-					rich = new DiscordRichPresence.Builder(Game.gameState).setDetails("Jogando - No Level: "+World.curLevel)
-							.setBigImage("game_logo", "Jogando The Traveler").setSmallImage("notestudios_logo",
-									"Note Studios").build();
+					rich = new DiscordRichPresence.Builder(Game.gameState).setDetails(presencePT).setBigImage(gameLogo, "Jogando The Traveler")
+							.setSmallImage(notestudiosLogo, "Note Studios").build();
 				}
 			}
 		} else {
-			rich = new DiscordRichPresence.Builder("devMode=true!").setDetails(presenceEN).setBigImage("game_logo", 
-					"Playing The Traveler").setSmallImage("terminal_logo", "dev mode on!").build();
+			rich = new DiscordRichPresence.Builder("dev").setDetails(presenceEN).setBigImage(gameLogo, 
+					"Playing The Traveler").setSmallImage(terminalIcon, "dev mode on!").build();
 		}
 		DiscordRPC.discordUpdatePresence(rich);
 	}

@@ -10,7 +10,12 @@ import com.notestudios.entities.Entity;
 import com.notestudios.main.Game;
 import com.notestudios.world.Camera;
 
-public class InteractibleObjects {
+interface IObjectsInterface {
+	public void tick();
+	public void ifCollides();
+}
+
+public class InteractibleObjects implements IObjectsInterface {
 	
 	public double x;
 	public double y;
@@ -66,15 +71,16 @@ public class InteractibleObjects {
 		return this.height;
 	}
 	
-	public void tick() {
-		
-	}
-	
 	public double calculateDistance(int x1, int y1, int x2, int y2) {
 		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 	}
 	
-	public static boolean isCollidding(Entity e1, InteractibleObjects io2) {
+	public void checkCollision(InteractibleObjects obj, Entity en) {
+		if(isColliding(en, obj)) 
+			ifCollides();
+	}
+	
+	public static boolean isColliding(Entity e1, InteractibleObjects io2) {
 		Rectangle e1Mask = new Rectangle(e1.getX() + e1.maskx, e1.getY() + e1.masky, e1.mwidth, e1.mheight);
 		Rectangle e2Mask = new Rectangle(io2.getX() + io2.maskx, io2.getY() + io2.masky, io2.mwidth, io2.mheight);
 		return e1Mask.intersects(e2Mask);
@@ -88,5 +94,11 @@ public class InteractibleObjects {
 			g.setColor(new Color(0, 0, 255, 125));
 		}
 	}
+
+	@Override
+	public void tick() {}
+
+	@Override
+	public void ifCollides() {}
 
 }

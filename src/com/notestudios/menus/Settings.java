@@ -81,7 +81,10 @@ public class Settings {
 	public Button changeGraphicsPreset = new Button(60, 300, 340, 50, "Graphics: Default") {
 		@Override
 		public void functions() {
-			if(MainMenu.portuguese) text = "Gráficos: "+Game.showGraphics; else text = "Graphics: "+Game.showGraphics;
+			if(MainMenu.portuguese) 
+				text = "Gráficos: "+Game.showGraphics; 
+			else 
+				text = "Graphics: "+Game.showGraphics;
 			
 			customFont = MainMenu.aFont;
 			x = selectLanguage.getX() + selectLanguage.getWidth() + 6;
@@ -90,10 +93,12 @@ public class Settings {
 				clicked = false;
 				if (Game.graphicsQuality == 2) {
 					Game.graphicsQuality = 1;
+					Game.antiAliasingEnabled = false;
 					if(!Game.mute) Sound.menuEnter.play();
 					Game.saveConfig = true;
 				} else if (Game.graphicsQuality == 1) {
 					Game.graphicsQuality = 2;
+					Game.antiAliasingEnabled = true;
 					if(!Game.mute) Sound.menuEnter.play();
 					Game.saveConfig = true;
 				}
@@ -130,8 +135,8 @@ public class Settings {
 				clicked = false;
 				if(!Game.mute) Sound.menuEnter.play();
 				new Popup("About", Arrays.asList("Game: The Traveler", "Version: "+Game.currentVersion, 
-						"Last Updated: "+Game.lastUpdated, "OS: "+System.getProperty("os.name"), 
-						"OS Version: " + System.getProperty("os.version")));
+						"Last Updated: "+Game.lastUpdated, "Java Version: "+System.getProperty("java.version"), 
+						"OS: "+System.getProperty("os.name"), "OS Version: " + System.getProperty("os.version")));
 			}
 		}
 	};
@@ -279,6 +284,8 @@ public class Settings {
 	            g.setColor(Color.black);
 	         else 
 	            g.setColor(Color.gray);
+			
+			//g.drawImage(Game.jolt.getUserAvatarImage(), getX(), getY(), 48, 48, null);
 	        
             g.setFont(customFont);
             g.drawString(text, getX() + (getWidth() / 2) - (g.getFontMetrics().stringWidth(text)/2) + textOffsetX, getY() + (g.getFontMetrics().getHeight()/2) + textOffsetY);
@@ -305,6 +312,18 @@ public class Settings {
 	
 	public void tick() {
 		for(Button b : settingsButtons) b.functions();
+		
+		if (Game.graphicsQuality == 2) {
+			if(MainMenu.portuguese)
+				Game.showGraphics = "Alta";
+			else 
+				Game.showGraphics = "High";
+		} else if (Game.graphicsQuality == 1) {
+			if (MainMenu.portuguese)
+				Game.showGraphics = "Baixa";
+			else 
+				Game.showGraphics = "Low";
+		}
 		
 		if(esc) {
 			esc = false;

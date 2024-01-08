@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 
 import com.notestudios.graphics.UI;
 import com.notestudios.main.Game;
+import com.notestudios.main.Window;
 import com.notestudios.util.Button;
 import com.notestudios.util.Sound;
 
@@ -29,6 +30,7 @@ public class MainMenu {
 	public short curEncode = 0;
 	public static BufferedImage menuCreditsIcon;
 	public boolean up, down, left, right, enter;
+	public boolean loadGameSave = false;
 	
 	public static InputStream streamFont = ClassLoader.getSystemClassLoader().getResourceAsStream(Game.AlterebroFontDir);
 	public static Font aFont;
@@ -44,7 +46,7 @@ public class MainMenu {
 		public void functions() {
 			customBackColor = new Color(220, 220, 0);
 			customTextColor = Color.black;
-			if(!pauseMenu.showPauseMenu) {
+			if(!pauseMenu.pauseMode) {
 				x = (Game.window.getWidth()/2) - (getWidth()/2);
 				y = 290;
 			} else {
@@ -52,25 +54,25 @@ public class MainMenu {
 				y = 290;
 			}
 			if(english) {
-				if(pauseMenu.showPauseMenu) 
+				if(pauseMenu.pauseMode) 
 					text = "Resume";
 				else
 					text = "Play Game";
 			} else {
-				if(pauseMenu.showPauseMenu)
+				if(pauseMenu.pauseMode)
 					text = "Continuar Jogo";
 				else
 					text = "Novo Jogo";
 			}
 			if(clicked) {
 				clicked = false;
-				if(pauseMenu.showPauseMenu) 
+				if(pauseMenu.pauseMode) 
 					pauseMenu.closePauseMenu = true;
 				else 
 					Game.gameState = "Normal";
 				
 				if(!Game.mute) {
-					if(!pauseMenu.showPauseMenu) 
+					if(!pauseMenu.pauseMode) 
 						Sound.newGame.play();
 					else 
 						Sound.unpauseGame.play();
@@ -112,9 +114,8 @@ public class MainMenu {
 	};
 	
 	public Button loadBtn = new Button(PauseMenu.x + 30, 50, 340, 50, "Load Game") {
-		
 		public void functions() {
-			if(!pauseMenu.showPauseMenu) {
+			if(!pauseMenu.pauseMode) {
 				x = (Game.window.getWidth()/2) - (getWidth()/2);
 				y = playBtn.getY() + playBtn.getHeight() + 6;
 			} else {
@@ -128,23 +129,29 @@ public class MainMenu {
 			
 			if(clicked) {
 				clicked = false;
-				UI.doTransition = true;
-				pauseMenu.showPauseMenu = false;
-				if (Game.world.saveFile.exists()) {
-					String saver = Game.world.loadGame(curEncode);
-					Game.world.applySave(saver);
+				if(Game.world.saveFile.exists()) {
 					if(!Game.mute) Sound.loadSave.play();
-					Game.cutsceneState = Game.finishCutscene;
-				}
+					UI.doTransition = true;
+					loadGameSave = pauseMenu.pauseMode;
+					if(!pauseMenu.pauseMode) { load(); }
+				} else { if(!Game.mute) Sound.errorSound.play(); }
+			}
+			if(loadGameSave) {
+				pauseMenu.closePauseMenu = true;
 			}
 		}
-		
 	};
+	
+	public void load() {
+		String saver = Game.world.loadGame(curEncode);
+		Game.world.applySave(saver);
+		Game.cutsceneState = Game.finishCutscene;
+	}
 	
 	public Button settingsBtn = new Button(PauseMenu.x + 30, 50, 340, 50, "Settings") {
 		
 		public void functions() {
-			if(!pauseMenu.showPauseMenu) {
+			if(!pauseMenu.pauseMode) {
 				x = loadBtn.getX();
 				y = loadBtn.getY() + loadBtn.getHeight() + 6;
 			} else {
@@ -194,7 +201,7 @@ public class MainMenu {
 		
 		public void functions() {
 			customBackColor = new Color(50, 40, 40);
-			if(!pauseMenu.showPauseMenu) {
+			if(!pauseMenu.pauseMode) {
 				x = (Game.window.getWidth()/2) - (getWidth()/2);
 				y = Game.window.getHeight() - 90;
 			} else {
@@ -232,7 +239,7 @@ public class MainMenu {
 				text = "Yes";
 			else
 				text = "Sim";
-			if(!pauseMenu.showPauseMenu) {
+			if(!pauseMenu.pauseMode) {
 				x = ((Game.window.getWidth()/2)) - (width/2) - (cancelBtn.getWidth()/2);
 				y = PauseMenu.y + 100;
 			} else {
@@ -284,7 +291,7 @@ public class MainMenu {
 		Game.showLoginPopup = !Game.jolt.isLoggedIn && !Game.gamejoltCredentialsFile.exists()
 				&& !Game.gameCredentialsFile.exists();
 		
-		Game.window.info(Game.frame).setTitle("The Traveler | "+Game.randomText);
+		Game.window.info(Window.frame).setTitle("The Traveler | "+Game.randomText);
 		
 		menuButtons = Collections.unmodifiableList(Arrays.asList(
 				playBtn,
@@ -335,15 +342,15 @@ public class MainMenu {
 		if(!exitRequest) {
 			g.setFont(aFont);
 			g.setColor(Color.gray);
-			g.drawString("The",  Game.window.getX() + (Game.window.getWidth()/2) - (g.getFontMetrics().stringWidth("The")/2)+2, 82);
+			g.drawString("The", (Game.window.getWidth()/2) - (g.getFontMetrics().stringWidth("The")/2)+2, 82);
 			g.setColor(Color.white);
-			g.drawString("The",  Game.window.getX() + (Game.window.getWidth()/2) - (g.getFontMetrics().stringWidth("The")/2), 80);
+			g.drawString("The", (Game.window.getWidth()/2) - (g.getFontMetrics().stringWidth("The")/2), 80);
 			
 			g.setFont(Game.travelerLogoFont);
 			g.setColor(Color.gray);
-			g.drawString("TRAVELER", Game.window.getX() + (Game.window.getWidth()/2) - (g.getFontMetrics().stringWidth("TRAVELER")/2) + 5, 170);
+			g.drawString("TRAVELER", (Game.window.getWidth()/2) - (g.getFontMetrics().stringWidth("TRAVELER")/2) + 5, 170);
 			g.setColor(Color.yellow);
-			g.drawString("TRAVELER",  Game.window.getX() + (Game.window.getWidth()/2) - (g.getFontMetrics().stringWidth("TRAVELER")/2), 165);
+			g.drawString("TRAVELER", (Game.window.getWidth()/2) - (g.getFontMetrics().stringWidth("TRAVELER")/2), 165);
 			
 		} if(exitRequest) {
 			g.setFont(MainMenu.DialogFont);

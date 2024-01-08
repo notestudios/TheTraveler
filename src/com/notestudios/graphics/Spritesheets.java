@@ -9,10 +9,29 @@ import javax.swing.JOptionPane;
 import com.notestudios.menus.MainMenu;
 
 public class Spritesheets {
+	
+	public class SpriteSheet {
+		
+		private BufferedImage sheet;
+		
+		public SpriteSheet(BufferedImage sheet) {
+			this.sheet = sheet;
+		}
+		public BufferedImage getSprite(int x, int y, int width, int height) {
+			return sheet.getSubimage(x, y, width, height);
+		}
+		public int getMaxWidth() {
+			return sheet.getWidth();
+		}
+		public int getMaxHeight() {
+			return sheet.getHeight();
+		}
+	}
+	
 	public BufferedImage spritesheet;
-	public static BufferedImage spritesheetPlayer;
-	public static BufferedImage spritesheetTiles;
-	public static BufferedImage spritesheetUI;
+	public static SpriteSheet entities;
+	public static SpriteSheet tiles;
+	public static SpriteSheet ui;
 
 	public Spritesheets() {
 		reloadImages();
@@ -20,18 +39,14 @@ public class Spritesheets {
 	
 	public void reloadImages() {
 		try {
-			spritesheetPlayer = ImageIO.read(getClass().getResourceAsStream("/spritesheets/Player Spritesheet.png"));
-			spritesheetTiles = ImageIO.read(getClass().getResourceAsStream("/spritesheets/Tiles Spritesheet.png"));
-			spritesheetUI = ImageIO.read(getClass().getResourceAsStream("/spritesheets/UI Spritesheet.png"));
-			MainMenu.menuCreditsIcon = Spritesheets.spritesheetUI.getSubimage(96, 96, 16, 16);
+			entities = new SpriteSheet(ImageIO.read(getClass().getResourceAsStream("/spritesheets/Player Spritesheet.png")));
+			tiles = new SpriteSheet(ImageIO.read(getClass().getResourceAsStream("/spritesheets/Tiles Spritesheet.png")));
+			ui = new SpriteSheet(ImageIO.read(getClass().getResourceAsStream("/spritesheets/UI Spritesheet.png")));
+			MainMenu.menuCreditsIcon = ui.getSprite(96, 96, 16, 16);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, JOptionPane.ERROR, "An error ocurred while loading sprite sheets.\n"+e, 0);
 		}
-	}
-	
-	public static BufferedImage getSprite(BufferedImage spritesheet, int x, int y, int width, int height) {
-		return spritesheet.getSubimage(x, y, width, height);
 	}
 }

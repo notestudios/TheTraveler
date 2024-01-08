@@ -156,7 +156,7 @@ public class GameOver {
 			}
 		} if(finishGame) {
 			if(finishedCloseAni) {
-				MainMenu.pauseMenu.showPauseMenu = false;
+				MainMenu.pauseMenu.pauseMode = false;
 				UI.doTransition = true;
 				Game.world.resetLevel();
 				Game.gameState = "Menu";

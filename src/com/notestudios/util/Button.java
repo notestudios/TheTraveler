@@ -12,7 +12,11 @@ import com.notestudios.main.Game;
 import com.notestudios.main.Window;
 import com.notestudios.menus.MainMenu;
 
-public class Button {
+interface MainFunctions {
+	public void functions();
+}
+
+public class Button implements MainFunctions {
 	
 	public static List<Button> buttons = new ArrayList<>();
 	
@@ -20,13 +24,14 @@ public class Button {
 	
 	protected double x;
 	protected double y;
-	protected int width;//optional
-	protected int height;//optional
-	protected String text = "Button"+buttons.size()+"Text";
+	protected int width;
+	protected int height;
+	protected String text = "Button"+buttons.size();
 	public int layer = 0;
 	
 	protected int timeSelected = 0;
 	protected int maxTimeSelected = 60*2;
+	protected int maxAddictiveSizeAnimation = 5, addictiveSizeAnimation = maxAddictiveSizeAnimation;
 	
 	public boolean selected = false;
 	public boolean clicked = false;
@@ -73,25 +78,30 @@ public class Button {
 		/* Select animation */
 		if(this.selectAni) {
 			if(selected) {
+				if(addictiveSizeAnimation > 0) addictiveSizeAnimation--;
 				if(selectAlpha < 255) {
 					selectAlpha+=51;
 					wasSelected = true;
 				}
 			} else { 
-				if(wasSelected && selectAlpha <= 255 && selectAlpha > 0) 
+				if(wasSelected && selectAlpha <= 255 && selectAlpha > 0) { 
 					selectAlpha-=51;
+				}
+				if(addictiveSizeAnimation < maxAddictiveSizeAnimation) addictiveSizeAnimation++;
 			}
 		}
 		
 		g.setColor(customBackColor);
-		g.fillRoundRect((int)x, (int)y, getWidth(), getHeight(), this.arc, this.arc);
+		g.fillRoundRect(getX(), getY(), getWidth(), getHeight(), this.arc, this.arc);
 		
 		if(selected || selectAlpha > 0) {
 			g.setColor(new Color(255, 255, 255, selectAlpha));
+			g.drawRoundRect(getX()-(addictiveSizeAnimation/2), getY()-(addictiveSizeAnimation/2), getWidth()+addictiveSizeAnimation, getHeight()+addictiveSizeAnimation , this.arc, this.arc);
 		} else {
 			g.setColor(new Color(50, 50, 50, generalAlpha));
+			g.drawRoundRect(getX(), getY(), getWidth(), getHeight(), this.arc, this.arc);
 		}
-		g.drawRoundRect((int)x, (int)y, (int)width, (int)height, this.arc, this.arc);
+		
 		
 		if(!unavailable) 
 			g.setColor(this.customTextColor);
@@ -100,11 +110,11 @@ public class Button {
 		
 		if(buttonImage != null) {
 			if(customImageW != 1) {
-				g.drawImage(buttonImage, getX() + (width/2) - ((buttonImage.getWidth() + (customImageW/2))/2) + imageOffsetX, 
-						getY() + (height/2) - ((buttonImage.getWidth() + (customImageH/2))/2) + imageOffsetY, customImageW, customImageH, null);
+				g.drawImage(buttonImage, getX() + (getWidth()/2) - ((buttonImage.getWidth() + (customImageW/2))/2) + imageOffsetX, 
+						getY() + (getHeight()/2) - ((buttonImage.getWidth() + (customImageH/2))/2) + imageOffsetY, customImageW, customImageH, null);
 			} else {
-				g.drawImage(buttonImage, getX() + (width/2) - (buttonImage.getWidth()/2) + imageOffsetX, 
-						getY() + (height/2) - (buttonImage.getWidth()/2) + imageOffsetY, null);
+				g.drawImage(buttonImage, getX() + (getWidth()/2) - (buttonImage.getWidth()/2) + imageOffsetX, 
+						getY() + (getHeight()/2) - (buttonImage.getWidth()/2) + imageOffsetY, null);
 			}
 		} else {
 			if(customFont == Game.menuFont2) 
@@ -116,7 +126,7 @@ public class Button {
 			if(g.getFontMetrics().stringWidth(text) > getWidth()) 
 				xCenter = this.getX() + this.textOffsetX + 6;
 			else 
-				xCenter = this.getX() + (this.width / 2) - (g.getFontMetrics().stringWidth(this.text)/2) + textOffsetX;
+				xCenter = this.getX() + (this.getWidth()/2) - (g.getFontMetrics().stringWidth(this.text)/2) + textOffsetX;
 			
 			g.drawString(this.text,  xCenter, getY() + (g.getFontMetrics().getHeight()/2) + textOffsetY);
 		}
@@ -145,27 +155,27 @@ public class Button {
 	}
 	
 	public void setX(int newX) {
-		x = newX;
+		this.x = newX;
 	}
 	
 	public void setY(int newY) {
-		y = newY;
+		this.y = newY;
 	}
 	
 	public int getX() {
-		return (int)x;
+		return (int)this.x;
 	}
 	
 	public int getY() {
-		return (int)y;
+		return (int)this.y;
 	}
 	
 	public int getWidth() {
-		return (int)width;
+		return (int)this.width;
 	}
 	
 	public int getHeight() {
-		return (int)height;
+		return (int)this.height;
 	}
 	
 }

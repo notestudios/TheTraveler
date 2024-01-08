@@ -71,6 +71,7 @@ public class Controls {
 			g.drawString("(Mouse) Right Click = Pause Game", 480, 245 + 72 + 72-(30*Window.SCALE));
 			g.drawString("(Mouse) Mouse Wheel = N/A", 476, 245 + 72 + 72 + 72-(30*Window.SCALE));
 			g.drawString("(Mouse) Select Option = Mouse", 480, 244 + 72 + 72 + 72 + 72-(30*Window.SCALE));
+			g.drawString("(Keyb.) Place Bomb = 'Z'", 480, 244 + 72 + 72 + 72 + 72 + 72-(30*Window.SCALE));
 		}
 		
 		backBtn.render(g);

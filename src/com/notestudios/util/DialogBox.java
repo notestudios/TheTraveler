@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.notestudios.input.Keyboard;
 import com.notestudios.main.Game;
 import com.notestudios.menus.MainMenu;
 import static com.notestudios.graphics.UI.drawString;
@@ -71,11 +72,11 @@ public class DialogBox {
 		} if(nameAnimationIndex < name.length()) {
 			nameAnimationIndex++;
 		}
-		if(Game.getKeyPressed() == KeyEvent.VK_ESCAPE) {
+		if(Keyboard.getKeyboard().getKeyPressed() == KeyEvent.VK_ESCAPE) {
 			dialogBoxes.remove(this);
 			Game.dialogMode = false;
 		}
-		if(Game.getKeyPressed() == KeyEvent.VK_ENTER) {
+		if(Keyboard.getKeyboard().getKeyPressed() == KeyEvent.VK_ENTER) {
 			continueDialog();
 		}
 		switch(dialogOrientation) {

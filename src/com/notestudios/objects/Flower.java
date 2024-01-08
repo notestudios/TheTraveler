@@ -8,4 +8,16 @@ public class Flower extends InteractibleObjects {
 		super(x, y, width, height, sprite);
 	}
 
+	@Override
+	public void tick() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void ifCollides() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
