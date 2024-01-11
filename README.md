@@ -3,10 +3,10 @@
   <a href="https://gamejolt.com/games/ttraveler/796130">GameJolt Page</a>
   > Release: **4.5.1** <br>
   > Beta: **4.5.2** <br>
-<center>
+
 <a href="https://gamejolt.com/games/ttraveler/796130">
-<img src="https://github.com/notestudios/TheTraveler/blob/master/assets/images/BannerGitHub.png?raw=true" alt="The Traveler Github Banner"></a>
-</center>
+<img src="https://raw.githubusercontent.com/retrozinndev/TheTraveler/main/assets/images/BannerGitHub.png" alt="The Traveler Github Banner">
+</a>
 <br>
 
   This is **The Traveler** source code on GitHub! You can mod the game, help optimizing, create new game levels and make any changes you want to it!
