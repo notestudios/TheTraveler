@@ -28,16 +28,10 @@ sourceSets {
     }
 }
 
-tasks.withType<Jar> {
-    manifest {
-        attributes["Main-Class"] = "com.notestudios.main.Game"
-    }
-}
-
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
-    targetCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_21
 }

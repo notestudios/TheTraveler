@@ -97,7 +97,7 @@ MouseMotionListener, MouseWheelListener {
 	public static final InputStream stream6 = ClassLoader.getSystemClassLoader().getResourceAsStream(AlterebroFontDir);
 	public static Font travelerLogoFont;
 	
-	private static BufferedImage img;
+	private BufferedImage img;
 	public Spritesheets spritesheet;
 	private File debugFile = new File("enableDebug.txt");
 	private File licenseFile = new File("LICENSE.txt");
@@ -107,7 +107,7 @@ MouseMotionListener, MouseWheelListener {
 	gamejoltCredentialsFile = new File(".gj-credentials");
 	public File amogus = new File("amogus.txt");
 	
-	private List<String> words = Arrays.asList("look mom! i'm famous!",
+	private List<String> words = Arrays.asList("christmas is approching fast!",
 	"frontend or backend?", "hello there", "potato", "this is "+currentVersion+"!", "what's up?", 
 	"fun fact: the developer likes coding ;)", "shop is available!!",
 	"v5 when?", "finally the 'kaboom' title makes sense",
@@ -118,8 +118,8 @@ MouseMotionListener, MouseWheelListener {
 	
 	public static String showGraphics;
 	public static String randomText;
-	public static final String currentVersion = "v4.5.2b";
-	private static final String day = "08", month = "01", year = "2024";
+	public static final String currentVersion = "HAPPY NEW YEAR! v4.5.1";
+	private static final String day = "06", month = "01", year = "2024";
 	public final static String lastUpdated = year+"/"+month+"/"+day;
 	public static String gameState = "Menu";
 	
@@ -356,9 +356,6 @@ MouseMotionListener, MouseWheelListener {
 		bs.show();
 	}
 	
-	public static BufferedImage getRenderImage() {
-		return img;
-	}
 	public static Random getRandom() {
 		return random;
 	}
