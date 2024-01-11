@@ -2,6 +2,7 @@
   **The Traveler** Game on GitHub! <br>
   <a href="https://gamejolt.com/games/ttraveler/796130">GameJolt Page</a>
   > Release: **4.5.1** <br>
+  > Beta: **4.5.2** <br>
 <center>
 <a href="https://gamejolt.com/games/ttraveler/796130">
 <img src="https://github.com/notestudios/TheTraveler/blob/master/assets/images/BannerGitHub.png?raw=true" alt="The Traveler Github Banner"></a>
@@ -24,14 +25,8 @@ You can clone this repo [Installing Git](https://git-scm.com/downloads) (recomme
 
   - Using GitHub:
     
-    1. Select the desired branch in the left corner(stable: master; development: beta):
-       
-       ![Branch list dropdown](https://github.com/retrozinndev/TheTraveler/assets/65513943/cb173d4f-7828-4517-ba0c-009a578e115b)
-    
+    1. Select the desired branch in the left corner(stable: master; development: beta);
     3. Click in the green **<>Code** dropdown in the right corner of the project files:
-
-       ![<>Code dropdown](https://github.com/retrozinndev/TheTraveler/assets/65513943/b2e3e50a-1b38-4706-a391-b9dda7d5e898)
-
     4. In the opened menu: click on the **Download ZIP** button:
 
        ![Download ZIP button](https://github.com/retrozinndev/TheTraveler/assets/65513943/e5db811b-b6cf-4b91-8af0-5b2875d75349)
