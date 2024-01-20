@@ -20,6 +20,9 @@
 *.rar
 *.7z
 
+# Eclipse build prefs
+*.core.prefs
+
 # Build
 bin
 build
