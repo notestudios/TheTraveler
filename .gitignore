@@ -21,7 +21,7 @@
 *.7z
 
 # Eclipse build prefs
-*.core.prefs
+*.prefs
 
 # Build
 bin
