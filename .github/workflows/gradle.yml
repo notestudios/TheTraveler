@@ -21,8 +21,9 @@ jobs:
         java-version: '8'
         distribution: 'temurin'
     - name: Set up Gradle 8.5
-      uses: sdkman/sdkman-action@v1
+      uses: sdkman/sdkman-action@v1-preview-2
       with:
-        arguments: install gradle 8.5
+        candidate: gradle
+        version: 8.5
     - name: Build with Gradle
       run: gradle build
