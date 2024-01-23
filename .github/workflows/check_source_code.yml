@@ -21,7 +21,7 @@ jobs:
         java-version: '8'
         distribution: 'temurin'
     - name: Set up Gradle 8.5
-      uses: actions/setup-gradle@v0
+      uses: gradle/setup-gradle@v0
     - name: Build with Gradle
       run: gradle build
     - name: Checkout
