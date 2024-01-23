@@ -5,7 +5,7 @@
   > Beta: **4.5.2** <br>
 
 <a href="https://gamejolt.com/games/ttraveler/796130">
-<img src="https://raw.githubusercontent.com/retrozinndev/TheTraveler/main/assets/images/BannerGitHub.png" alt="The Traveler Github Banner">
+<img src="https://raw.githubusercontent.com/notestudios/TheTraveler/main/src/main/resources/images/BannerGitHub.png" alt="The Traveler Github Banner">
 </a>
 <br>
 
