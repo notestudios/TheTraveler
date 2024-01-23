@@ -1,4 +1,4 @@
-name: Check source code
+name: Build source code
 
 permissions:
   contents: read
