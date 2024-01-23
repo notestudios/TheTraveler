@@ -23,8 +23,8 @@ jobs:
     - name: Set up Gradle 8.5
       uses: gradle/actions/setup-gradle@v0
     - name: Build with Gradle
-      run: ./gradlew build
+      run: gradle build
     - name: Checkout
       uses: actions/checkout@v3
     - name: Check source code
-      run: ./gradlew --verbose check
+      run: gradle --verbose check
