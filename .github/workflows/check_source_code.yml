@@ -22,14 +22,19 @@ jobs:
         distribution: 'temurin'
     
     - name: Set up Gradle 8.5
-      uses: gradle/gradle-build-action@v2
+      uses: gradle/gradle-build-action@v2.11.1
       id: setup-gradle
     
     - name: Build with Gradle
-      run: gradle build
+      uses: gradle/gradle-build-action@v2.11.1
+      id: build
       
     - name: Checkout
       uses: actions/checkout@v4
       
     - name: Check source code
-      run: gradle --verbose check
+      uses: gradle/gradle-build-action@v2.11.1
+      with: 
+        arguments: --verbose
+      id: check
+          
