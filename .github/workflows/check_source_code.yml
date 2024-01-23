@@ -15,6 +15,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+    - name: Show present woorking directory files (Testing)
+      run: ls
+
     - name: Set up Temurin OpenJDK 8
       uses: actions/setup-java@v4
       with:
