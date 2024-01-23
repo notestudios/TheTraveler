@@ -16,9 +16,6 @@ jobs:
 
     steps:
 
-    - name: Show present woorking directory files (Testing)
-      run: ls
-
     - name: Set up Temurin OpenJDK 8
       uses: actions/setup-java@v4
       with:
@@ -26,23 +23,23 @@ jobs:
         distribution: 'temurin'
     
     - name: Set up Gradle 8.5
-      uses: gradle/gradle-build-action@v2.11.1
+      uses: gradle/gradle-build-action@v2
       id: setup-gradle
       with:
         gradle-version: 8.5
     
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@v2.11.1
+      uses: gradle/gradle-build-action@v2
       with: 
-        arguments: --debug --no-build-cache build
+        arguments: --stacktrace build
         gradle-version: 8.5
       
     - name: Checkout
       uses: actions/checkout@v4
       
     - name: Check source code
-      uses: gradle/gradle-build-action@v2.11.1
+      uses: gradle/gradle-build-action@v2
       with: 
-        arguments: --debug check
+        arguments: --stacktrace check
         gradle-version: 8.5
           
