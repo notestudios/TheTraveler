@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
   
 jobs:
-  check:
+  build:
     runs-on: ubuntu-latest
     
     steps:
@@ -24,15 +24,17 @@ jobs:
     - name: Set up Gradle 8.5
       uses: gradle/gradle-build-action@v2.11.1
       id: setup-gradle
+
+    - name: Checkout
+      uses: actions/checkout@v4
     
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2.11.1
-      id: build
-      
-    - name: Checkout
-      uses: actions/checkout@v4
-      
-    - name: Check source code
-      uses: gradle/gradle-build-action@v2.11.1
-      with: 
-        arguments: --debug check
+      with:
+        arguments: --debug jar
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4.2.0
+      with:
+        name: Build-jar
+        path: build/libs/TheTraveler.jar
