@@ -26,10 +26,10 @@ jobs:
       id: setup-gradle
     
     - name: Build with Gradle
-      run: ./gradlew build
+      run: gradle build
       
     - name: Checkout
       uses: actions/checkout@v4
       
     - name: Check source code
-      run: ./gradlew --verbose check
+      run: gradle --verbose check
