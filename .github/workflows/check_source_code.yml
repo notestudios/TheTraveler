@@ -1,7 +1,7 @@
 name: Check source code
 
 permissions:
-  contents: read, write
+  contents: read
 
 on:
   push:
