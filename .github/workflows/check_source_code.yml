@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
   
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,7 +27,8 @@ jobs:
     
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2.11.1
-      id: build
+      with: 
+        arguments: --debug --no-build-cache build
       
     - name: Checkout
       uses: actions/checkout@v4
