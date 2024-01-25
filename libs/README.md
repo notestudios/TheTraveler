@@ -5,4 +5,4 @@ This repo requires, until now, two third-party libraries:
    
    Credits to [ashleygwinnell](https://github.com/ashleygwinnell/) for the Java Game Jolt API and [Vatuu](https://github.com/Vatuu) for the Java Discord RPC.
 
-   All the required libraries are included in the repo, under the `libs/` directory.
+   All the required libraries are included in the `pom.xml`, in the root of the project.
