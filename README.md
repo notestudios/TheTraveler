@@ -11,6 +11,11 @@
 
   This is **The Traveler** source code on GitHub! You can mod the game, help optimizing, create new game levels and make any changes you want to it!
 
+## About the repo.
+ The Traveler GitHub Repository has been moved to [notestudios/TheTraveler](https://github.com/notestudios/TheTraveler). Altough the project is still maintained by me, 
+I moved it to make the Note Studios in-game logo and face make more sense, so I created this organization and moved the repo to that organization. Even so, you can
+still use the repo in my account. It has just the `main` branch, meaning it has stable changes. I am just a single person, so feel free to [help the project](#Contributing) if you want!
+
 ## Compiling from source
 This will guide you how to compile the game and run it with from the source code.
 
