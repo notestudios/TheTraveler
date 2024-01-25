@@ -18,9 +18,10 @@ This section will guide you how to build the game and run it with from the sourc
 The Traveler needs some dependencies to be installed to make the game run. Such as:
  - [Java](https://java.com) or [OpenJDK](https://jdk.java.net/21/)
  - [Gradle](https://gradle.org/install)
+ - [Git](https://git-scm.com/downloads) (optional)
 
 ### Cloning Repository
-You can clone this repo [Installing Git](https://git-scm.com/downloads) (recommended) or just downloading the source here, on GitHub:
+You can clone this repo [Installing Git](#Installing-dependencies) (recommended) or just downloading the source here, on GitHub:
 
    - Using Git CLI: open a new terminal in the desired folder and paste:
      ```
