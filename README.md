@@ -2,7 +2,6 @@
   **The Traveler** Game on GitHub! <br>
   <a href="https://gamejolt.com/games/ttraveler/796130">GameJolt Page</a>
   > Release: **4.5.1** <br>
-  > Beta: **4.5.2** <br>
 
 <a href="https://gamejolt.com/games/ttraveler/796130">
 <img src="https://raw.githubusercontent.com/notestudios/TheTraveler/main/src/main/resources/images/BannerGitHub.png" alt="The Traveler Github Banner">
@@ -17,7 +16,7 @@ This section will guide you how to build the game and run it with from the sourc
 ### Installing dependencies
 The Traveler needs some dependencies to be installed to make the game run. Such as:
  - [Java](https://java.com) or [OpenJDK](https://jdk.java.net/21/)
- - [Gradle](https://gradle.org/install)
+ - [Maven](https://maven.apache.org/download.cgi)
  - [Git](https://git-scm.com/downloads) (optional)
 
 ### Cloning Repository
@@ -40,31 +39,22 @@ You can clone this repo [Installing Git](#Installing-dependencies) (recommended)
     5. Open your system's **Downloads** folder and extract the downloaded ZIP file ([7zip](https://www.7-zip.org/download.html), [RAR](https://www.win-rar.com/))
     
 ### Compiling
-This repository uses [Gradle](https://gradle.org/) for building and running, you can [Install Gradle Tool](https://gradle.org/install/) or use the project one.
-
-  - Windows: Open a new Windows Terminal, Powershell or CMD window on the project path and use the following comand:
+This repository uses [Maven](https://maven.apache.org/) for building and running, you can [Install the Maven Tool](#Installing-dependencies) to compile it.
+  - Open a new terminal in the project directory and run:
     ```
-    .\gradlew.bat build
-    ```
-  - Linux/macOS: Open a new terminal in the project folder and run:
-    ```
-    ./gradlew build
+    mvn package
     ```
 
 ### Running
-  To run the project build you made previously, in the same terminal window, run the following command:
-  - Windows: In the project folder, use the following comand:
+To run the package build you made previously:
+  - In the same terminal, run the following command:
     ```
-    .\gradlew.bat run
-    ```
-  - Linux/macOS: In the project folder, run:
-    ```
-    ./gradlew run
+    java -jar target/TheTraveler-4.1.0.jar
     ```
   After that, the game will start, if it does not start, [open a new issue here](https://github.com/retrozinndev/TheTraveler/issues/new), copy and paste the output of the used command in the issue content and I will help you! Have fun!
 
 ## Required Libraries
-  See under the [Libs folder](https://github.com/retrozinndev/TheTraveler/tree/master/libs#third-party-libraries) for more information.
+  In this branch, libraries will be available inside the `pom.xml` file. Maven will automatically download and compile them, so don't worry!
  
 ## Contributing
   #### License
