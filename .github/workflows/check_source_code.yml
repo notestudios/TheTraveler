@@ -33,7 +33,7 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2
       with: 
-        arguments: --stacktrace build
+        arguments: --info build
         gradle-version: 8.5
       
     - name: Checkout
