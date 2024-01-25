@@ -25,8 +25,7 @@
 
 # Build
 bin
-build
-!gradle-wrapper.jar
+target/
 
 # Libraries
 !libs
@@ -39,6 +38,3 @@ LICENSE
 hs_err_pid*
 replay_pid*
 /bin/
-
-# Ignore Gradle project-specific cache directory
-.gradle
