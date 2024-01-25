@@ -12,7 +12,12 @@
   This is **The Traveler** source code on GitHub! You can mod the game, help optimizing, create new game levels and make any changes you want to it!
 
 ## Compiling from source
-This will guide you how to compile the game and run it with from the source code.
+This section will guide you how to build the game and run it with from the source code.
+
+### Installing dependencies
+The Traveler needs some dependencies to be installed to make the game run. Such as:
+ - [Java](https://java.com) or [OpenJDK](https://jdk.java.net/21/)
+ - [Gradle](https://gradle.org/install)
 
 ### Cloning Repository
 You can clone this repo [Installing Git](https://git-scm.com/downloads) (recommended) or just downloading the source here, on GitHub:
@@ -31,7 +36,7 @@ You can clone this repo [Installing Git](https://git-scm.com/downloads) (recomme
 
        ![Download ZIP button](https://github.com/retrozinndev/TheTraveler/assets/65513943/e5db811b-b6cf-4b91-8af0-5b2875d75349)
 
-    5. Open your system's **Downloads** folder and extract the downloaded ZIP file ([RAR](https://www.win-rar.com/download.html), [7zip](https://www.7-zip.org/download.html))
+    5. Open your system's **Downloads** folder and extract the downloaded ZIP file ([7zip](https://www.7-zip.org/download.html), [RAR](https://www.win-rar.com/))
     
 ### Compiling
 This repository uses [Gradle](https://gradle.org/) for building and running, you can [Install Gradle Tool](https://gradle.org/install/) or use the project one.
