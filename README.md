@@ -8,17 +8,17 @@
 </a>
 <br>
 
-This is **The Traveler** source code on GitHub! You can mod the game, [help optimizing](#Contributing), create [new game levels](#Contributing) and make **any** changes you want to it!
-Please, read the [License](#License) section for more information of what you can do.
+This is **The Traveler** source code on GitHub! You can mod the game, [help optimizing](#-Contributing), create [new game levels](#-Contributing) and make **any** changes you want to it!
+Please, read the [License](#-License) section for more information of what you can do.
 
 ## ℹ️ About
  The Traveler GitHub Repository has been moved to the **Note Studios** organization. Altough the project is still maintained by me, 
 It has been moved to make the Note Studios in-game logo and face make more sense, so I created this organization and moved the repo here.
 Even so, you can still use the repo in my account. It has just the `main`(stable) branch, meaning it's stable commits. I am just a single person, 
-so feel free to [contribute to the project](#Contributing) if you want!
+so feel free to [contribute to the project](#-Contributing) if you want!
 
 ## 🎮 How can I play?
-You can play The Traveler right away on [Game Jolt](https://gamejolt.com/games/ttraveler/796130) or you can [build your own](#Playing-from-source) with the source! 
+You can play The Traveler right away on [Game Jolt](https://gamejolt.com/games/ttraveler/796130) or you can [build your own](#-Playing-from-source) with the source! 
 
 ## 🧰 Playing from source
 This section will guide you on how to build the game and run it with from the source code.
@@ -32,7 +32,7 @@ The Traveler needs some dependencies to be installed to make the game run. Such 
   See under the [Libs folder](https://github.com/retrozinndev/TheTraveler/tree/master/libs#third-party-libraries) for more information.
 
 ### 📥 Cloning Repository
-You can clone this repo [Installing Git](#Installing-dependencies) (recommended) or just downloading the source here, on GitHub:
+You can clone this repo [Installing Git](#-Installing-dependencies) (recommended) or just downloading the source here, on GitHub:
 
    - Using Git CLI: open a new terminal in the desired folder and paste:
      ```
