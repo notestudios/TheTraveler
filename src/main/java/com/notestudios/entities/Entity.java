@@ -133,6 +133,12 @@ public class Entity implements MainFunctions {
 		return e1Mask.intersects(e2Mask);
 	}
 
+	public void renderShadow(Graphics g, int shadowWidth, int shadowHeight) {
+	    int halfShadow = getHeight()-(shadowHeight/2);
+		g.setColor(new Color(0, 0, 0, 100));
+		g.fillOval(getX() + (getWidth()/2) - (shadowWidth/2) - Camera.x, getY() + halfShadow - Camera.y, shadowWidth, shadowHeight);
+	}
+
 	public void render(Graphics g) {
 		g.drawImage(sprite, getX() - Camera.x, getY() - Camera.y, null);
 		if(Game.debugMode) {

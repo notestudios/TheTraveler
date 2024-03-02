@@ -260,8 +260,7 @@ public class Player extends Entity {
 	}
 
 	public void render(Graphics g) {
-		g.setColor(new Color(0, 0, 0, 100));
-		g.fillOval(getX() - Camera.x + 4, getY() - Camera.y + 13, 9, 4);
+		renderShadow(g, getWidth()-6, 4);
 		if(!isDamaged) {
 			if(dir == right_dir) {
 				g.drawImage(rightPlayer[index], getX() - Camera.x, getY() - Camera.y - (int) z, null);
