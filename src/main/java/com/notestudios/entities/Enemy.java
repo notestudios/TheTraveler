@@ -135,6 +135,7 @@ public class Enemy extends Entity {
 	}
 
 	public void render(Graphics g) {
+		renderShadow(g, getWidth()-6, 4);
 		if (moved) {
 			g.drawImage(sprites[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		}
@@ -152,18 +153,3 @@ public class Enemy extends Entity {
 
 	}
 }
-
-//Old Enemy AI
-/*
- * if (x < Game.player.getX() && World.isFree((int) (x + speed), this.getY()) &&
- * !isCollidding((int) (x + speed), this.getY())) { moved = true; x += speed; }
- * else if (x > Game.player.getX() && World.isFree((int) (x - speed),
- * this.getY()) && !isCollidding((int) (x - speed), this.getY())) { moved =
- * true; x -= speed; }
- * 
- * if (y < Game.player.getY() && World.isFree(this.getX(), (int) (y + speed)) &&
- * !isCollidding(this.getX(), (int) (y + speed))) { moved = true; y += speed; }
- * else if (y > Game.player.getY() && World.isFree(this.getX(), (int) (y -
- * speed)) && !isCollidding(this.getX(), (int) (y - speed))) { moved = true; y
- * -= speed; }
- */

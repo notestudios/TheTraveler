@@ -1,5 +1,6 @@
 package com.notestudios.entities;
 
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.List;
@@ -42,5 +43,10 @@ public class Npc extends Entity {
 			new DialogBox("Dungeon Guy", dialogs, DialogBox.Orientation.BOTTOM);
 			alreadyTriggered = true;
 		}
+	}
+
+	public void render(Graphics g) {
+		renderShadow(g, getWidth()-6, 4);
+		super.render(g);
 	}
 }
