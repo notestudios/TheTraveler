@@ -25,21 +25,28 @@ This section will guide you on how to build the game and run it with from the so
 
 ### 📦 Installing dependencies
 The Traveler needs some dependencies to be installed to make the game run. Such as:
- - [Java](https://java.com) or [OpenJDK](https://jdk.java.net/21/)
+#### Needed:
+ - [Java](https://java.com) or [OpenJDK](https://jdk.java.net/21)
  - [Gradle](https://gradle.org/install)
- - [Git](https://git-scm.com/downloads) (optional)
+#### Optional:
+ - [Git](https://git-scm.com/downloads)
+ - [GitHub CLI](https://cli.github.com)
 #### Project's Required Libraries
   See under the [Libs folder](https://github.com/retrozinndev/TheTraveler/tree/master/libs#third-party-libraries) for more information.
 
 ### 📥 Cloning Repository
 You can clone this repo [Installing Git](#-Installing-dependencies) (recommended) or just downloading the source here, on GitHub:
 
-   - Using Git CLI: open a new terminal in the desired folder and paste:
+   - Using Git: open a new terminal in the desired folder and paste:
      ```
-     git clone https://github.com/retrozinndev/TheTraveler.git
+     git clone https://github.com/notestudios/TheTraveler.git
      ```
-     It will start cloning the repo in your current working directory.
-
+     After that, Git will start cloning the repo in your current working directory.
+   - Using GitHub CLI(gh)
+     ```
+     gh repo clone notestudios/TheTraveler
+     ```
+     The GitHub CLI will start clonning the repo in you current working directory.
   - Using GitHub:
     
     1. Select the desired branch in the left corner(stable: main; testing: development);
