@@ -19,32 +19,42 @@ interface MainFunctions {
 }
 
 public class Entity implements MainFunctions {
-	public double x;
-	public double y;
-	public double z;
-	protected int width;
-	protected int height;
+
+	protected double x, y, z;
+	protected int width, height;
 	protected boolean moved = false;
+	public double speed = 1;
 	public int depth = 0;
 
 	protected List<Node> path;
-
-	private BufferedImage sprite;
-	public int maskx, masky, mwidth, mheight;
 	public static List<Entity> entities;
 
+	private BufferedImage sprite;
+	public int maskx = 0, masky = 0, mwidth, mheight;
+
 	public Entity(int x, int y, int width, int height, BufferedImage sprite) {
-		if(!getClass().getSimpleName().equals(Particle.class.getSimpleName())) {
+		if(Game.devMode && !getClass().getSimpleName().equals(Particle.class.getSimpleName())) 
 			System.out.println("Creating "+getClass().getSimpleName()+"("+entities.size()+") entity...");
-		}
+		
+		initConstructor(x, y, width, height, sprite);
+	}
+
+	public Entity(int x, int y, int width, int height, double speed, BufferedImage sprite) {
+		if(Game.devMode && !getClass().getSimpleName().equals(Particle.class.getSimpleName())) 
+			System.out.println("Creating "+getClass().getSimpleName()+"("+entities.size()+") entity...");
+		
+		initConstructor(x, y, width, height, sprite);
+		this.speed = speed;
+	}
+
+	private void initConstructor(int x, int y, int width, int height, BufferedImage sprite) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		
 		this.sprite = sprite;
 
-		this.maskx = 0;
-		this.masky = 0;
 		this.mwidth = width;
 		this.mheight = height;
 	}
@@ -54,30 +64,6 @@ public class Entity implements MainFunctions {
 		this.masky = masky;
 		this.mwidth = mwidth;
 		this.mheight = mheight;
-	}
-
-	public void setX(int newX) {
-		x = newX;
-	}
-
-	public void setY(int newY) {
-		y = newY;
-	}
-
-	public int getX() {
-		return (int) this.x;
-	}
-
-	public int getY() {
-		return (int) this.y;
-	}
-
-	public int getWidth() {
-		return this.width;
-	}
-
-	public int getHeight() {
-		return this.height;
 	}
 
 	public void updateCamera() {
@@ -145,5 +131,29 @@ public class Entity implements MainFunctions {
 			g.fillRect(getX() + maskx - Camera.x, getY() + masky - Camera.y, mwidth, mheight);
 			g.setColor(new Color(0, 0, 255, 125));
 		}
+	}
+
+	public void setX(int newX) {
+		this.x = newX;
+	}
+
+	public void setY(int newY) {
+		this.y = newY;
+	}
+
+	public int getX() {
+		return (int) this.x;
+	}
+
+	public int getY() {
+		return (int) this.y;
+	}
+
+	public int getWidth() {
+		return this.width;
+	}
+
+	public int getHeight() {
+		return this.height;
 	}
 }

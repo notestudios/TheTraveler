@@ -232,8 +232,8 @@ MouseMotionListener, MouseWheelListener {
 			saveGame = false;
 			if(!Game.mute) Sound.savedGame.play();
 			String[] opt1 = { "level", "px", "py", "life", "coins", "ammo"};
-			int[] opt2 = { World.curLevel, (int) player.x, (int) player.y, (int) player.life, playerCoins, player.ammo};
-			world.saveGame(opt1, opt2, /*encode*/ui.menu.curEncode);
+			int[] opt2 = { World.curLevel, (int) player.getX(), (int) player.getY(), (int) player.life, playerCoins, player.ammo};
+			world.saveGame(opt1, opt2, ui.menu.curEncode);
 		} if(saveConfig) {
 			saveConfig = false;
 			String[] cfg1 = {"english", "portugues", "quality", "mute", "minimap", "anti-aliasing", "showPopup"};

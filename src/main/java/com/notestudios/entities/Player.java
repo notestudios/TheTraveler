@@ -29,9 +29,8 @@ public class Player extends Entity {
 	private double jumpCur = 0;
 	private double jumpSpeed = 3.5;
 	public double life = 100, maxLife = 100;
-	public double curSpeed = 1.0;
-	public double defaultSpeed = 1.0;
-	public double runSpeed = 1.4;
+	public double defSpeed = 1.0;
+	public double sprintSpd = 1.4;
 
 	public boolean right, up, left, down;
 	public boolean isDamaged = false;
@@ -96,34 +95,27 @@ public class Player extends Entity {
 				}
 			}
 		}
+		if(right && Game.world.isFree((int) (x + speed), this.getY())) {
+			moved = true;
+			dir = right_dir;
+			x += speed;
+		} else if(left && Game.world.isFree((int) (x - speed), this.getY())) {
+			moved = true;
+			dir = left_dir;
+			x -= speed;
+		} if(up && Game.world.isFree(this.getX(), (int) (y - speed))) {
+			moved = true;
+			dir = up_dir;
+			y -= speed;
+		} else if(down && Game.world.isFree(this.getX(), (int) (y + speed))) {
+			moved = true;
+			dir = down_dir;
+			y += speed;
+		}
+
 		if(placeBomb) {
 			placeBomb = false;
 			placeBomb();
-		}
-		if(right && Game.world.isFree((int) (x + curSpeed), this.getY())) {
-			moved = true;
-			dir = right_dir;
-			x += curSpeed;
-			if(isJumping && !isRunning && Game.world.isFree(getX() + 1, getY())) 
-				x += 1;
-		} else if(left && Game.world.isFree((int) (x - curSpeed), this.getY())) {
-			moved = true;
-			dir = left_dir;
-			x -= curSpeed;
-			if(isJumping && !isRunning && Game.world.isFree(getX() - 1, getY())) 
-				x -= 1;
-		} if(up && Game.world.isFree(this.getX(), (int) (y - curSpeed))) {
-			moved = true;
-			dir = up_dir;
-			y -= curSpeed;
-			if (isJumping && !isRunning && Game.world.isFree(getX() - 1, getY())) 
-				x -= 1;
-		} else if(down && Game.world.isFree(this.getX(), (int) (y + curSpeed))) {
-			moved = true;
-			dir = down_dir;
-			y += curSpeed;
-			if (isJumping && !isRunning && Game.world.isFree(getX() + 1, getY())) 
-				x += 1;
 		}
 
 		if(Game.cutsceneState == Game.enterCutscene) {
@@ -174,9 +166,9 @@ public class Player extends Entity {
 		}
 
 		if(isRunning) 
-			curSpeed = runSpeed;
+			speed = sprintSpd;
 		else 
-			curSpeed = defaultSpeed;
+			speed = defSpeed;
 
 		if(isDamaged) {
 			damageFrames++;

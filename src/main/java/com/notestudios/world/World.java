@@ -233,9 +233,9 @@ public class World {
 					Game.gameState = "Normal";
 				break;
 				case "px":
-					Game.player.x = Integer.parseInt(spl2[1]);
+					Game.player.setX(Integer.parseInt(spl2[1]));
 				case "py":
-					Game.player.y = Integer.parseInt(spl2[1]);
+					Game.player.setY(Integer.parseInt(spl2[1]));
 				case "life":
 					Game.player.life = Integer.parseInt(spl2[1]);
 				case "coins":
