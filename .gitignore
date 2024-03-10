@@ -29,7 +29,7 @@ build
 !gradle-wrapper.jar
 
 # Libraries
-!libs
+!libs/*
 
 # The Traveler files
 *.save
