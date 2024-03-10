@@ -56,47 +56,17 @@
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/joaov/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/33.0.0-jre/161ba27964a62f241533807a46b8711b13c1d94b/guava-33.0.0-jre.jar" sourcepath="/home/joaov/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/33.0.0-jre/2cca40652185734d5a89349c471a54367fb98067/guava-33.0.0-jre-sources.jar">
+	<classpathentry kind="lib" path="libs/GJAPI.jar">
 		<attributes>
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/joaov/.gradle/caches/modules-2/files-2.1/com.google.guava/failureaccess/1.0.2/c4a06a64e650562f30b7bf9aaec1bfed43aca12b/failureaccess-1.0.2.jar" sourcepath="/home/joaov/.gradle/caches/modules-2/files-2.1/com.google.guava/failureaccess/1.0.2/6acdafcf2dfc3b548e59dd3a4b454552aeb6ff65/failureaccess-1.0.2-sources.jar">
+	<classpathentry kind="lib" path="libs/discord-rpc.jar">
 		<attributes>
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/joaov/.gradle/caches/modules-2/files-2.1/com.google.guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/b421526c5f297295adef1c886e5246c39d4ac629/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar">
-		<attributes>
-			<attribute name="gradle.buildServer" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/joaov/Documentos/Code/repos/TheTraveler/libs/GJAPI.jar">
-		<attributes>
-			<attribute name="gradle.buildServer" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/joaov/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.2/25ea2e8b0c338a877313bd4672d3fe056ea78f0d/jsr305-3.0.2.jar" sourcepath="/home/joaov/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.2/b19b5927c2c25b6c70f093767041e641ae0b1b35/jsr305-3.0.2-sources.jar">
-		<attributes>
-			<attribute name="gradle.buildServer" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/joaov/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/2.8/c85270e307e7b822f1086b93689124b89768e273/j2objc-annotations-2.8.jar" sourcepath="/home/joaov/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/2.8/74fb66e276fc42784d884d51f841e35232bc90de/j2objc-annotations-2.8-sources.jar">
-		<attributes>
-			<attribute name="gradle.buildServer" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/joaov/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.23.0/43a27853b6c7d54893e0b1997c2c778c347179eb/error_prone_annotations-2.23.0.jar" sourcepath="/home/joaov/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.23.0/532ee2653e231d34f2beef55b1738fb92dc3be0e/error_prone_annotations-2.23.0-sources.jar">
-		<attributes>
-			<attribute name="gradle.buildServer" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/joaov/.gradle/caches/modules-2/files-2.1/org.checkerframework/checker-qual/3.41.0/8be6df7f1e9bccb19f8f351b3651f0bac2f5e0c/checker-qual-3.41.0.jar" sourcepath="/home/joaov/.gradle/caches/modules-2/files-2.1/org.checkerframework/checker-qual/3.41.0/bbd6dfcb5998fdda708d32c6c5b5a570f9f788e8/checker-qual-3.41.0-sources.jar">
-		<attributes>
-			<attribute name="gradle.buildServer" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/joaov/Documentos/Code/repos/TheTraveler/libs/discord-rpc.jar">
+	<classpathentry kind="lib" path="libs/JSONutils.jar">
 		<attributes>
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>
