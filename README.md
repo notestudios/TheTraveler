@@ -1,12 +1,9 @@
 # The Traveler 
 [Play on Game Jolt](https://gamejolt.com/games/ttraveler/796130)
 > Stable: **4.5.1**<br>
-> Devel: **unknown**
+> Devel: **4.5.2**
 
-<a href="https://gamejolt.com/games/ttraveler/796130">
-<img src="https://raw.githubusercontent.com/notestudios/TheTraveler/main/src/main/resources/images/BannerGitHub.png" alt="The Traveler Banner">
-</a>
-<br>
+[![The Traveler Banner](src/main/resources/images/BannerGitHub.png)](https://gamejolt.com/games/ttraveler/796130)
 
 This is **The Traveler** source code on GitHub! You can mod the game, [help optimizing](#-Contributing), create [new game levels](#-Contributing) and make **any** changes you want to it!
 Please, read the [License](#-License) section for more information of what you can do.
@@ -23,14 +20,16 @@ You can play The Traveler right away on [Game Jolt](https://gamejolt.com/games/t
 ## 🧰 Playing from source
 This section will guide you on how to build the game and run it with from the source code.
 
-### 📦 Installing dependencies
+### 📦 Dependencies
 The Traveler needs some dependencies to be installed to make the game run. Such as:
-#### Needed:
+#### Needed
  - [Java](https://java.com) or [OpenJDK](https://jdk.java.net/21)
  - [Gradle](https://gradle.org/install)
-#### Optional:
+   
+#### Optional
  - [Git](https://git-scm.com/downloads)
  - [GitHub CLI](https://cli.github.com)
+   
 #### Project's Required Libraries
   See under the [Libs folder](https://github.com/retrozinndev/TheTraveler/tree/master/libs#third-party-libraries) for more information.
 
