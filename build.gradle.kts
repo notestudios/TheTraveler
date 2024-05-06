@@ -17,7 +17,7 @@ dependencies {
     // This dependency is used by the application.
     implementation("com.google.guava:guava:33.0.0-jre")
     // Game Libraries
-    implementation(files("libs/discord-rpc.jar", "libs/GJAPI.jar"))
+    implementation(files("libs/discord-rpc.jar", "libs/GJAPI.jar", "libs/JSONutils.jar"))
 }
 
 sourceSets {
